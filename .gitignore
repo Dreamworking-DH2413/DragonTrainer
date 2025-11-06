@@ -1,0 +1,120 @@
+# =========================================
+# Unity 6 (6000.x) Project .gitignore
+# =========================================
+
+# OS-specific junk
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Unity generated folders
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+UserSettings/
+MemoryCaptures/
+
+# Cache & runtime data
+# These are automatically rebuilt and contain no source data.
+[Bb]eeps/
+[Ll]ightmapSnapshot/
+[Ll]ightingData.asset
+[Ll]ightmaps/
+[Bb]akedData/
+StreamingAssets/aa/
+ShaderCache/
+Shaders/Cache/
+*.pdb.meta
+
+# Asset pipeline
+# These hold platform-specific cached import data.
+*.pidb
+*.userprefs
+*.user
+*.booproj
+*.suo
+*.svd
+
+# Visual Studio / Rider / VS Code
+.vs/
+.idea/
+*.csproj
+*.unityproj
+*.sln
+*.dotSettings
+*.code-workspace
+
+# Crash & profiler data
+sysinfo.txt
+*.stacktrace
+*.log
+*.dmp
+
+# Builds and exported packages
+*.apk
+*.aab
+*.unitypackage
+*.app
+*.exe
+*.zip
+*.tar.gz
+
+# Generated project settings
+ExportedObj/
+BuildReports/
+AssetImportData/
+BuildArtifacts/
+
+# Addressables / Scriptable Build Pipeline
+# Rebuild automatically
+ServerData/
+BuildCache/
+*.bundle
+*.hash
+*.json.meta
+*.bundle.meta
+
+# Unity Collaborate / Plastic SCM (optional)
+.collabignore
+PlasticSCM/
+.plastic/
+
+# XR/VR temporary data
+XRDeviceSimulator/
+XRDeviceSimulator.meta
+Oculus/
+OpenXR/
+XRPackages/
+*.oculus.config
+
+# CacheServer
+Cache/
+
+# If you use Rider's Unity plugin
+.idea/.idea.*
+
+# If using Unity Cloud Build
+[uU]nity[Cc]loud/
+
+# Logs from the editor
+*.log
+
+# =================================================
+# Keep these important project folders/files tracked
+# =================================================
+# ! means "do not ignore"
+!Assets/
+!Packages/
+!ProjectSettings/
+!Packages/manifest.json
+!Packages/packages-lock.json
+!ProjectSettings/ProjectSettings.asset
+!ProjectSettings/EditorBuildSettings.asset
+!ProjectSettings/GraphicsSettings.asset
+!ProjectSettings/QualitySettings.asset
+!ProjectSettings/TagManager.asset
+!ProjectSettings/InputManager.asset
