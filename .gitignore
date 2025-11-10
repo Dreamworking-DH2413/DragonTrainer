@@ -91,6 +91,28 @@ OpenXR/
 XRPackages/
 *.oculus.config
 
+# SteamVR plugin specific
+Assets/SteamVR/InteractionSystem/Longbow/
+Assets/SteamVR/InteractionSystem/Samples/
+Assets/SteamVR/InteractionSystem/Tests/
+Assets/SteamVR/Tools/
+Assets/SteamVR/Editor/SteamVR_Input_EditorWindow.cs.meta
+Assets/SteamVR/Editor/SteamVR_Input_EditorWindow.cs
+Assets/SteamVR/Editor/SteamVR_Update.cs
+Assets/SteamVR/Editor/SteamVR_Update.cs.meta
+
+# Generated SteamVR input / bindings
+Assets/SteamVR_Input/
+Assets/SteamVR_Input.meta
+Assets/SteamVR_Settings.asset
+Assets/SteamVR_Settings.asset.meta
+
+# Plugin binaries (these are rebuilt or downloaded)
+Assets/Plugins/x86_64/
+Assets/Plugins/openvr_api.dll
+Assets/Plugins/openvr_api.bundle/
+Assets/Plugins/openvr_api.so
+
 # CacheServer
 Cache/
 
