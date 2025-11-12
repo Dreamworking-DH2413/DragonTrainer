@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class FlyControl : MonoBehaviour
+public class DragonControl : MonoBehaviour
 {
     [Header("Flight Mechanics")]
     [SerializeField] private float flapForce = 50f;           // Forward impulse when flapping
@@ -32,11 +32,10 @@ public class FlyControl : MonoBehaviour
     [SerializeField] private float groundCheckDistance = 0.5f;
     [SerializeField] private LayerMask groundLayer;
     
-    [Header("Camera Follow")]
-    [SerializeField] private Transform cameraTransform;
-    [SerializeField] private bool useMainCamera = true;
-    [SerializeField] private string cameraTag = "MainCamera";
-    [SerializeField] private Vector3 cameraOffset = new Vector3(0, 1, -3);
+    [Header("VR Player Follow")]
+    [SerializeField] private Transform vrPlayerTransform;      // The VR Player root object
+    [SerializeField] private Vector3 playerOffset = new Vector3(0, 1, 0);  // Offset from dragon (player sits on dragon's back)
+    [SerializeField] private bool rotatePlayerWithDragon = true;  // Whether player rotates with dragon
 
     private Rigidbody rb;
     private bool isGrounded = false;
@@ -58,22 +57,29 @@ public class FlyControl : MonoBehaviour
         previousVelocity = rb.linearVelocity;
         previousForward = transform.forward;
         
-        // Find camera if not assigned
-        if (cameraTransform == null)
+        // Find VR Player if not assigned
+        if (vrPlayerTransform == null)
         {
-            if (useMainCamera)
+            // Try to find SteamVR Player by type
+            var player = FindFirstObjectByType<Valve.VR.InteractionSystem.Player>();
+            if (player != null)
             {
-                // Use Camera.main (the camera tagged "MainCamera")
-                Camera mainCamera = Camera.main;
-                if (mainCamera != null)
-                    cameraTransform = mainCamera.transform;
+                vrPlayerTransform = player.transform;
+                Debug.Log("Found SteamVR Player: " + vrPlayerTransform.name);
             }
             else
             {
-                // Find camera by tag
-                GameObject cameraObj = GameObject.FindWithTag(cameraTag);
-                if (cameraObj != null)
-                    cameraTransform = cameraObj.transform;
+                // Fallback: Try to find by name
+                GameObject playerObj = GameObject.Find("Player");
+                if (playerObj != null)
+                {
+                    vrPlayerTransform = playerObj.transform;
+                    Debug.Log("Found Player object by name: " + vrPlayerTransform.name);
+                }
+                else
+                {
+                    Debug.LogWarning("VR Player not found! Please assign vrPlayerTransform in the inspector.");
+                }
             }
         }
     }
@@ -105,7 +111,7 @@ public class FlyControl : MonoBehaviour
 
     void LateUpdate()
     {
-        UpdateCameraPosition();
+        UpdateVRPlayerPosition();
     }
 
     private void HandleFlapInput()
@@ -317,25 +323,23 @@ public class FlyControl : MonoBehaviour
         Debug.DrawRay(transform.position, Vector3.down * groundCheckDistance, isGrounded ? Color.green : Color.red);
     }
 
-    private void UpdateCameraPosition()
+    private void UpdateVRPlayerPosition()
     {
-        if (cameraTransform == null)
+        if (vrPlayerTransform == null)
             return;
 
-        // Position camera relative to the dragon in LOCAL space
-        // The camera offset is applied in the dragon's local coordinate system
-        Vector3 localOffset = cameraOffset;
-        Vector3 worldOffset = transform.TransformDirection(localOffset);
+        // Position VR player relative to the dragon in LOCAL space
+        // The player offset is applied in the dragon's local coordinate system
+        Vector3 worldOffset = transform.TransformDirection(playerOffset);
         Vector3 targetPosition = transform.position + worldOffset;
         
-        cameraTransform.position = targetPosition;
+        vrPlayerTransform.position = targetPosition;
 
-        // Make camera look at a point ahead of the dragon (in dragon's forward direction)
-        Vector3 lookAtPoint = transform.position + transform.forward * 5f;
-        cameraTransform.LookAt(lookAtPoint);
-        
-        // Apply the dragon's roll to the camera by rotating around the forward axis
-        Vector3 forward = (lookAtPoint - targetPosition).normalized;
-        cameraTransform.rotation = Quaternion.LookRotation(forward, transform.up);
+        // Rotate the VR player with the dragon if enabled
+        if (rotatePlayerWithDragon)
+        {
+            // Match the dragon's rotation exactly so the player experiences all the rolls, pitches, and yaws
+            vrPlayerTransform.rotation = transform.rotation;
+        }
     }
 }

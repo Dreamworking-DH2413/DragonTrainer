@@ -45,7 +45,7 @@ public class VRRig : MonoBehaviour
 
             if (leftOuterArm != null)
             {
-                leftOuterArm.position = tracker1Pos * wingSpanScale;
+                // leftOuterArm.position = tracker1Pos * wingSpanScale;
                 //leftOuterArm.rotation = tracker1Rot;
             }
         }
@@ -57,7 +57,7 @@ public class VRRig : MonoBehaviour
 
             if (rightOuterArm != null)
             {
-                rightOuterArm.position = tracker2Pos * wingSpanScale;
+                // rightOuterArm.position = tracker2Pos * wingSpanScale;
                 //rightOuterArm.rotation = tracker2Rot;
             }
         }
