@@ -11,6 +11,12 @@ public class VRRig : MonoBehaviour
     public Transform tracker1;
     public Transform tracker2;
 
+    [Header("Bones")]
+    public float wingSpanScale = 8.0f;
+
+    public Transform leftOuterArm;
+    public Transform rightOuterArm;
+
     void Update()
     {
         if (head != null)
@@ -32,6 +38,28 @@ public class VRRig : MonoBehaviour
             Quaternion rightRot = rightHand.rotation;
         }
 
-        // same idea for trackers
+        if (tracker1 != null)
+        {
+            Vector3 tracker1Pos = tracker1.position;
+            Quaternion tracker1Rot = tracker1.rotation;
+
+            if (leftOuterArm != null)
+            {
+                leftOuterArm.position = tracker1Pos * wingSpanScale;
+                //leftOuterArm.rotation = tracker1Rot;
+            }
+        }
+
+        if (tracker2 != null)
+        {
+            Vector3 tracker2Pos = tracker2.position;
+            Quaternion tracker2Rot = tracker2.rotation;
+
+            if (rightOuterArm != null)
+            {
+                rightOuterArm.position = tracker2Pos * wingSpanScale;
+                //rightOuterArm.rotation = tracker2Rot;
+            }
+        }
     }
 }
