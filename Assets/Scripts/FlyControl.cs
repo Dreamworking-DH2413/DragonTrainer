@@ -13,11 +13,20 @@ public class FlyControl : MonoBehaviour
     [SerializeField] private float groundDrag = 5f;           // Drag when on ground to stop movement
     [SerializeField] private float gravityScale = 0.5f;       // Reduce gravity effect (0.5 = half gravity, 0.3 = very light)
     
+    [Header("Wing Mechanics")]
+    [SerializeField] private float expandedLiftMultiplier = 1.5f;    // Extra lift when wings expanded
+    [SerializeField] private float expandedDragMultiplier = 1.3f;    // Extra drag when wings expanded
+    [SerializeField] private float retractedSpeedMultiplier = 1.4f;  // Speed bonus when wings retracted
+    [SerializeField] private float retractedLiftMultiplier = 0.6f;   // Reduced lift when wings retracted
+    [SerializeField] private float glidingLiftForce = 5f;            // Upward force while gliding straight with expanded wings
+    [SerializeField] private float velocityRedirectSpeed = 3f;       // How fast velocity aligns with forward direction (higher = tighter turns)
+    [SerializeField] private float turnDragFactor = 0.98f;           // Speed retained per degree of turn (0.98 = 2% loss per degree)
+    [SerializeField] private float minSpeedForLift = 2f;             // Minimum speed to generate lift while gliding
+    
     [Header("Rotation (Pitch, Yaw, Roll)")]
     [SerializeField] private float pitchSpeed = 60f;          // Up/down rotation (W/S)
     [SerializeField] private float yawSpeed = 60f;            // Left/right rotation (A/D)
     [SerializeField] private float rollSpeed = 90f;           // Roll rotation (Q/E)
-    [SerializeField] private float maxPitchAngle = 120f;       // Limit pitch to prevent over-rotation
     
     [Header("Ground Detection")]
     [SerializeField] private float groundCheckDistance = 0.5f;
@@ -31,17 +40,23 @@ public class FlyControl : MonoBehaviour
 
     private Rigidbody rb;
     private bool isGrounded = false;
-    private float currentPitch = 0f;
     
     // Flapping state tracking
     private float flapTimer = 0f;           // Time remaining in current flap
     private float flapCooldownTimer = 0f;   // Time until next flap is allowed
     private bool isCurrentlyFlapping = false;
     private bool flapRequested = false;     // Track if flap was requested this frame
+    
+    // Wing state tracking
+    private bool wingsExpanded = true;      // Default to expanded wings
+    private Vector3 previousVelocity;       // Track velocity to detect turns
+    private Vector3 previousForward;        // Track forward direction to detect turns
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        previousVelocity = rb.linearVelocity;
+        previousForward = transform.forward;
         
         // Find camera if not assigned
         if (cameraTransform == null)
@@ -71,6 +86,13 @@ public class FlyControl : MonoBehaviour
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             flapRequested = true;
+        }
+        
+        // Toggle wing state with LEFT SHIFT key
+        if (Keyboard.current.leftShiftKey.wasPressedThisFrame)
+        {
+            wingsExpanded = !wingsExpanded;
+            Debug.Log("Wings " + (wingsExpanded ? "EXPANDED" : "RETRACTED"));
         }
     }
 
@@ -154,32 +176,30 @@ public class FlyControl : MonoBehaviour
         if (Keyboard.current.sKey.isPressed)
             pitchInput = -1f;
 
-        if (Keyboard.current.aKey.isPressed)
+        if (Keyboard.current.qKey.isPressed)
             yawInput = -1f;
-        if (Keyboard.current.dKey.isPressed)
+        if (Keyboard.current.eKey.isPressed)
             yawInput = 1f;
 
-        if (Keyboard.current.qKey.isPressed)
+        if (Keyboard.current.aKey.isPressed)
             rollInput = 1f;
-        if (Keyboard.current.eKey.isPressed)
+        if (Keyboard.current.dKey.isPressed)
             rollInput = -1f;
 
-        // Apply pitch with clamping
+        // Apply rotations directly in local space - full freedom of movement
+        // Pitch (X-axis): Up/down nose rotation
         if (pitchInput != 0f)
         {
-            float newPitch = currentPitch + pitchInput * pitchSpeed * Time.fixedDeltaTime;
-            newPitch = Mathf.Clamp(newPitch, -maxPitchAngle, maxPitchAngle);
-            transform.Rotate(newPitch - currentPitch, 0, 0, Space.Self);
-            currentPitch = newPitch;
+            transform.Rotate(pitchInput * pitchSpeed * Time.fixedDeltaTime, 0, 0, Space.Self);
         }
 
-        // Apply yaw (left/right)
+        // Yaw (Y-axis): Left/right nose rotation
         if (yawInput != 0f)
         {
             transform.Rotate(0, yawInput * yawSpeed * Time.fixedDeltaTime, 0, Space.Self);
         }
 
-        // Apply roll (barrel roll)
+        // Roll (Z-axis): Barrel roll rotation
         if (rollInput != 0f)
         {
             transform.Rotate(0, 0, rollInput * rollSpeed * Time.fixedDeltaTime, Space.Self);
@@ -201,24 +221,83 @@ public class FlyControl : MonoBehaviour
         {
             // During flap animation state: Apply drag for flapping state
             // (Actual impulse was applied instantly in StartFlap())
-            rb.linearDamping = flapDrag;
+            float dragMultiplier = wingsExpanded ? expandedDragMultiplier : 1f;
+            rb.linearDamping = flapDrag * dragMultiplier;
         }
         else if (!isGrounded)
         {
-            // Gliding: Redirect velocity to follow current forward direction
-            // Get current horizontal speed (ignoring vertical component)
-            Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
-            float currentSpeed = horizontalVelocity.magnitude;
+            // === GLIDING PHYSICS (Elytra-style) ===
             
-            // If gliding and moving, redirect velocity to face forward direction
-            if (currentSpeed > 0.1f)
+            // Get current velocity and speed
+            Vector3 currentVelocity = rb.linearVelocity;
+            float currentSpeed = currentVelocity.magnitude;
+            Vector3 horizontalVelocity = new Vector3(currentVelocity.x, 0, currentVelocity.z);
+            float horizontalSpeed = horizontalVelocity.magnitude;
+            
+            // Calculate turn angle (how much the dragon rotated this frame)
+            float turnAngle = Vector3.Angle(previousForward, transform.forward);
+            
+            // Apply small speed loss based on turning (air resistance from turning)
+            if (turnAngle > 0.1f && currentSpeed > 0.1f)
             {
-                Vector3 newHorizontalVelocity = transform.forward * currentSpeed;
-                rb.linearVelocity = new Vector3(newHorizontalVelocity.x, rb.linearVelocity.y, newHorizontalVelocity.z);
+                // Slight speed loss when turning (much less aggressive)
+                float speedLossMultiplier = Mathf.Pow(turnDragFactor, turnAngle);
+                currentSpeed *= speedLossMultiplier;
             }
             
-            // Apply lower drag for longer glide
-            rb.linearDamping = glideDrag;
+            // Smoothly redirect velocity toward the forward direction (Elytra-style)
+            // This gradually turns the velocity vector instead of snapping it
+            if (currentSpeed > 0.1f)
+            {
+                Vector3 targetVelocity = transform.forward * currentSpeed;
+                
+                // Smoothly interpolate current velocity toward target direction
+                // Higher velocityRedirectSpeed = tighter turns, lower = wider turns
+                Vector3 newVelocity = Vector3.Lerp(
+                    currentVelocity, 
+                    targetVelocity, 
+                    velocityRedirectSpeed * Time.fixedDeltaTime
+                );
+                
+                // Preserve the speed magnitude (prevent speed gain/loss from lerp)
+                newVelocity = newVelocity.normalized * currentSpeed;
+                
+                rb.linearVelocity = newVelocity;
+            }
+            
+            // === WING STATE EFFECTS ===
+            
+            if (wingsExpanded)
+            {
+                // Expanded wings: Generate lift when moving forward above minimum speed
+                if (horizontalSpeed >= minSpeedForLift)
+                {
+                    // More speed = more lift (quadratic relationship like real wings)
+                    float liftAmount = glidingLiftForce * expandedLiftMultiplier * (horizontalSpeed / minSpeedForLift);
+                    // Use transform.up so lift follows dragon's orientation (banking turns!)
+                    rb.AddForce(transform.up * liftAmount, ForceMode.Force);
+                }
+                
+                // Expanded wings have more drag
+                rb.linearDamping = glideDrag * expandedDragMultiplier;
+            }
+            else
+            {
+                // Retracted wings: Less lift, less drag (faster but sink faster)
+                if (horizontalSpeed >= minSpeedForLift)
+                {
+                    float liftAmount = glidingLiftForce * retractedLiftMultiplier * (horizontalSpeed / minSpeedForLift);
+                    // Use transform.up so lift follows dragon's orientation (banking turns!)
+                    rb.AddForce(transform.up * liftAmount, ForceMode.Force);
+                }
+                
+                // Retracted wings have less drag = can go faster
+                rb.linearDamping = glideDrag * (1f / retractedSpeedMultiplier);
+            }
+            
+            // Store current state for next frame
+            previousVelocity = rb.linearVelocity;
+            previousForward = transform.forward;
         }
         else
         {
