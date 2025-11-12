@@ -39,6 +39,7 @@ public class DragonControl : MonoBehaviour
 
     private Rigidbody rb;
     private bool isGrounded = false;
+    private Animator animator;              // Reference to animator (if present)
     
     // Flapping state tracking
     private float flapTimer = 0f;           // Time remaining in current flap
@@ -54,6 +55,40 @@ public class DragonControl : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        
+        // Get animator if present (for rigged models)
+        animator = GetComponentInChildren<Animator>();
+        
+        // CRITICAL FIX FOR RIGGED MODELS:
+        // Configure animator to not interfere with physics
+        if (animator != null)
+        {
+            Debug.Log("Rigged dragon detected! Configuring animator for physics control...");
+            
+            // Disable root motion so animator doesn't override Rigidbody movement
+            animator.applyRootMotion = false;
+            
+            // Set update mode to Fixed so animator updates in sync with physics (FixedUpdate)
+            animator.updateMode = AnimatorUpdateMode.Fixed;
+            
+            Debug.Log("Animator configured: Root Motion = " + animator.applyRootMotion + 
+                     ", Update Mode = " + animator.updateMode);
+        }
+        
+        // CRITICAL FIX FOR RIGGED MODELS:
+        // Ensure Rigidbody is on the root object with the script
+        if (rb == null)
+        {
+            Debug.LogError("No Rigidbody found on " + gameObject.name + "! Adding one automatically.");
+            rb = gameObject.AddComponent<Rigidbody>();
+            rb.mass = 10f;
+            rb.linearDamping = glideDrag;
+            rb.angularDamping = 0.5f;
+        }
+        
+        // Configure Rigidbody constraints to prevent unwanted rotation interference
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
+        
         previousVelocity = rb.linearVelocity;
         previousForward = transform.forward;
         
