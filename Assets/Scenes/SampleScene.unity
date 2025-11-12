@@ -488,15 +488,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 2.5
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepMax
+      value: 3.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepStr
-      value: 0.2
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: damping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: senseHz
+      value: 6.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 1.7
+      value: 6.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -504,11 +516,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 2.5
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: turnSpeed
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.01
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseInterval
@@ -516,7 +532,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
@@ -532,7 +548,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5677094077493774292, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_IsKinematic
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -703,15 +719,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 2.5
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepMax
+      value: 3.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepStr
-      value: 0.2
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: damping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: senseHz
+      value: 6.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 1.7
+      value: 6.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -719,11 +747,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 2.5
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: turnSpeed
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.01
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseInterval
@@ -731,7 +763,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
@@ -747,7 +779,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5677094077493774292, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_IsKinematic
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1186,15 +1218,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 2.5
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepMax
+      value: 3.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepStr
-      value: 0.2
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: damping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: senseHz
+      value: 6.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 1.7
+      value: 6.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -1202,11 +1246,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 2.5
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: turnSpeed
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.01
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseInterval
@@ -1214,7 +1262,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
@@ -1230,7 +1278,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5677094077493774292, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_IsKinematic
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1344,15 +1392,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 2.5
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepMax
+      value: 3.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepStr
-      value: 0.2
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: damping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: senseHz
+      value: 6.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 1.7
+      value: 6.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -1360,11 +1420,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 2.5
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: turnSpeed
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.01
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseInterval
@@ -1372,7 +1436,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
@@ -1388,7 +1452,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5677094077493774292, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_IsKinematic
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1497,15 +1561,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 2.5
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepMax
+      value: 3.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepStr
-      value: 0.2
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: damping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: senseHz
+      value: 6.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 1.7
+      value: 6.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -1513,11 +1589,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 2.5
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: turnSpeed
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.01
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseInterval
@@ -1525,7 +1605,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
@@ -1541,7 +1621,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5677094077493774292, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_IsKinematic
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1603,15 +1683,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 2.5
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepMax
+      value: 3.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepStr
-      value: 0.2
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: damping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: senseHz
+      value: 6.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 1.7
+      value: 6.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -1619,11 +1711,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 2.5
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: turnSpeed
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.01
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseInterval
@@ -1631,7 +1727,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
@@ -1647,7 +1743,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5677094077493774292, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_IsKinematic
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1709,15 +1805,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 2.5
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepMax
+      value: 3.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepStr
-      value: 0.2
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: damping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: senseHz
+      value: 6.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 1.7
+      value: 6.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -1725,11 +1833,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 2.5
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: turnSpeed
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.01
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseInterval
@@ -1737,7 +1849,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
@@ -1753,7 +1865,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5677094077493774292, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_IsKinematic
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1815,15 +1927,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 2.5
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepMax
+      value: 3.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepStr
-      value: 0.2
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: damping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: senseHz
+      value: 6.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 1.7
+      value: 6.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -1831,11 +1955,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 2.5
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: turnSpeed
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.01
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseInterval
@@ -1843,7 +1971,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
@@ -1859,7 +1987,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5677094077493774292, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_IsKinematic
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

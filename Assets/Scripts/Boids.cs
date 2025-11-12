@@ -12,7 +12,8 @@ public class Boids : MonoBehaviour
     // SENSING NEIGHBOUR BOIDS
     public LayerMask boidMask;            // Layer that all sheep are on (e.g., "Boid")
     public int maxNeighbors = 64;         // Size of reusable hits buffer
-    public float senseInterval = 0.1f;    // Each sheep senses ~10×/sec
+    public float senseHz = 0.1f;    // Each sheep senses ~10×/sec
+    float senseInterval;
     public float cohesionRadius = 4f;     // How far we "see" other sheep
     public float sepRadius = 4f;     // How far we "see" other sheep
 
@@ -20,6 +21,8 @@ public class Boids : MonoBehaviour
     public float damping = 0.1f;
     public float cohesionStr = 0.1f;
     public float sepStr = 0.5f;
+    public float sepMax = 3.5f;
+
 
 
 
@@ -34,6 +37,7 @@ public class Boids : MonoBehaviour
     private Collider[] hits; //non-triggered. OverlapSphere func returns Colliders it finds in a radius. <- Why we need it.
     private Vector3 cohesionCenter;
     private Vector3 vel;
+    private Vector3 desiredVel;
     //==============================================
      void Awake()
     {
@@ -46,130 +50,120 @@ public class Boids : MonoBehaviour
         Vector2 rnd = Random.insideUnitCircle.normalized;     // 2D random on the plane
         heading = new Vector3(rnd.x, 0f, rnd.y);              // Set XZ (L/R), keep y (UP) = 0
         if (heading.sqrMagnitude < 1e-4f) heading = Vector3.forward;// Fallback just in case
-    
+
+        Vector2 r = Random.insideUnitCircle.normalized;
+        desiredVel = new Vector3(r.x, 0f, r.y) * 0.5f; // small nudge
+
+
         hits = new Collider[maxNeighbors];                              // Allocate once; reuse forever
-        nextSenseTime = 0f + Random.value * senseInterval;       // Stagger first sensing //Mayb can use 0 inst of Time.time (?)
+        senseInterval = 1f / senseHz;   // e.g., 5 Hz -> 0.2 s
+
+        nextSenseTime = Time.fixedTime + Random.value * senseInterval;        // Stagger first sensing //Mayb can use 0 inst of Time.time (?)
 
     
     }
 
     void Update()
     {
-        /*
-        //update heading dir using BOID rules
-        //forces should be normalized and have y val of 0
-        if (cohesionForce.sqrMagnitude > 1e-6f)
+        
+
+    }
+    
+    void calcBoidForces()
+    {
+        
+        //reset boid forces:
+        cohesionForce = Vector3.zero;
+        cohesionCenter = Vector3.zero;
+        sepForce = Vector3.zero;
+        
+        int found = SenseNeighborsNonAlloc(transform.position, cohesionRadius, hits, boidMask);
+        int neighborCount = 0;
+
+        for (int i = 0; i < found; i++)
         {
-            heading = Vector3.Slerp(heading, cohesionForce, Mathf.Clamp01(cohesionStr)); //Gently rotate the current heading toward the desired steerDir.
-            heading.y = 0f; //safe
-            if (heading.sqrMagnitude > 1e-6f) heading.Normalize(); //safe
+            var col = hits[i];                                      // Candidate collider
+            if (!col) continue;                                     // Safety-ignore (no found)
+            var otherRb = col.attachedRigidbody;                    // Prefer Rigidbody to identify self
+            if (otherRb == rb) continue;                            // if self-ignore
 
-        }*/
+            Vector3 dstToOther = col.transform.position - transform.position;
+            dstToOther.y = 0f;
+            float sqr = dstToOther.sqrMagnitude;
 
-        // --- Move using physics-friendly API so collisions behave nicely ---
-        /*
-        Vector3 targetVelXZ  = heading * maxSpeed; //* Time.fixedDeltaTime; // How far to go this physics tick (XZ)
-        Vector3 vel = rb.linearVelocity; // includes current Y from gravity
-        Vector3 curXZ = new Vector3(vel.x, 0f, vel.z); //exclude Y
-        curXZ = Vector3.MoveTowards(curXZ, targetVelXZ, maxAcc * Time.fixedDeltaTime); //move by at most acc*dt=maxSpeed
-        rb.linearVelocity = new Vector3(curXZ.x, vel.y, curXZ.z); // Reassemble final velocity: keep gravity-driven Y
-        */
-        //Vector3 target = rb.position + new Vector3(step.x, 0f, step.z); // Do not drive Y; gravity handles it
-        //rb.MovePosition(target); // Ask the physics engine to move us to 'target'
-
-
-
-
-        // --- Sense neighbors on a staggered schedule (not every frame) ---
-        if (Time.time >= nextSenseTime)
-        //if(true)
-        {
-            //reset boid forces:
-            cohesionForce = Vector3.zero;
-            cohesionCenter = Vector3.zero;
-            sepForce = Vector3.zero;
-
-            nextSenseTime += senseInterval;                             // Book next sensing time
-            int found = SenseNeighborsNonAlloc(transform.position, cohesionRadius, hits, boidMask);
-            int neighborCount = 0;
-
-            for (int i = 0; i < found; i++)
+            // Accumulate cohesion force
+            if (sqr <= cohesionRadius * cohesionRadius)    // out of range-ignore
             {
-                var col = hits[i];                                      // Candidate collider
-                if (!col) continue;                                     // Safety-ignore (no found)
-                var otherRb = col.attachedRigidbody;                    // Prefer Rigidbody to identify self
-                if (otherRb == rb) continue;                            // if self-ignore
-
-                Vector3 dstToOther = col.transform.position - transform.position;
-                dstToOther.y = 0f;
-                float sqr = dstToOther.sqrMagnitude;
-
-                // Accumulate cohesion force
-                if (sqr > cohesionRadius * cohesionRadius) continue;    // out of range-ignore
                 neighborCount++; //found a neighbour!
                 cohesionCenter += col.transform.position;
-
-                // Accumulate sep force
-                if (sqr > sepRadius * sepRadius) continue;
-                sepForce += (-dstToOther) * (sepRadius / Mathf.Min(dstToOther.sqrMagnitude, 0.1f)); //neg because the other way. Apply greater force if closer
             }
-
-            // BOID FORCES calcs
-            if (neighborCount > 0)
+            // Accumulate sep force
+            if (sqr <= sepRadius * sepRadius)// out of range-ignore (!) should prob not be squared???
             {
-                cohesionCenter = cohesionCenter / neighborCount;
-                Vector3 centerDir = cohesionCenter - transform.position;
-                centerDir.y = 0f;
-                cohesionForce = centerDir.normalized;   // direction only; accel cap handles magnitude
-                cohesionForce *= cohesionStr;
-                
-                sepForce = sepForce.normalized;
-                sepForce *= sepStr;
+                Vector3 sepAdd = (-dstToOther) * (sepRadius / Mathf.Max(dstToOther.sqrMagnitude, 0.1f));//neg because the other way. Falloff-Apply greater force if very close
+                //sepAdd = Vector3.ClampMagnitude(sepAdd, sepMax); // clamp the total separation force (since we dont normalize it)
+                sepForce += sepAdd;
             }
-
+            
 
         }
 
-        Vector3 oldVel = vel;
-        //UPDATE POS/VEL VIA BOID FORCES
-        vel = vel + sepForce + cohesionForce;
-        //vel.y=0f; //safe
-
-        //speed limit
-        if (vel.sqrMagnitude > maxSpeed)
+        // BOID FORCES calcs
+        if (neighborCount > 0)
         {
-            vel = vel.normalized * maxSpeed;
-        }
-        Vector3 slerpVel= Vector3.zero;
-        if (vel.sqrMagnitude > 1e-1f) //speed minLimit
-        {
-            slerpVel = Vector3.Slerp(oldVel, vel, 0.5f); //Gently rotate the current heading toward the desired steerDir.
+            cohesionCenter = cohesionCenter / neighborCount;
+            Vector3 centerDir = cohesionCenter - transform.position;
+            centerDir.y = 0f;
+            cohesionForce = centerDir.normalized;   // direction only; accel cap handles magnitude
+            cohesionForce *= cohesionStr;
 
+            sepForce = Vector3.ClampMagnitude(sepForce, sepMax); // clamp the total separation force (since we dont normalize it)
+            sepForce *= sepStr;
         }
-        slerpVel*= (1f - damping * Time.deltaTime);  // damping ~ 0.1–0.3
-        //Debug.Log("\n" + vel.sqrMagnitude);
-        transform.position += slerpVel * Time.deltaTime;
+
 
         
-
-        
-        // Optionally rotate the body to face the movement direction (yaw only)
-          // --- Face movement direction (yaw only) ---
-        /*
-        if (faceMoveDirection && vel.sqrMagnitude > 1e-6f)
-        {
-            Quaternion want = Quaternion.LookRotation(vel, Vector3.up);
-            Quaternion next = Quaternion.RotateTowards(rb.rotation, want, turnSpeed * Time.fixedDeltaTime);
-            rb.MoveRotation(next);
-        }
-        */
-
-
     }
 
     //==============================================
     void FixedUpdate()
     {
+        // --- Sense and reCalc forces (throttled) ---
+        if (Time.fixedTime >= nextSenseTime)
+        {
+            nextSenseTime += senseInterval; //book next sense session
+            calcBoidForces();
+        }
+
+        //UPDATE VEL VIA BOID FORCES
+        desiredVel = desiredVel + sepForce + cohesionForce;
+        //speed limit
+        if (desiredVel.sqrMagnitude > maxSpeed*maxSpeed)
+        {
+            desiredVel = desiredVel.normalized * maxSpeed;
+        }
+        desiredVel *= 1f - (damping * Time.fixedDeltaTime);  // damping ~ 0.1–0.3
+
+
+        //STEER currVEL TO newVEL VIA desiredVEL
+        Vector3 currVel = rb.linearVelocity; // includes gravity Y
+        Vector3 newVelXZ = new Vector3(currVel.x, 0f, currVel.z);
+        newVelXZ = Vector3.MoveTowards(newVelXZ, desiredVel, maxAcc * Time.fixedDeltaTime);
+
+        //UPDATE POS VIA BOID FORCES AND VIA RB-VEL
+        //if (desiredVel.sqrMagnitude > 1e-1f) //speed minLimit
+        if(true)
+        {
+
+            rb.linearVelocity = new Vector3(newVelXZ.x, currVel.y, newVelXZ.z);
+            /*
+            Quaternion want = Quaternion.LookRotation(newVelXZ, Vector3.up);
+            Quaternion next = Quaternion.RotateTowards(rb.rotation, want, turnSpeed * Time.fixedDeltaTime);
+            rb.MoveRotation(next);
+            */
+
+        }
+        
         /*
 // --- Move using physics-friendly API so collisions behave nicely ---
         
