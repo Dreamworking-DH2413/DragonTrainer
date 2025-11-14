@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 436623788374310418}
   - component: {fileID: 3629546554454730444}
   - component: {fileID: 967399337488425603}
-  - component: {fileID: 3243091856965433270}
   - component: {fileID: 1639526715377912509}
   - component: {fileID: 5677094077493774292}
+  - component: {fileID: 2576260599752310788}
   m_Layer: 8
   m_Name: Sheep
   m_TagString: Untagged
@@ -43,7 +43,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3937638948870174604}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &967399337488425603
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -89,27 +89,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &3243091856965433270
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3937638948870174604}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1639526715377912509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122,18 +101,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18b4408e1f107ff4388d3ad0c3f60385, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 3
-  maxAcc: 1.5
-  turnSpeed: 90
+  maxSpeed: 6.5
+  maxAcc: 10
+  turnSpeed: 10
   faceMoveDirection: 1
-  neighborRadius: 4
   boidMask:
     serializedVersion: 2
     m_Bits: 0
   maxNeighbors: 64
-  senseInterval: 0.1
-  cohesionForce: {x: 0, y: 0, z: 0}
-  cohesionStr: 0.1
+  senseHz: 6.5
+  cohesionRadius: 10
+  sepRadius: 1.6
+  predatorRadius: 10
+  player: {fileID: 0}
+  damping: 0
+  cohesionStr: 0.8
+  sepStr: 1.8
+  sepMax: 3.8
+  predatorStr: 1.5
 --- !u!54 &5677094077493774292
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -161,3 +146,24 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!135 &2576260599752310788
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3937638948870174604}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}

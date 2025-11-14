@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections.Generic;
+
 
 public class Boids : MonoBehaviour
 {
@@ -12,16 +14,30 @@ public class Boids : MonoBehaviour
     // SENSING NEIGHBOUR BOIDS
     public LayerMask boidMask;            // Layer that all sheep are on (e.g., "Boid")
     public int maxNeighbors = 64;         // Size of reusable hits buffer
-    public float senseHz = 0.1f;    // Each sheep senses ~10×/sec
+    public float senseHz = 0.05f;    // Each sheep senses ~10×/sec
     float senseInterval;
     public float cohesionRadius = 4f;     // How far we "see" other sheep
+    public float pastureRadius = 4f;     // How far we "see" other sheep
     public float sepRadius = 4f;     // How far we "see" other sheep
+    public float predatorRadius = 10f;   // how far away we start caring about the player
+    public float matchingRadius = 10f;   // how far away we start caring about the player
+
+    public Transform player;             // set in Awake or inspector
+
 
     //BOIDS FORCES STUFF
+    Dictionary<string, bool> status = new Dictionary<string, bool>()
+    {
+        { "regrouping", false },
+        { "pasture", false },
+        { "hunted", false }
+    };
     public float damping = 0.1f;
     public float cohesionStr = 0.1f;
     public float sepStr = 0.5f;
     public float sepMax = 3.5f;
+    public float predatorStr = 1.5f;     // strength of the avoidance
+    public float matchingStr = 0.8f;      // str of mathching vel of surrounding fleeing cheep
 
 
 
@@ -31,13 +47,19 @@ public class Boids : MonoBehaviour
     // --- Internals ---
     private Vector3 cohesionForce;
     private Vector3 sepForce;
+    private Vector3 predatorForce;
+    private Vector3 matchingForce;
+
+
     private Rigidbody rb;               // Cached reference to our Rigidbody
     private Vector3 heading;            // Our current movement direction on XZ (y = 0)
     private float nextSenseTime;          // When this sheep should sense next (not every frame)
     private Collider[] hits; //non-triggered. OverlapSphere func returns Colliders it finds in a radius. <- Why we need it.
     private Vector3 cohesionCenter;
-    private Vector3 vel;
+    private Vector3 matchingVel;
+
     private Vector3 desiredVel;
+
     //==============================================
      void Awake()
     {
@@ -52,7 +74,7 @@ public class Boids : MonoBehaviour
         if (heading.sqrMagnitude < 1e-4f) heading = Vector3.forward;// Fallback just in case
 
         Vector2 r = Random.insideUnitCircle.normalized;
-        desiredVel = new Vector3(r.x, 0f, r.y) * 0.5f; // small nudge
+        //desiredVel = new Vector3(r.x, 0f, r.y) * 0.5f; // small nudge
 
 
         hits = new Collider[maxNeighbors];                              // Allocate once; reuse forever
@@ -60,66 +82,120 @@ public class Boids : MonoBehaviour
 
         nextSenseTime = Time.fixedTime + Random.value * senseInterval;        // Stagger first sensing //Mayb can use 0 inst of Time.time (?)
 
+            // Auto-find player if not assigned in Inspector
+        if (player == null)
+        {
+            GameObject p = GameObject.Find("FallbackObjects"); // Use Find by name instead
+            if (p != null) player = p.transform;
+        }
     
     }
 
     void Update()
     {
-        
 
     }
     
+    void calcPredatorForce()
+    {
+        
+        Vector3 dstToPredator = player.position - transform.position;
+        dstToPredator.y = 0f;
+        
+        if (dstToPredator.sqrMagnitude <= predatorRadius * predatorRadius)// out of range-ignore (!) should prob not be squared???
+        {
+            predatorForce = -dstToPredator * ((predatorRadius*predatorRadius) / Mathf.Max(dstToPredator.sqrMagnitude, 0.001f));
+            predatorForce *= predatorStr;
+            status["hunted"]=true;
+
+        }
+        else
+        {
+            predatorForce = Vector3.zero;
+            status["hunted"]=false;
+        }
+    }
+
     void calcBoidForces()
     {
         
+
         //reset boid forces:
         cohesionForce = Vector3.zero;
         cohesionCenter = Vector3.zero;
         sepForce = Vector3.zero;
+        matchingForce=Vector3.zero;
+        matchingVel = Vector3.zero;
+        
         
         int found = SenseNeighborsNonAlloc(transform.position, cohesionRadius, hits, boidMask);
-        int neighborCount = 0;
+        int cohersionCount = 0;
+        int matchingCount = 0;
 
         for (int i = 0; i < found; i++)
         {
-            var col = hits[i];                                      // Candidate collider
+            var col = hits[i];                                      // Candidate collider (OTHER SHEEP)
             if (!col) continue;                                     // Safety-ignore (no found)
             var otherRb = col.attachedRigidbody;                    // Prefer Rigidbody to identify self
             if (otherRb == rb) continue;                            // if self-ignore
 
             Vector3 dstToOther = col.transform.position - transform.position;
             dstToOther.y = 0f;
-            float sqr = dstToOther.sqrMagnitude;
-
+            float sqrDst = dstToOther.sqrMagnitude;
+            
             // Accumulate cohesion force
-            if (sqr <= cohesionRadius * cohesionRadius)    // out of range-ignore
+            if ((sqrDst <= cohesionRadius * cohesionRadius) && (sqrDst >= pastureRadius * pastureRadius))    // out of range-ignore
             {
-                neighborCount++; //found a neighbour!
+                cohersionCount++; //found a neighbour!
                 cohesionCenter += col.transform.position;
             }
             // Accumulate sep force
-            if (sqr <= sepRadius * sepRadius)// out of range-ignore (!) should prob not be squared???
+            if (sqrDst <= sepRadius * sepRadius)// out of range-ignore (!) should prob not be squared???
             {
-                Vector3 sepAdd = (-dstToOther) * (sepRadius / Mathf.Max(dstToOther.sqrMagnitude, 0.1f));//neg because the other way. Falloff-Apply greater force if very close
+                Vector3 sepAdd = (-dstToOther) * ((sepRadius*sepRadius) / Mathf.Max(dstToOther.sqrMagnitude, 0.1f));//neg because the other way. Falloff-Apply greater force if very close
                 //sepAdd = Vector3.ClampMagnitude(sepAdd, sepMax); // clamp the total separation force (since we dont normalize it)
                 sepForce += sepAdd;
             }
+            // Accumulate matching force
+            if (status["hunted"] == true)
+            {
+                if (sqrDst <= matchingRadius * matchingRadius)
+                {
+                    matchingCount++; //found a neighbour!
+                    matchingVel += otherRb.linearVelocity;
+                }
+            }
+            
             
 
         }
 
         // BOID FORCES calcs
-        if (neighborCount > 0)
+        if (cohersionCount > 0)
         {
-            cohesionCenter = cohesionCenter / neighborCount;
+            cohesionCenter = cohesionCenter / cohersionCount;
             Vector3 centerDir = cohesionCenter - transform.position;
             centerDir.y = 0f;
             cohesionForce = centerDir.normalized;   // direction only; accel cap handles magnitude
-            cohesionForce *= cohesionStr;
-
-            sepForce = Vector3.ClampMagnitude(sepForce, sepMax); // clamp the total separation force (since we dont normalize it)
-            sepForce *= sepStr;
+            cohesionForce *= cohesionStr;    
         }
+        if ((matchingCount > 0) && (status["hunted"]==true))
+        {
+            matchingVel = matchingVel / matchingCount;
+            matchingVel = matchingVel - rb.linearVelocity;
+            matchingVel.y = 0f;
+            matchingForce = matchingVel.normalized;   // lets not normalize because we want them to affecteach others vel: Large velocity differences = huge forces, small differences = tiny forces.
+            matchingForce *= matchingStr;
+        }
+        else
+        {
+            matchingForce=Vector3.zero;
+        }
+
+
+        sepForce = Vector3.ClampMagnitude(sepForce, sepMax); // clamp the total separation force (since we dont normalize it)
+        sepForce *= sepStr;
+        
 
 
         
@@ -129,14 +205,16 @@ public class Boids : MonoBehaviour
     void FixedUpdate()
     {
         // --- Sense and reCalc forces (throttled) ---
-        if (Time.fixedTime >= nextSenseTime)
-        {
-            nextSenseTime += senseInterval; //book next sense session
+        //if (Time.fixedTime >= nextSenseTime)
+        //{
+         //   nextSenseTime += senseInterval; //book next sense session
             calcBoidForces();
-        }
-
-        //UPDATE VEL VIA BOID FORCES
-        desiredVel = desiredVel + sepForce + cohesionForce;
+        //}
+        calcPredatorForce(); //we afford do every update because its only 1 item we look for
+        //---------------------------------------------------------------------------------
+        //---------------------------UPDATE VEL VIA BOID FORCES ---------------------------------------------
+        //------------------------------------------------------------------------------------------------------------
+        desiredVel = desiredVel  + predatorForce +  matchingForce; //sepForce + cohesionForce;
         //speed limit
         if (desiredVel.sqrMagnitude > maxSpeed*maxSpeed)
         {
@@ -150,7 +228,7 @@ public class Boids : MonoBehaviour
         Vector3 newVelXZ = new Vector3(currVel.x, 0f, currVel.z);
         newVelXZ = Vector3.MoveTowards(newVelXZ, desiredVel, maxAcc * Time.fixedDeltaTime);
 
-        //UPDATE POS VIA BOID FORCES AND VIA RB-VEL
+        //UPDATE POS VIA RB-VEL
         //if (desiredVel.sqrMagnitude > 1e-1f) //speed minLimit
         if(true)
         {
@@ -164,80 +242,12 @@ public class Boids : MonoBehaviour
 
         }
         
-        /*
-// --- Move using physics-friendly API so collisions behave nicely ---
-        
-        Vector3 targetVelXZ  = heading * maxSpeed; //* Time.fixedDeltaTime; // How far to go this physics tick (XZ)
-        Vector3 vel = rb.linearVelocity; // includes current Y from gravity
-        Vector3 curXZ = new Vector3(vel.x, 0f, vel.z); //exclude Y
-        curXZ = Vector3.MoveTowards(curXZ, targetVelXZ, maxAcc * Time.fixedDeltaTime); //move by at most acc*dt=maxSpeed
-        rb.linearVelocity = new Vector3(curXZ.x, vel.y, curXZ.z); // Reassemble final velocity: keep gravity-driven Y
-        
-        //Vector3 target = rb.position + new Vector3(step.x, 0f, step.z); // Do not drive Y; gravity handles it
-        //rb.MovePosition(target); // Ask the physics engine to move us to 'target'
-        //vel = vel + cohesionForce;
-        //transform.position += vel * Time.fixedDeltaTime;
-
-
-        // Optionally rotate the body to face the movement direction (yaw only)
-          // --- Face movement direction (yaw only) ---
-        if (faceMoveDirection && curXZ.sqrMagnitude > 1e-6f)
-        {
-            Quaternion want = Quaternion.LookRotation(curXZ, Vector3.up);
-            Quaternion next = Quaternion.RotateTowards(rb.rotation, want, turnSpeed * Time.fixedDeltaTime);
-            rb.MoveRotation(next);
-        }
-
-        // --- Sense neighbors on a staggered schedule (not every frame) ---
-        if (Time.fixedTime >= nextSenseTime)
-        {
-            //reset boid forces:
-            cohesionForce = Vector3.zero;
-            cohesionCenter = Vector3.zero;
-            
-            nextSenseTime += senseInterval;                             // Book next sensing time
-            int found = SenseNeighborsNonAlloc(transform.position, cohesionRadius, hits, boidMask);
-            int neighborCount = 0;
-
-            // Example: iterate results (you’ll use this later for boid forces)
-            for (int i = 0; i < found; i++)
-            {
-                var col = hits[i];                                      // Candidate collider
-                if (!col) continue;                                     // Safety-ignore (no found)
-                var otherRb = col.attachedRigidbody;                    // Prefer Rigidbody to identify self
-                if (otherRb == rb) continue;                            // if self-ignore
-
-                // Optional precise filtering (e.g., 2D distance on XZ)
-                Vector3 dstToOther = col.transform.position - transform.position;
-                dstToOther.y = 0f;
-                float sqr = dstToOther.sqrMagnitude;
-                if (sqr > cohesionRadius * cohesionRadius) continue;    // out of range-ignore
-                neighborCount++; //found a neighbour!
-
-                // ACCUMULATE BOID FORCES
-                // e.g., alignmentDir += other.forward; separation += -dstToOther.normalized, etc.
-                cohesionCenter += col.transform.position;
-            }
-
-            //CREATE BOID FORCES
-            if (neighborCount  > 0)
-            {
-                cohesionCenter = cohesionCenter / neighborCount;
-                Vector3 centerDir = cohesionCenter - transform.position;
-                centerDir.y = 0f;
-                cohesionForce = centerDir.normalized;   // direction only; accel cap handles magnitude
-
-            }
-            
-            
-        }
-        */
+       
         
     }
     
     // Uses Unity’s physics broadphase to collect nearby colliders into a reused buffer.
     // Returns how many valid entries were written.
-    
     int SenseNeighborsNonAlloc(Vector3 center, float radius, Collider[] buffer, LayerMask mask)
     {
         // QueryTriggerInteraction.Collide lets us pick up triggers if agents are triggers
