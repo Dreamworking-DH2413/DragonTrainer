@@ -16,55 +16,27 @@ public class ToothlessWingController : MonoBehaviour
     [Tooltip("0 = Wings Extended, 1 = Wings Folded")]
     public float rightWingFold = 0f;
 
-    [Header("Flapping Control")]
-    [Range(-1f, 1f)]
-    [Tooltip("Rotate elbow to flap: -1 = down, 0 = neutral, 1 = up")]
-    public float leftWingFlap = 0f;
-    
-    [Range(-1f, 1f)]
-    [Tooltip("Rotate elbow to flap: -1 = down, 0 = neutral, 1 = up")]
-    public float rightWingFlap = 0f;
-    
-    [Range(0f, 90f)]
-    [Tooltip("Maximum flap angle in degrees")]
-    public float maxFlapAngle = 45f;
-
-    [Header("Forward/Backward Movement")]
-    [Range(-1f, 1f)]
-    [Tooltip("Move wing forward/backward: -1 = backward, 0 = neutral, 1 = forward")]
-    public float leftWingForwardBack = 0f;
-    
-    [Range(-1f, 1f)]
-    [Tooltip("Move wing forward/backward: -1 = backward, 0 = neutral, 1 = forward")]
-    public float rightWingForwardBack = 0f;
-    
-    [Range(0f, 90f)]
-    [Tooltip("Maximum forward/backward rotation angle in degrees")]
-    public float maxForwardBackAngle = 30f;
-
     [Range(0.1f, 5f)]
     public float animationSpeed = 1f;
 
     [Header("Setup")]
     public Transform armatureRoot;
     public bool autoFindArmature = true;
+    
+    [Header("IK Compatibility")]
+    [Tooltip("Skip animating shoulder, elbow, and forearm bones - let IK control them for flapping")]
+    public bool useIKForFlapping = true;
 
     [Header("Procedural Animation")]
     [Tooltip("Use procedural folding instead of captured poses")]
     public bool useProceduralAnimation = true;
 
     [Header("Fold Parameters - Left Wing")]
-    public float leftShoulderFold = 0f;
-    public float leftElbowFold = 65f;
-    public float leftForearmFold = -130f;
     public float leftWristFold = 120f;
     public float leftFingerSpread = 40f;
     public float leftFingerSpacing = -18f;
 
     [Header("Fold Parameters - Right Wing")]
-    public float rightShoulderFold = 0f;
-    public float rightElbowFold = -65f;  // Opposite direction for right side
-    public float rightForearmFold = 130f;
     public float rightWristFold = -120f;
     public float rightFingerSpread = -40f;
     public float rightFingerSpacing = 18f;
@@ -260,59 +232,20 @@ public class ToothlessWingController : MonoBehaviour
         {
             if (boneData.bone == null) continue;
 
+            // Skip shoulder, elbow, and forearm if IK is controlling them
+            if (useIKForFlapping && (boneData.boneName.Contains("Shoulder") || 
+                                      boneData.boneName.Contains("Elbow") || 
+                                      boneData.boneName.Contains("ForeArm")))
+            {
+                continue;
+            }
+
             // Get the base (extended) rotation
             Quaternion baseRotation = boneData.extendedRotation;
             Quaternion foldRotation = baseRotation;
 
             // Apply different rotations based on bone type
-            // Wings fold vertically (Z-axis rotation for up/down movement)
-            if (boneData.boneName.Contains("Shoulder"))
-            {
-                float foldAngle = isLeftWing ? leftShoulderFold : rightShoulderFold;
-                float forwardBackValue = isLeftWing ? leftWingForwardBack : rightWingForwardBack;
-                float forwardBackAngle = forwardBackValue * maxForwardBackAngle;
-                
-                // Invert the angle for right wing since it's mirrored
-                if (!isLeftWing)
-                {
-                    forwardBackAngle = -forwardBackAngle;
-                }
-                
-                // Apply fold on Z-axis and forward/back on ?-axis
-                foldRotation = baseRotation 
-                               * Quaternion.Euler(0, 0, foldAngle * foldAmount)
-                               * Quaternion.Euler(0, 0, forwardBackAngle);
-            }
-            else if (boneData.boneName.Contains("Elbow"))
-            {
-                // Flap and fold should be independent - flap in body space, fold in local space
-                float foldAngle = isLeftWing ? leftElbowFold : rightElbowFold;
-                float flapValue = isLeftWing ? leftWingFlap : rightWingFlap;
-                float flapAngle = flapValue * maxFlapAngle;
-                
-                // Invert the angle for right wing since it's mirrored
-                if (!isLeftWing)
-                {
-                    flapAngle = -flapAngle;
-                }
-                
-                // Calculate the world rotation we want (base + body space flap)
-                Quaternion targetWorldRotation = armatureRoot.rotation * Quaternion.Euler(0, 0, flapAngle) * 
-                                                 Quaternion.Inverse(armatureRoot.rotation) * 
-                                                 boneData.bone.parent.rotation * baseRotation;
-                
-                // Convert to local space
-                Quaternion flapInLocal = Quaternion.Inverse(boneData.bone.parent.rotation) * targetWorldRotation;
-                
-                // Now apply the fold on top in local space
-                foldRotation = flapInLocal * Quaternion.Euler(0, 0, foldAngle * foldAmount);
-            }
-            else if (boneData.boneName.Contains("ForeArm"))
-            {
-                float foldAngle = isLeftWing ? leftForearmFold : rightForearmFold;
-                foldRotation = baseRotation * Quaternion.Euler(0, 0, foldAngle * foldAmount);
-            }
-            else if (boneData.boneName.Contains("Wrist"))
+            if (boneData.boneName.Contains("Wrist"))
             {
                 float foldAngle = isLeftWing ? leftWristFold : rightWristFold;
                 foldRotation = baseRotation * Quaternion.Euler(0, 0, foldAngle * foldAmount);
@@ -422,67 +355,6 @@ public class ToothlessWingController : MonoBehaviour
         StartCoroutine(AnimateFold(leftWingFold, 1f));
     }
 
-    // Flapping methods
-    public void StartFlapping(float frequency = 2f, float intensity = 1f)
-    {
-        StopAllCoroutines();
-        StartCoroutine(FlapCoroutine(frequency, intensity));
-    }
-
-    public void StopFlapping()
-    {
-        StopAllCoroutines();
-        leftWingFlap = 0f;
-        rightWingFlap = 0f;
-    }
-
-    // Forward/backward sweep methods
-    public void StartWingSweep(float frequency = 1f, float intensity = 1f)
-    {
-        StopAllCoroutines();
-        StartCoroutine(SweepCoroutine(frequency, intensity));
-    }
-
-    public void StopWingSweep()
-    {
-        StopAllCoroutines();
-        leftWingForwardBack = 0f;
-        rightWingForwardBack = 0f;
-    }
-
-    System.Collections.IEnumerator SweepCoroutine(float frequency, float intensity)
-    {
-        float time = 0f;
-        while (true)
-        {
-            time += Time.deltaTime * frequency;
-            
-            // Sine wave for smooth sweeping motion
-            float sweepValue = Mathf.Sin(time * Mathf.PI * 2f) * intensity;
-            
-            leftWingForwardBack = sweepValue;
-            rightWingForwardBack = sweepValue;
-            
-            yield return null;
-        }
-    }
-
-    System.Collections.IEnumerator FlapCoroutine(float frequency, float intensity)
-    {
-        float time = 0f;
-        while (true)
-        {
-            time += Time.deltaTime * frequency;
-            
-            // Sine wave for smooth flapping motion
-            float flapValue = Mathf.Sin(time * Mathf.PI * 2f) * intensity;
-            
-            leftWingFlap = flapValue;
-            rightWingFlap = flapValue;
-            
-            yield return null;
-        }
-    }
 
     System.Collections.IEnumerator AnimateFold(float targetLeft, float targetRight)
     {
@@ -583,84 +455,7 @@ public class ToothlessWingControllerEditor : UnityEditor.Editor
         }
         UnityEditor.EditorGUILayout.EndHorizontal();
 
-        UnityEditor.EditorGUILayout.Space();
-        UnityEditor.EditorGUILayout.LabelField("Animation Controls", UnityEditor.EditorStyles.boldLabel);
 
-        // Flapping controls
-        UnityEditor.EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Button("Start Flapping"))
-        {
-            controller.StartFlapping(2f, 1f);
-        }
-        if (GUILayout.Button("Stop Flapping"))
-        {
-            controller.StopFlapping();
-        }
-        UnityEditor.EditorGUILayout.EndHorizontal();
-
-        UnityEditor.EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Button("Flap Slow"))
-        {
-            controller.StartFlapping(1f, 0.7f);
-        }
-        if (GUILayout.Button("Flap Fast"))
-        {
-            controller.StartFlapping(4f, 1f);
-        }
-        UnityEditor.EditorGUILayout.EndHorizontal();
-
-        // Wing sweep controls
-        UnityEditor.EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Button("Start Sweep"))
-        {
-            controller.StartWingSweep(1f, 1f);
-        }
-        if (GUILayout.Button("Stop Sweep"))
-        {
-            controller.StopWingSweep();
-        }
-        UnityEditor.EditorGUILayout.EndHorizontal();
-
-        // Set flap states
-        UnityEditor.EditorGUILayout.Space();
-        UnityEditor.EditorGUILayout.LabelField("Set Flap States", UnityEditor.EditorStyles.boldLabel);
-        
-        UnityEditor.EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Button("Flap Up"))
-        {
-            controller.leftWingFlap = -1f;
-            controller.rightWingFlap = -1f;
-        }
-        if (GUILayout.Button("Flap Neutral"))
-        {
-            controller.leftWingFlap = 0f;
-            controller.rightWingFlap = 0f;
-        }
-        if (GUILayout.Button("Flap Down"))
-        {
-            controller.leftWingFlap = 1f;
-            controller.rightWingFlap = 1f;
-        }
-        UnityEditor.EditorGUILayout.EndHorizontal();
-
-        // Set forward/back states
-        UnityEditor.EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Button("Forward"))
-        {
-            controller.leftWingForwardBack = -1f;
-            controller.rightWingForwardBack = -1f;
-        }
-        if (GUILayout.Button("Neutral"))
-        {
-            controller.leftWingForwardBack = 0f;
-            controller.rightWingForwardBack = 0f;
-        }
-        if (GUILayout.Button("Backward"))
-        {
-            controller.leftWingForwardBack = 1f;
-            controller.rightWingForwardBack = 1f;
-        }
-        UnityEditor.EditorGUILayout.EndHorizontal();
     }
 }
 #endif
