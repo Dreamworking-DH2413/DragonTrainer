@@ -17,7 +17,7 @@ This script now works alongside Unity's IK system. The script **only controls wi
 ### 1. Setup IK in Unity:
 1. Add IK targets for the wings (empty GameObjects positioned where wing tips should be)
 2. Setup your IK system (Unity Animation Rigging, Final IK, or custom IK)
-3. Configure IK to control `WingShoulder.L/R` and `WingElbow.L/R` bones
+3. Configure IK to control `WingShoulder.L/R`, `WingElbow.L/R`, and `WingForeArm.L/R` bones
 4. Test that IK can move the wings up and down for flapping
 
 ### 2. Setup Wing Folding:
@@ -26,7 +26,6 @@ This script now works alongside Unity's IK system. The script **only controls wi
 3. Click "Initialize" button in the inspector
 4. Make sure **"Use IK For Flapping"** is checked
 5. Adjust the fold parameters if needed:
-   - `leftForearmFold` / `rightForearmFold` - Controls forearm rotation when folding
    - `leftWristFold` / `rightWristFold` - Controls wrist rotation when folding
    - `leftFingerSpread` / `rightFingerSpread` - Controls how fingers spread out
    - `leftFingerSpacing` / `rightFingerSpacing` - Controls spacing between fingers
@@ -87,13 +86,14 @@ wingController.ExtendRightWing();
 - **Solution:** Adjust the fold parameter values in the inspector. Different rigs may need different values.
 
 **Problem:** Wings fold but don't flap
-- **Solution:** Check that your IK is setup correctly and targeting the shoulder/elbow bones
+- **Solution:** Check that your IK is setup correctly and targeting the shoulder/elbow/forearm bones
 
 **Problem:** Wings flap but don't fold
 - **Solution:** Make sure the script is initialized. Click the "Initialize" button in the inspector.
 
 ## Performance Notes
 - The script only animates bones when needed (uses `LateUpdate()`)
-- When IK is enabled, shoulder and elbow bones are completely skipped, reducing overhead
+- When IK is enabled, shoulder, elbow, and forearm bones are completely skipped, reducing overhead
 - The procedural animation is very efficient - no animation curves or heavy calculations
+- Only wrist and finger bones are animated by this script when IK is enabled
 
