@@ -1,2 +1,12 @@
 fileFormatVersion: 2
 guid: 80357bff1ca411c47ad86d400e136fe1
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - fireCS: {fileID: 7200000, guid: 53b06c64a201e21488d9d021c34657ef, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,34 +1,54 @@
-using System;
 using UnityEngine;
-using UnityEngine.Rendering;
 
+/// <summary>
+/// Eulerian fluid simulation for fire effects
+/// Based on Stable Fluids (Stam 1999) and Curl-Noise (Bridson et al. 2007)
+/// </summary>
 public class FireSimulation
 {
     public int gridX = 64;
     public int gridY = 32;
     public int gridZ = 64;
     
-    // Swap A and B after each step
-    // https://docs.unity3d.com/6000.2/Documentation/ScriptReference/RenderTexture.html
-    RenderTexture velocityA; // Call Create3DTexture for all of these RTs
+    // Double-buffered textures for ping-pong rendering
+    RenderTexture velocityA;
     RenderTexture velocityB;
     RenderTexture densityA;
     RenderTexture densityB;
 
     public float timeStep = 0.016f;
 
-    // CS references
+    // Compute shader references
     public ComputeShader fireCS;
     int kernelInject;
     int kernelAdvect;
     int kernelCurl;
     
-    
+    // Public access for visualization
+    public RenderTexture GetDensityTexture() => densityA;
+    public RenderTexture GetVelocityTexture() => velocityA;
+
+    public void Initialize()
+    {
+        Debug.Log("Initializing FireSimulation");
+        // Create 3D textures
+        velocityA = Create3DTexture(gridX, gridY, gridZ, RenderTextureFormat.ARGBFloat);
+        velocityB = Create3DTexture(gridX, gridY, gridZ, RenderTextureFormat.ARGBFloat);
+        densityA = Create3DTexture(gridX, gridY, gridZ, RenderTextureFormat.RFloat);
+        densityB = Create3DTexture(gridX, gridY, gridZ, RenderTextureFormat.RFloat);
+        
+        // Find kernel indices
+        kernelInject = fireCS.FindKernel("Inject");
+        // kernelAdvect = fireCS.FindKernel("Advect");
+        // kernelCurl = fireCS.FindKernel("CurlNoise");
+        
+        Debug.Log("FireSimulation initialized successfully");
+    }
 
     RenderTexture Create3DTexture(int x, int y, int z, RenderTextureFormat format)
     {
-        var rt = new RenderTexture(x, y, 0);
-        rt.dimension = TextureDimension.Tex3D;
+        var rt = new RenderTexture(x, y, 0, format);
+        rt.dimension = UnityEngine.Rendering.TextureDimension.Tex3D;
         rt.volumeDepth = z;
         rt.enableRandomWrite = true;
         rt.wrapMode = TextureWrapMode.Clamp;
@@ -50,34 +70,58 @@ public class FireSimulation
         Swap(ref densityA, ref densityB);
     }
     
-    void Update()
+    public void Update()
     {
+        Debug.Log("Updating FireSimulation");
         SimulateFire();
-        
-        // // Optional: give raymarch renderer the density texture
-        // fireMaterial.SetTexture("_DensityTex", densityA);
     }
 
     void SimulateFire()
     {
+        // Pipeline based on Stable Fluids:
+        // 1. Inject forces/density
         RunInjectKernel();
         SwapBuffers();
-        // RUN ADVECT
-        SwapBuffers();
-        // RUN CURL
-        SwapBuffers();
-        // RUN Dissipate
+        
+        // 2. Advect velocity and density
+        // RunAdvectKernel();
+        // SwapBuffers();
+        
+        // 3. Add curl noise for turbulence
+        // RunCurlKernel();
+        // SwapBuffers();
+        
+        // 4. Dissipate/decay
+        // RunDissipateKernel();
     }
     
     void RunInjectKernel() 
     {
+        // Set grid parameters
+        fireCS.SetInt("_GridX", gridX);
+        fireCS.SetInt("_GridY", gridY);
+        fireCS.SetInt("_GridZ", gridZ);
+        fireCS.SetFloat("_DeltaTime", timeStep);
+        
+        // Bind textures
+        fireCS.SetTexture(kernelInject, "VelocityPrev", velocityA);
+        fireCS.SetTexture(kernelInject, "VelocityNext", velocityB);
+        fireCS.SetTexture(kernelInject, "DensityPrev", densityA);
+        fireCS.SetTexture(kernelInject, "DensityNext", densityB);
+        
+        // Dispatch
         int tx = Mathf.CeilToInt(gridX / 8f);
         int ty = Mathf.CeilToInt(gridY / 8f);
         int tz = Mathf.CeilToInt(gridZ / 8f);
-        kernelInject = fireCS.FindKernel("Inject");
+        
         fireCS.Dispatch(kernelInject, tx, ty, tz);
     }
+    
+    public void Cleanup()
+    {
+        velocityA?.Release();
+        velocityB?.Release();
+        densityA?.Release();
+        densityB?.Release();
+    }
 }
-
-// https://dl-acm-org.focus.lib.kth.se/doi/pdf/10.1145/1275808.1276435
-// Curl-noise for procedural fluid

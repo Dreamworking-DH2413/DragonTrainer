@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: a2e250debf3b5dc45a20e65d4bea1805
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - fireComputeShader: {fileID: 7200000, guid: 53b06c64a201e21488d9d021c34657ef, type: 3}
+  - sliceVisualizerMaterial: {fileID: 2100000, guid: 7ff45cfb9622ba94a9e9e11f0fe455ab, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
