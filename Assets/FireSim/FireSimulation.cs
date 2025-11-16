@@ -38,7 +38,7 @@ public class FireSimulation
         densityB = Create3DTexture(gridX, gridY, gridZ, RenderTextureFormat.RFloat);
         
         // Find kernel indices
-        kernelInject = fireCS.FindKernel("Inject");
+        kernelInject = fireCS.FindKernel("FillTest");
         // kernelAdvect = fireCS.FindKernel("Advect");
         // kernelCurl = fireCS.FindKernel("CurlNoise");
         

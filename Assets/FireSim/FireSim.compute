@@ -11,6 +11,12 @@ int _GridY;
 int _GridZ;
 float _DeltaTime;
 
+// Injection
+float3 _InjectionPoint;
+float _InjectionRadius;
+float _InjectionStrength;
+float _InjectionVelocity;
+
 // Textures
 RWTexture3D<float4> VelocityPrev;
 RWTexture3D<float4> VelocityNext;
