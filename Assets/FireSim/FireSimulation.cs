@@ -24,6 +24,12 @@ public class FireSimulation
     int kernelAdvect;
     int kernelCurl;
     
+    // Injection
+    public Vector3 injectionPoint = new Vector3(32, 2, 32); // Center-bottom
+    public float injectionRadius = 5.0f;
+    public float injectionStrength = 2.0f;
+    public float injectionVelocity = 8.0f;
+    
     // Public access for visualization
     public RenderTexture GetDensityTexture() => densityA;
     public RenderTexture GetVelocityTexture() => velocityA;
@@ -38,8 +44,8 @@ public class FireSimulation
         densityB = Create3DTexture(gridX, gridY, gridZ, RenderTextureFormat.RFloat);
         
         // Find kernel indices
-        kernelInject = fireCS.FindKernel("FillTest");
-        // kernelAdvect = fireCS.FindKernel("Advect");
+        kernelInject = fireCS.FindKernel("Inject");
+        kernelAdvect = fireCS.FindKernel("Advect");
         // kernelCurl = fireCS.FindKernel("CurlNoise");
         
         Debug.Log("FireSimulation initialized successfully");
@@ -102,6 +108,11 @@ public class FireSimulation
         fireCS.SetInt("_GridY", gridY);
         fireCS.SetInt("_GridZ", gridZ);
         fireCS.SetFloat("_DeltaTime", timeStep);
+        
+        fireCS.SetVector("_InjectionPoint", injectionPoint);
+        fireCS.SetFloat("_InjectionRadius", injectionRadius);
+        fireCS.SetFloat("_InjectionStrength", injectionStrength);
+        fireCS.SetFloat("_InjectionVelocity", injectionVelocity);
         
         // Bind textures
         fireCS.SetTexture(kernelInject, "VelocityPrev", velocityA);

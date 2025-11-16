@@ -408,12 +408,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 1667427440}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b3d7e40bf407c5241b544e3e486e4f6b, type: 3}
+  m_Script: {fileID: 11500000, guid: a2e250debf3b5dc45a20e65d4bea1805, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  computeShader: {fileID: 7200000, guid: 53b06c64a201e21488d9d021c34657ef, type: 3}
-  displayMaterial: {fileID: 2100000, guid: 7ff45cfb9622ba94a9e9e11f0fe455ab, type: 2}
+  fireComputeShader: {fileID: 7200000, guid: 53b06c64a201e21488d9d021c34657ef, type: 3}
+  sliceMaterial: {fileID: 2100000, guid: 7ff45cfb9622ba94a9e9e11f0fe455ab, type: 2}
+  gridX: 64
+  gridY: 32
+  gridZ: 64
+  injectionPoint: {x: 32, y: 2, z: 32}
+  injectionRadius: 5
+  injectionStrength: 2
+  injectionVelocity: 8
   sliceDepth: 0.5
+  sliceAxis: 1
 --- !u!1 &1986959623
 GameObject:
   m_ObjectHideFlags: 0
@@ -565,13 +573,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fireComputeShader: {fileID: 7200000, guid: 53b06c64a201e21488d9d021c34657ef, type: 3}
+  sliceMaterial: {fileID: 0}
   gridX: 64
   gridY: 32
   gridZ: 64
-  sliceVisualizerMaterial: {fileID: 2100000, guid: 6e474cbcb36476140b2acaf5bf52d56e, type: 2}
+  injectionPoint: {x: 32, y: 2, z: 32}
+  injectionRadius: 5
+  injectionStrength: 2
+  injectionVelocity: 8
   sliceDepth: 0.5
-  showVelocity: 0
-  runFillTestOnStart: 1
+  sliceAxis: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

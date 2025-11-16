@@ -1,47 +1,48 @@
 using UnityEngine;
 
 /// <summary>
-/// Test harness for FireSimulation - attach to Main Camera
-/// Visualizes the 3D density field using a simple slice viewer
+/// Phase 1 Tester: Test fire injection
+/// Attach to a Quad to visualize the fire growing over time
 /// </summary>
-[RequireComponent(typeof(Camera))]
-public class FireSimulationTester : MonoBehaviour
+public class FirePhase1Tester : MonoBehaviour
 {
-    [Header("Simulation Settings")]
+    [Header("Simulation")]
     public ComputeShader fireComputeShader;
+    public Material sliceMaterial;
+    
+    [Header("Grid Settings")]
     public int gridX = 64;
     public int gridY = 32;
     public int gridZ = 64;
     
+    [Header("Injection Settings")]
+    [Tooltip("Position in grid coordinates (0 to gridSize)")]
+    public Vector3 injectionPoint = new Vector3(32, 2, 32);
+    
+    [Range(1f, 20f)]
+    [Tooltip("How wide the fire source is")]
+    public float injectionRadius = 5.0f;
+    
+    [Range(0.1f, 5f)]
+    [Tooltip("How much density to add per second")]
+    public float injectionStrength = 2.0f;
+    
+    [Range(1f, 20f)]
+    [Tooltip("Upward velocity of fire")]
+    public float injectionVelocity = 8.0f;
+    
     [Header("Visualization")]
-    public Material sliceVisualizerMaterial;
     [Range(0f, 1f)]
     public float sliceDepth = 0.5f;
-    public bool showVelocity = false;
     
-    [Header("Debug")]
-    public bool runFillTestOnStart = true;
+    [Tooltip("Which axis to slice: 0=YZ plane, 1=XZ plane, 2=XY plane")]
+    [Range(0, 2)]
+    public int sliceAxis = 1; // XZ plane (looking down from top)
     
     private FireSimulation sim;
-    private RenderTexture densityTexture;
-    private RenderTexture velocityTexture;
-
+    
     void Start()
     {
-        // Validate compute shader
-        if (fireComputeShader == null)
-        {
-            Debug.LogError("FireComputeShader is not assigned!");
-            return;
-        }
-        
-        // Check if FillTest kernel exists
-        if (!HasKernel(fireComputeShader, "FillTest"))
-        {
-            Debug.LogError("FillTest kernel not found in compute shader! Check your .compute file.");
-            return;
-        }
-        
         // Initialize simulation
         sim = new FireSimulation();
         sim.gridX = gridX;
@@ -49,139 +50,75 @@ public class FireSimulationTester : MonoBehaviour
         sim.gridZ = gridZ;
         sim.fireCS = fireComputeShader;
         
+        // Set injection parameters
+        sim.injectionPoint = injectionPoint;
+        sim.injectionRadius = injectionRadius;
+        sim.injectionStrength = injectionStrength;
+        sim.injectionVelocity = injectionVelocity;
+        
         sim.Initialize();
         
-        // Run test kernel to fill with gradient
-        if (runFillTestOnStart)
-        {
-            RunFillTest();
-        }
+        // Apply material to this quad
+        GetComponent<Renderer>().material = sliceMaterial;
         
-        Debug.Log("FireSimulationTester started successfully!");
+        Debug.Log("Phase 1: Fire injection ready! Watch the density grow.");
     }
     
-    bool HasKernel(ComputeShader cs, string kernelName)
+    void Update()
     {
-        try
-        {
-            cs.FindKernel(kernelName);
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
-    void RunFillTest()
-    {
-        if (fireComputeShader == null || sim == null)
-        {
-            Debug.LogError("Cannot run FillTest - compute shader or simulation not initialized!");
-            return;
-        }
+        // Update injection parameters in real-time
+        sim.injectionPoint = injectionPoint;
+        sim.injectionRadius = injectionRadius;
+        sim.injectionStrength = injectionStrength;
+        sim.injectionVelocity = injectionVelocity;
         
-        if (sim.GetDensityTexture() == null)
+        // Run simulation step
+        sim.Update();
+        
+        // Update visualization
+        if (sliceMaterial != null)
         {
-            Debug.LogError("Density texture is null! Did Initialize() fail?");
-            return;
-        }
-        
-        try
-        {
-            int kernel = fireComputeShader.FindKernel("FillTest");
-            
-            // Set grid parameters
-            fireComputeShader.SetInt("_GridX", gridX);
-            fireComputeShader.SetInt("_GridY", gridY);
-            fireComputeShader.SetInt("_GridZ", gridZ);
-            
-            // Bind textures - get them from simulation
-            fireComputeShader.SetTexture(kernel, "DensityNext", sim.GetDensityTexture());
-            fireComputeShader.SetTexture(kernel, "VelocityNext", sim.GetVelocityTexture());
-            
-            // Dispatch
-            int tx = Mathf.CeilToInt(gridX / 8f);
-            int ty = Mathf.CeilToInt(gridY / 8f);
-            int tz = Mathf.CeilToInt(gridZ / 8f);
-            
-            fireComputeShader.Dispatch(kernel, tx, ty, tz);
-            
-            Debug.Log($"FillTest dispatched successfully! ({tx}x{ty}x{tz} thread groups)");
-            Debug.Log("You should see a gradient from black (corner) to white (opposite corner)");
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Error running FillTest: {e.Message}");
-        }
-    }
-
-    void OnGUI()
-    {
-        GUILayout.BeginArea(new Rect(10, 10, 300, 250));
-        
-        GUILayout.Label("Fire Simulation Tester", new GUIStyle(GUI.skin.label) { fontSize = 16, fontStyle = FontStyle.Bold });
-        GUILayout.Space(10);
-        
-        GUILayout.Label($"Grid: {gridX}x{gridY}x{gridZ}");
-        GUILayout.Label($"Slice Depth: {sliceDepth:F2}");
-        GUILayout.Label($"Compute Shader: {(fireComputeShader != null ? "Assigned" : "MISSING!")}");
-        GUILayout.Label($"Slice Material: {(sliceVisualizerMaterial != null ? "Assigned" : "MISSING!")}");
-        
-        GUILayout.Space(10);
-        
-        if (GUILayout.Button("Run FillTest Again"))
-        {
-            RunFillTest();
-        }
-        
-        if (GUILayout.Button("Toggle Visualization"))
-        {
-            showVelocity = !showVelocity;
-        }
-        
-        GUILayout.EndArea();
-    }
-
-    void OnRenderImage(RenderTexture src, RenderTexture dst)
-    {
-        // Debug: Log what's happening
-        if (sliceVisualizerMaterial == null)
-        {
-            Debug.LogWarning("sliceVisualizerMaterial is NULL!");
-            Graphics.Blit(src, dst);
-            return;
-        }
-        
-        if (sim == null)
-        {
-            Debug.LogWarning("sim is NULL!");
-            Graphics.Blit(src, dst);
-            return;
-        }
-        
-        RenderTexture densityTex = sim.GetDensityTexture();
-        if (densityTex == null)
-        {
-            Debug.LogWarning("Density texture is NULL!");
-            Graphics.Blit(src, dst);
-            return;
-        }
-        
-        // All good - apply visualization
-        sliceVisualizerMaterial.SetTexture("_Volume", densityTex);
-        sliceVisualizerMaterial.SetFloat("_SliceDepth", sliceDepth);
-        Graphics.Blit(src, dst, sliceVisualizerMaterial);
-        
-        // Debug: Only log once
-        if (Time.frameCount == 2)
-        {
-            Debug.Log("✓ OnRenderImage is working! Shader applied.");
+            sliceMaterial.SetTexture("_Volume", sim.GetDensityTexture());
+            sliceMaterial.SetFloat("_SliceDepth", sliceDepth);
         }
     }
     
     void OnDestroy()
     {
         sim?.Cleanup();
+    }
+    
+    void OnGUI()
+    {
+        GUILayout.BeginArea(new Rect(10, 10, 400, 300));
+        
+        GUILayout.Label("🔥 PHASE 1: FIRE INJECTION", new GUIStyle(GUI.skin.label) 
+            { fontSize = 18, fontStyle = FontStyle.Bold });
+        
+        GUILayout.Space(10);
+        
+        GUILayout.Label($"Grid: {gridX}x{gridY}x{gridZ}");
+        GUILayout.Label($"Injection Point: ({injectionPoint.x:F1}, {injectionPoint.y:F1}, {injectionPoint.z:F1})");
+        GUILayout.Label($"Injection Radius: {injectionRadius:F1}");
+        GUILayout.Label($"Injection Strength: {injectionStrength:F2}");
+        GUILayout.Label($"Injection Velocity: {injectionVelocity:F1}");
+        GUILayout.Label($"Slice Depth: {sliceDepth:F2}");
+        
+        GUILayout.Space(10);
+        
+        GUILayout.Label("WHAT TO OBSERVE:", new GUIStyle(GUI.skin.label) { fontStyle = FontStyle.Bold });
+        GUILayout.Label("• Bright spot should appear at injection point");
+        GUILayout.Label("• Density should continuously grow");
+        GUILayout.Label("• Without advection, it stays in place");
+        GUILayout.Label("• Adjust 'Slice Depth' to see different layers");
+        
+        GUILayout.Space(10);
+        
+        GUILayout.Label("CONTROLS:", new GUIStyle(GUI.skin.label) { fontStyle = FontStyle.Bold });
+        GUILayout.Label("• Tweak parameters in Inspector in real-time");
+        GUILayout.Label("• Try different slice depths (0-1)");
+        GUILayout.Label("• Move injection point to see it move");
+        
+        GUILayout.EndArea();
     }
 }

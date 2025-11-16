@@ -1,7 +1,7 @@
 
 
 #pragma kernel Inject
-// #pragma kernel Advect
+#pragma kernel Advect
 // #pragma kernel CurlNoise
 #pragma kernel FillTest
 
@@ -27,24 +27,115 @@ RWTexture3D<float>  DensityNext;
 [numthreads(8, 8, 8)]
 void Inject(uint3 id : SV_DispatchThreadID)
 {
-    // Check if we're at the base of the grid (bottom center)
-    float3 center = float3(_GridX * 0.5, 0, _GridZ * 0.5);
-    float3 pos = float3(id.xyz);
-    float dist = length(pos - center);
+    // If out of bounds
+    if (id.x >= (uint)_GridX || id.y >= (uint)_GridY || id.z >= (uint)_GridZ)
+        return;
     
-    // Inject density in a sphere at the base
-    if (dist < 10.0 && id.y < 5)
+    // Calculate distance from injection point
+    float3 pos = float3(id.xyz);
+    float3 injectionPos = float3(_GridX * 0.5, 2.0, _GridZ * 0.5);
+    float dist = length(pos - injectionPos);
+    
+    // Copy previous values
+    float density = DensityPrev[id.xyz];
+    float4 velocity = VelocityPrev[id.xyz];
+    
+    // Add density and upward velocity near injection point
+    if (dist < _InjectionRadius)
     {
-        DensityNext[id.xyz] = 1.0;
-        // Add upward velocity
-        VelocityNext[id.xyz] = float4(0, 5.0, 0, 0);
+        float strength = 1.0 - (dist / _InjectionRadius); // Falloff
+        density += strength * _InjectionStrength;
+        velocity.y += strength * 5.0; // Upward push
     }
-    else
-    {
-        // Copy previous values
-        DensityNext[id.xyz] = DensityPrev[id.xyz];
-        VelocityNext[id.xyz] = VelocityPrev[id.xyz];
-    }
+    
+    // results
+    DensityNext[id.xyz] = density;
+    VelocityNext[id.xyz] = velocity;
+}
+
+float SampleDensity(float3 pos)
+{
+    // Clamp to grid bounds
+    pos = clamp(pos, float3(0, 0, 0), float3(_GridX - 1, _GridY - 1, _GridZ - 1));
+    
+    // Get integer and fractional parts
+    int3 i0 = int3(floor(pos));
+    int3 i1 = min(i0 + 1, int3(_GridX - 1, _GridY - 1, _GridZ - 1));
+    float3 f = frac(pos);
+    
+    // Sample 8 corners
+    float c000 = DensityPrev[int3(i0.x, i0.y, i0.z)];
+    float c100 = DensityPrev[int3(i1.x, i0.y, i0.z)];
+    float c010 = DensityPrev[int3(i0.x, i1.y, i0.z)];
+    float c110 = DensityPrev[int3(i1.x, i1.y, i0.z)];
+    float c001 = DensityPrev[int3(i0.x, i0.y, i1.z)];
+    float c101 = DensityPrev[int3(i1.x, i0.y, i1.z)];
+    float c011 = DensityPrev[int3(i0.x, i1.y, i1.z)];
+    float c111 = DensityPrev[int3(i1.x, i1.y, i1.z)];
+    
+    // Trilinear interpolation
+    float c00 = lerp(c000, c100, f.x);
+    float c10 = lerp(c010, c110, f.x);
+    float c01 = lerp(c001, c101, f.x);
+    float c11 = lerp(c011, c111, f.x);
+    
+    float c0 = lerp(c00, c10, f.y);
+    float c1 = lerp(c01, c11, f.y);
+    
+    return lerp(c0, c1, f.z);
+}
+
+// https://en.wikipedia.org/wiki/Trilinear_interpolation
+float4 SampleVelocity(float3 pos)
+{
+    // Similar to SampleDensity but for float4
+    pos = clamp(pos, float3(0, 0, 0), float3(_GridX - 1, _GridY - 1, _GridZ - 1));
+    
+    int3 i0 = int3(floor(pos));
+    int3 i1 = min(i0 + 1, int3(_GridX - 1, _GridY - 1, _GridZ - 1));
+    float3 f = frac(pos);
+    
+    float4 c000 = VelocityPrev[int3(i0.x, i0.y, i0.z)];
+    float4 c100 = VelocityPrev[int3(i1.x, i0.y, i0.z)];
+    float4 c010 = VelocityPrev[int3(i0.x, i1.y, i0.z)];
+    float4 c110 = VelocityPrev[int3(i1.x, i1.y, i0.z)];
+    float4 c001 = VelocityPrev[int3(i0.x, i0.y, i1.z)];
+    float4 c101 = VelocityPrev[int3(i1.x, i0.y, i1.z)];
+    float4 c011 = VelocityPrev[int3(i0.x, i1.y, i1.z)];
+    float4 c111 = VelocityPrev[int3(i1.x, i1.y, i1.z)];
+    
+    float4 c00 = lerp(c000, c100, f.x);
+    float4 c10 = lerp(c010, c110, f.x);
+    float4 c01 = lerp(c001, c101, f.x);
+    float4 c11 = lerp(c011, c111, f.x);
+    
+    float4 c0 = lerp(c00, c10, f.y);
+    float4 c1 = lerp(c01, c11, f.y);
+    
+    return lerp(c0, c1, f.z);
+}
+
+[numthreads(8,8,8)]
+void Advect(uint3 id : SV_DispatchThreadID)
+{
+    // Bounds check
+    if (id.x >= (uint)_GridX || id.y >= (uint)_GridY || id.z >= (uint)_GridZ)
+        return;
+    
+    // Semi-Lagrangian advection (Stam 1999)
+    float3 pos = float3(id.xyz);
+    float3 vel = VelocityPrev[id.xyz].xyz;
+    
+    // Trace particle backward in time
+    float3 prevPos = pos - vel * _DeltaTime;
+    
+    // Sample previous values at traced position
+    float newDensity = SampleDensity(prevPos);
+    float4 newVelocity = SampleVelocity(prevPos);
+    
+    // Write advected values
+    DensityNext[id.xyz] = newDensity;
+    VelocityNext[id.xyz] = newVelocity;
 }
 
 // Test
