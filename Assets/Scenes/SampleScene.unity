@@ -394,8 +394,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.19202432, z: -0, w: 0.9813902}
   m_LocalPosition: {x: 1.433, y: 1.6872759, z: 2.42}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 22.142, z: 0}
@@ -416,11 +416,11 @@ MonoBehaviour:
   gridX: 64
   gridY: 32
   gridZ: 64
-  injectionPoint: {x: 32, y: 2, z: 32}
-  injectionRadius: 7.9
+  injectionPoint: {x: 32, y: 5, z: 32}
+  injectionRadius: 11
   injectionStrength: 0.54
   injectionVelocity: 5.2
-  sliceDepth: 0.681
+  sliceDepth: 0.505
   sliceAxis: 1
 --- !u!1 &1986959623
 GameObject:

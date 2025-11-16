@@ -2,7 +2,7 @@
 
 #pragma kernel Inject
 #pragma kernel Advect
-// #pragma kernel CurlNoise
+#pragma kernel CurlNoise
 #pragma kernel FillTest
 
 // Grid
@@ -27,13 +27,13 @@ RWTexture3D<float>  DensityNext;
 [numthreads(8, 8, 8)]
 void Inject(uint3 id : SV_DispatchThreadID)
 {
-    // If out of bounds
+    // Bounds check
     if (id.x >= (uint)_GridX || id.y >= (uint)_GridY || id.z >= (uint)_GridZ)
         return;
     
     // Calculate distance from injection point
     float3 pos = float3(id.xyz);
-    float3 injectionPos = float3(_GridX * 0.5, 2.0, _GridZ * 0.5);
+    float3 injectionPos = _InjectionPoint;  // ← Use the parameter!
     float dist = length(pos - injectionPos);
     
     // Copy previous values
@@ -43,12 +43,20 @@ void Inject(uint3 id : SV_DispatchThreadID)
     // Add density and upward velocity near injection point
     if (dist < _InjectionRadius)
     {
-        float strength = 1.0 - (dist / _InjectionRadius); // Falloff
-        density += strength * _InjectionStrength;
-        velocity.y += strength * 5.0; // Upward push
+        // Smooth falloff for natural look
+        float strength = 1.0 - (dist / _InjectionRadius);
+        strength = strength * strength; // Quadratic falloff
+        
+        // Inject new density (scaled by time for frame-rate independence)
+        density += strength * _InjectionStrength * _DeltaTime;
+        
+        // Add upward velocity (fire rises!)
+        // Injection velocity is an instantaneous velocity value (units/sec).
+        // Do not multiply by _DeltaTime here — advection already multiplies velocity by _DeltaTime.
+        velocity.y += strength * _InjectionVelocity;
     }
     
-    // results
+    // Write results
     DensityNext[id.xyz] = density;
     VelocityNext[id.xyz] = velocity;
 }

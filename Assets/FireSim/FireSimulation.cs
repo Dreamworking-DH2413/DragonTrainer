@@ -46,7 +46,7 @@ public class FireSimulation
         // Find kernel indices
         kernelInject = fireCS.FindKernel("Inject");
         kernelAdvect = fireCS.FindKernel("Advect");
-        // kernelCurl = fireCS.FindKernel("CurlNoise");
+        kernelCurl = fireCS.FindKernel("CurlNoise");
         
         Debug.Log("FireSimulation initialized successfully");
     }
@@ -90,12 +90,12 @@ public class FireSimulation
         SwapBuffers();
         
         // 2. Advect velocity and density
-        // RunAdvectKernel();
-        // SwapBuffers();
+        RunAdvectKernel();
+        SwapBuffers();
         
         // 3. Add curl noise for turbulence
-        // RunCurlKernel();
-        // SwapBuffers();
+        RunCurlKernel();
+        SwapBuffers();
         
         // 4. Dissipate/decay
         // RunDissipateKernel();
@@ -126,6 +126,49 @@ public class FireSimulation
         int tz = Mathf.CeilToInt(gridZ / 8f);
         
         fireCS.Dispatch(kernelInject, tx, ty, tz);
+    }
+
+    void RunAdvectKernel()
+    {
+        // Set grid parameters (advection needs these too)
+        fireCS.SetInt("_GridX", gridX);
+        fireCS.SetInt("_GridY", gridY);
+        fireCS.SetInt("_GridZ", gridZ);
+        fireCS.SetFloat("_DeltaTime", timeStep);
+
+        // Bind textures (read from A, write to B)
+        fireCS.SetTexture(kernelAdvect, "VelocityPrev", velocityA);
+        fireCS.SetTexture(kernelAdvect, "VelocityNext", velocityB);
+        fireCS.SetTexture(kernelAdvect, "DensityPrev", densityA);
+        fireCS.SetTexture(kernelAdvect, "DensityNext", densityB);
+
+        // Dispatch with same thread-group sizing as the compute shader
+        int tx = Mathf.CeilToInt(gridX / 8f);
+        int ty = Mathf.CeilToInt(gridY / 8f);
+        int tz = Mathf.CeilToInt(gridZ / 8f);
+
+        fireCS.Dispatch(kernelAdvect, tx, ty, tz);
+    }
+    
+    void RunCurlKernel()
+    {
+        fireCS.SetInt("_GridX", gridX);
+        fireCS.SetInt("_GridY", gridY);
+        fireCS.SetInt("_GridZ", gridZ);
+        fireCS.SetFloat("_DeltaTime", timeStep);
+
+        // Bind textures (read from A, write to B)
+        fireCS.SetTexture(kernelCurl, "VelocityPrev", velocityA);
+        fireCS.SetTexture(kernelCurl, "VelocityNext", velocityB);
+        fireCS.SetTexture(kernelCurl, "DensityPrev", densityA);
+        fireCS.SetTexture(kernelCurl, "DensityNext", densityB);
+
+        // Dispatch with same thread-group sizing as the compute shader
+        int tx = Mathf.CeilToInt(gridX / 8f);
+        int ty = Mathf.CeilToInt(gridY / 8f);
+        int tz = Mathf.CeilToInt(gridZ / 8f);
+
+        fireCS.Dispatch(kernelCurl, tx, ty, tz);
     }
     
     public void Cleanup()
