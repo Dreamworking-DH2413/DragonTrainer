@@ -115,6 +115,7 @@ float4 SampleVelocity(float3 pos)
     return lerp(c0, c1, f.z);
 }
 
+// Stam's Semi-Lagrangian Advection: Pull particles backward
 [numthreads(8,8,8)]
 void Advect(uint3 id : SV_DispatchThreadID)
 {
@@ -136,6 +137,65 @@ void Advect(uint3 id : SV_DispatchThreadID)
     // Write advected values
     DensityNext[id.xyz] = newDensity;
     VelocityNext[id.xyz] = newVelocity;
+}
+
+// ============================================
+// CURL NOISE - Add turbulence
+// ============================================
+
+// Simple 3D noise function (placeholder - replace with better noise)
+float Noise3D(float3 p)
+{
+    return frac(sin(dot(p, float3(12.9898, 78.233, 45.164))) * 43758.5453);
+}
+
+// Compute curl of a potential field
+float3 ComputeCurl(float3 pos, float epsilon)
+{
+    // Take three 3D noise fields
+    float dx_p = Noise3D(pos + float3(epsilon, 0, 0));
+    float dx_n = Noise3D(pos - float3(epsilon, 0, 0));
+    
+    float dy_p = Noise3D(pos + float3(0, epsilon, 0));
+    float dy_n = Noise3D(pos - float3(0, epsilon, 0));
+    
+    float dz_p = Noise3D(pos + float3(0, 0, epsilon));
+    float dz_n = Noise3D(pos - float3(0, 0, epsilon));
+    
+    
+    // You can't compute ∂ψ/∂x for noise function so we approximate
+    float dx = (dx_p - dx_n) / (2.0 * epsilon);
+    float dy = (dy_p - dy_n) / (2.0 * epsilon);
+    float dz = (dz_p - dz_n) / (2.0 * epsilon);
+    
+    // Curl = ∇ × ψ
+    return float3(
+        dz - dy,  // ∂ψ_z/∂y - ∂ψ_y/∂z
+        dx - dz,  // ∂ψ_x/∂z - ∂ψ_z/∂x
+        dy - dx   // ∂ψ_y/∂x - ∂ψ_x/∂y
+    );
+}
+
+[numthreads(8,8,8)]
+void CurlNoise(uint3 id : SV_DispatchThreadID)
+{
+    // Bounds
+    if (id.x >= (uint)_GridX || id.y >= (uint)_GridY || id.z >= (uint)_GridZ)
+        return;
+    
+    float3 pos = float3(id.xyz);
+    
+    // Compute curl noise
+    float3 curl = ComputeCurl(pos * 0.1, 0.5); // Scale and epsilon
+    
+    // Add curl to velocity (scaled)
+    float4 velocity = VelocityPrev[id.xyz];
+    velocity.xyz += curl * 0.5; // Curl strength
+    
+    VelocityNext[id.xyz] = velocity;
+    
+    // Copy density unchanged
+    DensityNext[id.xyz] = DensityPrev[id.xyz];
 }
 
 // Test

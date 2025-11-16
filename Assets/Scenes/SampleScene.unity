@@ -417,10 +417,10 @@ MonoBehaviour:
   gridY: 32
   gridZ: 64
   injectionPoint: {x: 32, y: 2, z: 32}
-  injectionRadius: 5
-  injectionStrength: 2
-  injectionVelocity: 8
-  sliceDepth: 0.5
+  injectionRadius: 7.9
+  injectionStrength: 0.54
+  injectionVelocity: 5.2
+  sliceDepth: 0.681
   sliceAxis: 1
 --- !u!1 &1986959623
 GameObject:
@@ -434,7 +434,6 @@ GameObject:
   - component: {fileID: 1986959626}
   - component: {fileID: 1986959625}
   - component: {fileID: 1986959624}
-  - component: {fileID: 1986959628}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -560,29 +559,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1986959628
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1986959623}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2e250debf3b5dc45a20e65d4bea1805, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fireComputeShader: {fileID: 7200000, guid: 53b06c64a201e21488d9d021c34657ef, type: 3}
-  sliceMaterial: {fileID: 0}
-  gridX: 64
-  gridY: 32
-  gridZ: 64
-  injectionPoint: {x: 32, y: 2, z: 32}
-  injectionRadius: 5
-  injectionStrength: 2
-  injectionVelocity: 8
-  sliceDepth: 0.5
-  sliceAxis: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
