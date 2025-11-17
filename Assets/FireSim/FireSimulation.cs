@@ -23,12 +23,16 @@ public class FireSimulation
     int kernelInject;
     int kernelAdvect;
     int kernelCurl;
+    int kernelDissipate;
     
     // Injection
     public Vector3 injectionPoint = new Vector3(32, 2, 32); // Center-bottom
     public float injectionRadius = 5.0f;
     public float injectionStrength = 2.0f;
     public float injectionVelocity = 8.0f;
+    
+    // Dissipation
+    public float dissipationRate = 0.8f;
     
     // Public access for visualization
     public RenderTexture GetDensityTexture() => densityA;
@@ -47,6 +51,7 @@ public class FireSimulation
         kernelInject = fireCS.FindKernel("Inject");
         kernelAdvect = fireCS.FindKernel("Advect");
         kernelCurl = fireCS.FindKernel("CurlNoise");
+        kernelDissipate = fireCS.FindKernel("Dissipate");
         
         Debug.Log("FireSimulation initialized successfully");
     }
@@ -98,7 +103,8 @@ public class FireSimulation
         SwapBuffers();
         
         // 4. Dissipate/decay
-        // RunDissipateKernel();
+        RunDissipateKernel();
+        SwapBuffers();
     }
     
     void RunInjectKernel() 
@@ -169,6 +175,29 @@ public class FireSimulation
         int tz = Mathf.CeilToInt(gridZ / 8f);
 
         fireCS.Dispatch(kernelCurl, tx, ty, tz);
+    }
+    
+    void RunDissipateKernel()
+    {
+        fireCS.SetInt("_GridX", gridX);
+        fireCS.SetInt("_GridY", gridY);
+        fireCS.SetInt("_GridZ", gridZ);
+        fireCS.SetFloat("_DeltaTime", timeStep);
+
+        // Bind textures (read from A, write to B)
+        fireCS.SetTexture(kernelDissipate, "VelocityPrev", velocityA);
+        fireCS.SetTexture(kernelDissipate, "VelocityNext", velocityB);
+        fireCS.SetTexture(kernelDissipate, "DensityPrev", densityA);
+        fireCS.SetTexture(kernelDissipate, "DensityNext", densityB);
+        
+        fireCS.SetFloat("_DissipationRate", dissipationRate);
+
+        // Dispatch with same thread-group sizing as the compute shader
+        int tx = Mathf.CeilToInt(gridX / 8f);
+        int ty = Mathf.CeilToInt(gridY / 8f);
+        int tz = Mathf.CeilToInt(gridZ / 8f);
+
+        fireCS.Dispatch(kernelDissipate, tx, ty, tz);
     }
     
     public void Cleanup()

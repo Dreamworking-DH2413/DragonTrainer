@@ -3,6 +3,7 @@
 #pragma kernel Inject
 #pragma kernel Advect
 #pragma kernel CurlNoise
+#pragma kernel Dissipate
 #pragma kernel FillTest
 
 // Grid
@@ -22,6 +23,9 @@ RWTexture3D<float4> VelocityPrev;
 RWTexture3D<float4> VelocityNext;
 RWTexture3D<float>  DensityPrev;
 RWTexture3D<float>  DensityNext;
+
+// Dissipation
+float _DissipationRate;
 
 
 [numthreads(8, 8, 8)]
@@ -205,6 +209,27 @@ void CurlNoise(uint3 id : SV_DispatchThreadID)
     // Copy density unchanged
     DensityNext[id.xyz] = DensityPrev[id.xyz];
 }
+
+// Exponential Dissipation: density(t) = density(0) × e^(-λt)
+[numthreads(8,8,8)]
+void Dissipate(uint3 id : SV_DispatchThreadID)
+{
+    // Bounds
+    if (id.x >= (uint)_GridX || id.y >= (uint)_GridY || id.z >= (uint)_GridZ)
+        return;
+    
+    float density = DensityPrev[id.xyz];
+    float4 velocity = VelocityPrev[id.xyz];
+    
+    float decay = exp(-_DissipationRate * _DeltaTime);
+    
+    density *= decay;
+    
+    DensityNext[id.xyz] = density;
+    VelocityNext[id.xyz] = velocity;
+    
+}
+
 
 // Test
 [numthreads(8,8,8)]

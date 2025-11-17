@@ -39,6 +39,10 @@ public class FirePhase1Tester : MonoBehaviour
     [Range(0, 2)]
     public int sliceAxis = 1; // XZ plane (looking down from top)
     
+    [Header("Dissipation")]
+    [Range(0f, 1f)]
+    public float dissipationRate = 0.8f;
+    
     private FireSimulation sim;
     
     void Start()
@@ -71,6 +75,7 @@ public class FirePhase1Tester : MonoBehaviour
         sim.injectionRadius = injectionRadius;
         sim.injectionStrength = injectionStrength;
         sim.injectionVelocity = injectionVelocity;
+        sim.dissipationRate = dissipationRate;
         
         // Run simulation step
         sim.Update();
