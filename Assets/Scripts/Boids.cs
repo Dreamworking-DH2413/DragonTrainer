@@ -17,6 +17,8 @@ public class Boids : MonoBehaviour
     public float senseHz = 0.05f;    // Each sheep senses ~10×/sec
     float senseInterval;
     public float cohesionRadius = 4f;     // How far we "see" other sheep
+    //public float regroupRadius = 4f;     // How far we "see" other sheep
+
     public float pastureRadius = 4f;     // How far we "see" other sheep
     public float sepRadius = 4f;     // How far we "see" other sheep
     public float predatorRadius = 10f;   // how far away we start caring about the player
@@ -32,8 +34,14 @@ public class Boids : MonoBehaviour
         { "pasture", false },
         { "hunted", false }
     };
-    public float damping = 0.1f;
+    float damping;
+    public float pastureDamping = 0.5f;
+    public int pastureSize = 8;
+    public float normalDamping = 0.12f;
+
+
     public float cohesionStr = 0.1f;
+    public float regroupStr = 0.1f;
     public float sepStr = 0.5f;
     public float sepMax = 3.5f;
     public float predatorStr = 1.5f;     // strength of the avoidance
@@ -46,9 +54,11 @@ public class Boids : MonoBehaviour
 
     // --- Internals ---
     private Vector3 cohesionForce;
+    private Vector3 regroupForce;
     private Vector3 sepForce;
     private Vector3 predatorForce;
     private Vector3 matchingForce;
+    
 
 
     private Rigidbody rb;               // Cached reference to our Rigidbody
@@ -56,6 +66,8 @@ public class Boids : MonoBehaviour
     private float nextSenseTime;          // When this sheep should sense next (not every frame)
     private Collider[] hits; //non-triggered. OverlapSphere func returns Colliders it finds in a radius. <- Why we need it.
     private Vector3 cohesionCenter;
+    private Vector3 regroupPos;
+
     private Vector3 matchingVel;
 
     private Vector3 desiredVel;
@@ -82,13 +94,20 @@ public class Boids : MonoBehaviour
 
         nextSenseTime = Time.fixedTime + Random.value * senseInterval;        // Stagger first sensing //Mayb can use 0 inst of Time.time (?)
 
-            // Auto-find player if not assigned in Inspector
+        //For predator position (player/dragon)
+        // Auto-find player if not assigned in Inspector
         if (player == null)
         {
             GameObject p = GameObject.Find("FallbackObjects"); // Use Find by name instead
             if (p != null) player = p.transform;
         }
-    
+
+        //lost sheep regroup pos
+        if (transform.parent != null)
+        {
+            regroupPos = transform.parent.position;
+            Debug.Log(regroupPos);
+        }
     }
 
     void Update()
@@ -121,16 +140,21 @@ public class Boids : MonoBehaviour
         
 
         //reset boid forces:
+        regroupForce = Vector3.zero;
         cohesionForce = Vector3.zero;
         cohesionCenter = Vector3.zero;
         sepForce = Vector3.zero;
         matchingForce=Vector3.zero;
         matchingVel = Vector3.zero;
         
-        
+        //see if inside cohesionRadius (biggest radius)
+        //NOTICE ITS THE COHESIONRADIUS DECIDING HOW MUCH THEY SEE CURRENTLY. may need changing
         int found = SenseNeighborsNonAlloc(transform.position, cohesionRadius, hits, boidMask);
-        int cohersionCount = 0;
+        int cohesionCount = 0;
         int matchingCount = 0;
+        int pastureCount = 0;
+        
+        if(found==0){Debug.Log(found);}
 
         for (int i = 0; i < found; i++)
         {
@@ -142,13 +166,15 @@ public class Boids : MonoBehaviour
             Vector3 dstToOther = col.transform.position - transform.position;
             dstToOther.y = 0f;
             float sqrDst = dstToOther.sqrMagnitude;
-            
+
             // Accumulate cohesion force
-            if ((sqrDst <= cohesionRadius * cohesionRadius) && (sqrDst >= pastureRadius * pastureRadius))    // out of range-ignore
-            {
-                cohersionCount++; //found a neighbour!
-                cohesionCenter += col.transform.position;
+            //if ((sqrDst <= cohesionRadius * cohesionRadius) && (sqrDst >= pastureRadius * pastureRadius))    // out of range-ignore
+            if (status["hunted"]==true && (sqrDst <= cohesionRadius * cohesionRadius))
+            {   
+                cohesionCount++; //found a neighbour!
+                cohesionCenter += col.transform.position;                   
             }
+            
             // Accumulate sep force
             if (sqrDst <= sepRadius * sepRadius)// out of range-ignore (!) should prob not be squared???
             {
@@ -157,23 +183,39 @@ public class Boids : MonoBehaviour
                 sepForce += sepAdd;
             }
             // Accumulate matching force
-            if (status["hunted"] == true)
+            if (status["hunted"] == true && (sqrDst <= matchingRadius * matchingRadius))
             {
-                if (sqrDst <= matchingRadius * matchingRadius)
-                {
-                    matchingCount++; //found a neighbour!
-                    matchingVel += otherRb.linearVelocity;
-                }
+            
+                matchingCount++; //found a neighbour!
+                matchingVel += otherRb.linearVelocity;
+            
+            }
+            
+            // Accumulate Pasture herd staus
+            if (status["hunted"] == false && (sqrDst <= pastureRadius * pastureRadius))
+            {
+                pastureCount+=1;
             }
             
             
 
         }
-
         // BOID FORCES calcs
-        if (cohersionCount > 0)
+        if (found < pastureSize/2) //may find subgroups (half size of pasture group)
         {
-            cohesionCenter = cohesionCenter / cohersionCount;
+            Vector3 toRegroup = regroupPos - transform.position;
+            toRegroup.y = 0f;
+
+            // When close to regroupPos, start pasturing
+            if (toRegroup.sqrMagnitude > pastureRadius * pastureRadius)
+            {
+                regroupForce = toRegroup.normalized * regroupStr;
+            }
+        }
+        else if (cohesionCount > 0)
+        {
+            regroupForce = Vector3.zero;
+            cohesionCenter = cohesionCenter / cohesionCount;
             Vector3 centerDir = cohesionCenter - transform.position;
             centerDir.y = 0f;
             cohesionForce = centerDir.normalized;   // direction only; accel cap handles magnitude
@@ -191,8 +233,16 @@ public class Boids : MonoBehaviour
         {
             matchingForce=Vector3.zero;
         }
-
-
+        if ((pastureCount > pastureSize) && (status["hunted"]==false)) //At least pastureSize not hunted close for pasture to take place
+        {
+            damping = pastureDamping;
+        }
+        else
+        {
+            damping = normalDamping;
+        }
+        
+        
         sepForce = Vector3.ClampMagnitude(sepForce, sepMax); // clamp the total separation force (since we dont normalize it)
         sepForce *= sepStr;
         
@@ -204,17 +254,19 @@ public class Boids : MonoBehaviour
     //==============================================
     void FixedUpdate()
     {
+        
         // --- Sense and reCalc forces (throttled) ---
         //if (Time.fixedTime >= nextSenseTime)
         //{
          //   nextSenseTime += senseInterval; //book next sense session
             calcBoidForces();
+        
         //}
         calcPredatorForce(); //we afford do every update because its only 1 item we look for
         //---------------------------------------------------------------------------------
         //---------------------------UPDATE VEL VIA BOID FORCES ---------------------------------------------
         //------------------------------------------------------------------------------------------------------------
-        desiredVel = desiredVel  + predatorForce +  matchingForce; //sepForce + cohesionForce;
+        desiredVel = desiredVel  + predatorForce +  matchingForce + sepForce + cohesionForce + regroupForce;
         //speed limit
         if (desiredVel.sqrMagnitude > maxSpeed*maxSpeed)
         {

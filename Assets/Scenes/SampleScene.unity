@@ -160,6 +160,12 @@ Transform:
   - {fileID: 1879192238}
   - {fileID: 380631511}
   - {fileID: 846229166}
+  - {fileID: 2066574705}
+  - {fileID: 2061956240}
+  - {fileID: 1500435509}
+  - {fileID: 446396100}
+  - {fileID: 1751987440}
+  - {fileID: 2125176839}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &97511662
@@ -220,15 +226,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -244,22 +250,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -268,11 +286,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
@@ -432,7 +458,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.4
+      value: 4.6
       objectReference: {fileID: 0}
     - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_LocalRotation.w
@@ -472,15 +498,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -496,22 +522,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -520,11 +558,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
@@ -614,15 +660,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -638,22 +684,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -662,11 +720,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
@@ -799,15 +865,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -823,22 +889,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -847,11 +925,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
@@ -1004,6 +1090,11 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 1
+--- !u!4 &446396100 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+  m_PrefabInstance: {fileID: 951038405}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &503826644
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1062,15 +1153,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -1086,22 +1177,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -1110,11 +1213,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
@@ -1204,15 +1315,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -1228,22 +1339,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -1252,11 +1375,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
@@ -1360,7 +1491,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 4.8
       objectReference: {fileID: 0}
     - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1400,15 +1531,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -1424,22 +1555,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -1448,11 +1591,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
@@ -1603,7 +1754,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.75
+      value: -1.9
       objectReference: {fileID: 0}
     - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1611,7 +1762,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 4.8
       objectReference: {fileID: 0}
     - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1651,15 +1802,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -1675,22 +1826,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -1699,11 +1862,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
@@ -1735,6 +1906,163 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
   m_PrefabInstance: {fileID: 777343333}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &777755626
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 92636537}
+    m_Modifications:
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -4.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: maxAcc
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 234276164}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepMax
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: damping
+      value: 0.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: senseHz
+      value: 6.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: maxSpeed
+      value: 6.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: moveSpeed
+      value: 10.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepRadius
+      value: 0.53
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: turnSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: cohesionStr
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: senseInterval
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: cohesionRadius
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: neighborRadius
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: predatorRadius
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: boidMask.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 3629546554454730444, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+    - target: {fileID: 3937638948870174604, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_Name
+      value: Sheep (13)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5677094077493774292, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
 --- !u!1 &827040546
 GameObject:
   m_ObjectHideFlags: 0
@@ -1950,15 +2278,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -1974,22 +2302,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -1998,11 +2338,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
@@ -2034,6 +2382,163 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
   m_PrefabInstance: {fileID: 846229165}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &951038405
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 92636537}
+    m_Modifications:
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -6.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 19.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: maxAcc
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 234276164}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepMax
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: damping
+      value: 0.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: senseHz
+      value: 6.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: maxSpeed
+      value: 6.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: moveSpeed
+      value: 10.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepRadius
+      value: 0.53
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: turnSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: cohesionStr
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: senseInterval
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: cohesionRadius
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: neighborRadius
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: predatorRadius
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: boidMask.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 3629546554454730444, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+    - target: {fileID: 3937638948870174604, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_Name
+      value: Sheep (15)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5677094077493774292, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
 --- !u!1001 &962588787
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2092,15 +2597,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -2116,22 +2621,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -2140,11 +2657,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
@@ -2181,6 +2706,320 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 476540, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
   m_PrefabInstance: {fileID: 1204444730}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &995036979
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 92636537}
+    m_Modifications:
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -4.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 19.33
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: maxAcc
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 234276164}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepMax
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: damping
+      value: 0.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: senseHz
+      value: 6.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: maxSpeed
+      value: 6.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: moveSpeed
+      value: 10.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepRadius
+      value: 0.53
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: turnSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: cohesionStr
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: senseInterval
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: cohesionRadius
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: neighborRadius
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: predatorRadius
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: boidMask.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 3629546554454730444, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+    - target: {fileID: 3937638948870174604, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_Name
+      value: Sheep (12)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5677094077493774292, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+--- !u!1001 &1032130706
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 92636537}
+    m_Modifications:
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 35.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 19.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: maxAcc
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 234276164}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepMax
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: damping
+      value: 0.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: senseHz
+      value: 6.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: maxSpeed
+      value: 6.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: moveSpeed
+      value: 10.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepRadius
+      value: 0.53
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: turnSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: cohesionStr
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: senseInterval
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: cohesionRadius
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: neighborRadius
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: predatorRadius
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: boidMask.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 3629546554454730444, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+    - target: {fileID: 3937638948870174604, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_Name
+      value: Sheep (16)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5677094077493774292, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
 --- !u!1 &1086461930 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 133480, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
@@ -2400,6 +3239,163 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1086461935}
   m_SourcePrefab: {fileID: 100100000, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
+--- !u!1001 &1229714295
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 92636537}
+    m_Modifications:
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -6.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: maxAcc
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 234276164}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepMax
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: damping
+      value: 0.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: senseHz
+      value: 6.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: maxSpeed
+      value: 6.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: moveSpeed
+      value: 10.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepRadius
+      value: 0.53
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: turnSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: cohesionStr
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: senseInterval
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: cohesionRadius
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: neighborRadius
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: predatorRadius
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: boidMask.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 3629546554454730444, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+    - target: {fileID: 3937638948870174604, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_Name
+      value: Sheep (14)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5677094077493774292, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
 --- !u!1001 &1240521441
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2458,15 +3454,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -2482,22 +3478,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -2506,11 +3514,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
@@ -2600,15 +3616,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -2624,22 +3640,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -2648,11 +3676,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
@@ -2742,15 +3778,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -2766,22 +3802,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -2790,11 +3838,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
@@ -2884,15 +3940,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -2908,22 +3964,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -2932,11 +4000,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
@@ -3026,15 +4102,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -3050,22 +4126,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -3074,11 +4162,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
@@ -3110,6 +4206,163 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
   m_PrefabInstance: {fileID: 1349623802}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1405519394
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 92636537}
+    m_Modifications:
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 35.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 21.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: maxAcc
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 234276164}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepMax
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: damping
+      value: 0.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: senseHz
+      value: 6.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: maxSpeed
+      value: 6.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: moveSpeed
+      value: 10.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepRadius
+      value: 0.53
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: turnSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: cohesionStr
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: senseInterval
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: cohesionRadius
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: neighborRadius
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: predatorRadius
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: boidMask.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 3629546554454730444, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+    - target: {fileID: 3937638948870174604, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_Name
+      value: Sheep (17)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5677094077493774292, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
 --- !u!4 &1416516049 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 485514, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
@@ -3173,15 +4426,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -3197,22 +4450,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -3221,11 +4486,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
@@ -3304,6 +4577,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   index: 4
   origin: {fileID: 0}
+--- !u!4 &1500435509 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+  m_PrefabInstance: {fileID: 1229714295}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1512431309
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3362,15 +4640,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -3386,22 +4664,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -3410,11 +4700,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
@@ -3504,15 +4802,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -3528,22 +4826,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -3552,11 +4862,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
@@ -3587,6 +4905,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
   m_PrefabInstance: {fileID: 1633934689}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1751987440 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+  m_PrefabInstance: {fileID: 1032130706}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1752594241
 PrefabInstance:
@@ -3646,15 +4969,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -3670,22 +4993,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -3694,11 +5029,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
@@ -3835,15 +5178,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -3859,22 +5202,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -3883,11 +5238,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
@@ -3977,15 +5340,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -4001,22 +5364,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -4025,11 +5400,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
@@ -4119,15 +5502,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -4143,22 +5526,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -4167,11 +5562,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
@@ -4202,6 +5605,16 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
   m_PrefabInstance: {fileID: 1997744266}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2061956240 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+  m_PrefabInstance: {fileID: 777755626}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2066574705 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+  m_PrefabInstance: {fileID: 995036979}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2082419137
 PrefabInstance:
@@ -4261,15 +5674,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -4285,22 +5698,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -4309,11 +5734,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
@@ -4344,6 +5777,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
   m_PrefabInstance: {fileID: 2082419137}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2125176839 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+  m_PrefabInstance: {fileID: 1405519394}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4555686695151180645
 PrefabInstance:
@@ -4403,15 +5841,15 @@ PrefabInstance:
       objectReference: {fileID: 234276164}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepMax
-      value: 3.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
-      propertyPath: sepStr
       value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: sepStr
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: damping
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: senseHz
@@ -4427,22 +5865,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: sepRadius
-      value: 1.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: turnSpeed
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: regroupStr
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 0.8
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: normalDamping
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureRadius
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
@@ -4451,11 +5901,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 100
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: matchingRadius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: neighborRadius
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: pastureDamping
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
