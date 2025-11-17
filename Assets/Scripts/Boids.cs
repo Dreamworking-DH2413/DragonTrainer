@@ -203,7 +203,7 @@ public class Boids : MonoBehaviour
 
         }
         // BOID FORCES calcs
-        if (found < pastureSize/2) //may find subgroups (half size of pasture group)
+        if (found < pastureSize/2) //dont apply if already found a subgroups (half size of pasture group)
         {
             Vector3 toRegroup = regroupPos - transform.position;
             toRegroup.y = 0f;
@@ -268,7 +268,7 @@ public class Boids : MonoBehaviour
         //---------------------------------------------------------------------------------
         //---------------------------UPDATE VEL VIA BOID FORCES ---------------------------------------------
         //------------------------------------------------------------------------------------------------------------
-        desiredVel = desiredVel  + predatorForce +  matchingForce + sepForce + cohesionForce + regroupForce;
+        desiredVel = desiredVel  + predatorForce +  matchingForce + sepForce  + regroupForce + cohesionForce;
         //speed limit
         if (desiredVel.sqrMagnitude > maxSpeed*maxSpeed)
         {

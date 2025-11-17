@@ -242,7 +242,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -262,15 +266,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 5
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -286,7 +290,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -302,7 +306,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -514,7 +518,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -534,15 +542,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 3
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -558,7 +566,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -574,7 +582,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -676,7 +684,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -696,15 +708,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 5
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -720,7 +732,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -736,7 +748,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -881,7 +893,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -901,15 +917,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 3
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -925,7 +941,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -941,7 +957,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -1169,7 +1185,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -1189,15 +1209,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 3
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -1213,7 +1233,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -1229,7 +1249,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -1331,7 +1351,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -1351,15 +1375,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 3
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -1375,7 +1399,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -1391,7 +1415,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -1547,7 +1571,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -1567,15 +1595,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 5
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -1591,7 +1619,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -1607,7 +1635,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -1818,7 +1846,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -1838,15 +1870,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 5
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -1862,7 +1894,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -1878,7 +1910,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -1916,7 +1948,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.5
+      value: 15.1
       objectReference: {fileID: 0}
     - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1924,7 +1956,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 21
+      value: 39.4
       objectReference: {fileID: 0}
     - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1980,7 +2012,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -2000,15 +2036,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 3
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -2024,7 +2060,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -2040,7 +2076,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -2294,7 +2330,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -2314,15 +2354,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 3
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -2338,7 +2378,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -2354,7 +2394,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -2392,7 +2432,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.7
+      value: 25.9
       objectReference: {fileID: 0}
     - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2400,7 +2440,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 19.5
+      value: 71.2
       objectReference: {fileID: 0}
     - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2456,7 +2496,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -2476,15 +2520,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 3
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -2500,7 +2544,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -2516,7 +2560,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -2613,7 +2657,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -2633,15 +2681,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 3
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -2657,7 +2705,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -2673,7 +2721,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -2716,7 +2764,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.5
+      value: 10.7
       objectReference: {fileID: 0}
     - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2780,7 +2828,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -2800,15 +2852,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 3
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -2824,7 +2876,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -2840,7 +2892,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -2937,7 +2989,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -2957,15 +3013,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 3
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -2981,7 +3037,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -2997,7 +3053,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -3249,7 +3305,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.7
+      value: 21.6
       objectReference: {fileID: 0}
     - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3257,7 +3313,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 21
+      value: 53.3
       objectReference: {fileID: 0}
     - target: {fileID: 436623788374310418, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3313,7 +3369,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -3333,15 +3393,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 3
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -3357,7 +3417,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -3373,7 +3433,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -3470,7 +3530,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -3490,15 +3554,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 3
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -3514,7 +3578,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -3530,7 +3594,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -3632,7 +3696,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -3652,15 +3720,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 3
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -3676,7 +3744,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -3692,7 +3760,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -3794,7 +3862,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -3814,15 +3886,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 5
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -3838,7 +3910,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -3854,7 +3926,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -3956,7 +4028,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -3976,15 +4052,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 3
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -4000,7 +4076,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -4016,7 +4092,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -4118,7 +4194,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -4138,15 +4218,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 5
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -4162,7 +4242,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -4178,7 +4258,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -4280,7 +4360,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -4300,15 +4384,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 3
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -4324,7 +4408,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -4340,7 +4424,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -4442,7 +4526,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -4462,15 +4550,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 3
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -4486,7 +4574,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -4502,7 +4590,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -4656,7 +4744,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -4676,15 +4768,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 5
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -4700,7 +4792,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -4716,7 +4808,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -4818,7 +4910,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -4838,15 +4934,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 3
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -4862,7 +4958,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -4878,7 +4974,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -4985,7 +5081,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -5005,15 +5105,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 5
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -5029,7 +5129,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -5045,7 +5145,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -5194,7 +5294,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -5214,15 +5318,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 3
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -5238,7 +5342,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -5254,7 +5358,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -5356,7 +5460,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -5376,15 +5484,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 5
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -5400,7 +5508,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -5416,7 +5524,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -5518,7 +5626,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -5538,15 +5650,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 5
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -5562,7 +5674,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -5578,7 +5690,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -5690,7 +5802,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -5710,15 +5826,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 5
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -5734,7 +5850,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -5750,7 +5866,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
@@ -5857,7 +5973,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 25
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: huntedAcc
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -5877,15 +5997,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionStr
-      value: 5
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingStr
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -5901,7 +6021,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: cohesionRadius
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: matchingRadius
@@ -5917,7 +6037,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorRadius
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: boidMask.m_Bits
