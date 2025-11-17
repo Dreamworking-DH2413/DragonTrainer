@@ -270,7 +270,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -490,7 +490,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: player
@@ -514,7 +514,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 6.5
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -704,7 +704,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -857,7 +857,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: player
@@ -881,7 +881,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 6.5
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -1145,7 +1145,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: player
@@ -1169,7 +1169,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 6.5
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -1307,7 +1307,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: player
@@ -1331,7 +1331,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 6.5
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -1575,7 +1575,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -1846,7 +1846,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -1956,7 +1956,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: player
@@ -1980,7 +1980,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 6.5
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -2270,7 +2270,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: player
@@ -2294,7 +2294,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 6.5
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -2432,7 +2432,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: player
@@ -2456,7 +2456,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 6.5
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -2589,7 +2589,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: player
@@ -2613,7 +2613,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 6.5
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -2756,7 +2756,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: player
@@ -2780,7 +2780,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 6.5
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -2913,7 +2913,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: player
@@ -2937,7 +2937,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 6.5
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -3289,7 +3289,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: player
@@ -3313,7 +3313,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 6.5
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -3446,7 +3446,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: player
@@ -3470,7 +3470,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 6.5
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -3608,7 +3608,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: player
@@ -3632,7 +3632,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 6.5
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -3822,7 +3822,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -3932,7 +3932,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: player
@@ -3956,7 +3956,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 6.5
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -4146,7 +4146,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -4256,7 +4256,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: player
@@ -4280,7 +4280,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 6.5
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -4418,7 +4418,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: player
@@ -4442,7 +4442,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 6.5
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -4684,7 +4684,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -4794,7 +4794,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: player
@@ -4818,7 +4818,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 6.5
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -5013,7 +5013,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -5170,7 +5170,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxAcc
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: player
@@ -5194,7 +5194,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: maxSpeed
-      value: 6.5
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: moveSpeed
@@ -5384,7 +5384,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -5546,7 +5546,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -5718,7 +5718,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping
@@ -5885,7 +5885,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: predatorStr
-      value: 10
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: normalDamping

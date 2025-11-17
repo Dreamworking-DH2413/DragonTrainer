@@ -7,7 +7,9 @@ public class Boids : MonoBehaviour
     
     // MOVEMENT
     public float maxSpeed=51.8f;
-    public float maxAcc = 50.0f;        // Units per second along the ground (XZ)
+    public float huntedAcc = 100.0f;        // Units per second along the ground (XZ)
+    public float restAcc = 6.5f;        // Units per second along the ground (XZ)
+
     public float turnSpeed = 90f;       // Degrees per second we can rotate around Y
     public bool faceMoveDirection = true; // If true, rotate to face where we’re moving
 
@@ -123,7 +125,7 @@ public class Boids : MonoBehaviour
         
         if (dstToPredator.sqrMagnitude <= predatorRadius * predatorRadius)// out of range-ignore (!) should prob not be squared???
         {
-            predatorForce = -dstToPredator * ((predatorRadius*predatorRadius) / Mathf.Max(dstToPredator.sqrMagnitude, 0.001f));
+            predatorForce = -dstToPredator.normalized; //* ((predatorRadius*predatorRadius) / Mathf.Max(dstToPredator.sqrMagnitude, 0.001f));
             predatorForce *= predatorStr;
             status["hunted"]=true;
 
@@ -259,7 +261,7 @@ public class Boids : MonoBehaviour
         //if (Time.fixedTime >= nextSenseTime)
         //{
          //   nextSenseTime += senseInterval; //book next sense session
-            calcBoidForces();
+        calcBoidForces();
         
         //}
         calcPredatorForce(); //we afford do every update because its only 1 item we look for
@@ -278,6 +280,10 @@ public class Boids : MonoBehaviour
         //STEER currVEL TO newVEL VIA desiredVEL
         Vector3 currVel = rb.linearVelocity; // includes gravity Y
         Vector3 newVelXZ = new Vector3(currVel.x, 0f, currVel.z);
+        float maxAcc=0f;
+        if (status["hunted"] == true)  maxAcc=huntedAcc;
+        else{maxAcc=restAcc;}
+
         newVelXZ = Vector3.MoveTowards(newVelXZ, desiredVel, maxAcc * Time.fixedDeltaTime);
 
         //UPDATE POS VIA RB-VEL
