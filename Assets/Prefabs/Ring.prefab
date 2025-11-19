@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -7842121342738100914}
   - component: {fileID: 3546430416027281981}
   m_Layer: 0
-  m_Name: Particle System
+  m_Name: Ring
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
