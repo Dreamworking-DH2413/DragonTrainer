@@ -16,6 +16,9 @@ public class ProceduralTerrain : MonoBehaviour
     [Tooltip("Maximum height of the terrain in world units")]
     public float maxHeight = 256f;
 
+    [Tooltip("Water level")]
+    public float waterLevel = 100f;
+
     [Header("Noise Settings")]
     [Tooltip("Noise span per tile in noise space (not world units)")]
     public float noiseScale = 1f;
