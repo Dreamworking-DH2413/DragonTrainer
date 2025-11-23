@@ -2,7 +2,10 @@ using UnityEngine;
 
 [RequireComponent(typeof(Terrain))]
 public class ProceduralTerrain : MonoBehaviour
+
 {
+    //Sheep herd prefab
+    public GameObject Herd;
     [Header("Terrain Settings")]
     [Tooltip("Must be 2^n + 1 (e.g. 257, 513, 1025)")]
     public int heightmapResolution = 257;
@@ -26,7 +29,6 @@ public class ProceduralTerrain : MonoBehaviour
     public float persistence = 0.5f;
     public float lacunarity = 2.0f;
     public Vector2 noiseOffset;
-
     [Header("Texturing")]
     [Tooltip("Sand texture (used below grassHeightWorld).")]
     public Texture2D sandTexture;
@@ -45,6 +47,7 @@ public class ProceduralTerrain : MonoBehaviour
 
     private Terrain _terrain;
     private TerrainData _data;
+    
 
     void Awake()
     {
@@ -53,6 +56,10 @@ public class ProceduralTerrain : MonoBehaviour
         // Clone the TerrainData so each tile has its own independent heightmap.
         _data = Instantiate(_terrain.terrainData);
         _terrain.terrainData = _data;
+        //make collider follow the data of the terrain
+        var terrainCollider = GetComponent<TerrainCollider>();
+        if (terrainCollider != null)
+            terrainCollider.terrainData = _data;
     }
 
     void Start()
@@ -97,6 +104,8 @@ public class ProceduralTerrain : MonoBehaviour
         _data.SetHeights(0, 0, heights);
 
         ApplyTextureSplatmap();
+
+        Instantiate(Herd, this.transform.position, Quaternion.identity);    
     }
 
     float FractalNoise(float x, float y)

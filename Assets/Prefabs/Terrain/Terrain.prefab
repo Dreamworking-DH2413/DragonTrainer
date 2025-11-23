@@ -106,10 +106,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f5b9994ba5e6c444ab7fef99c23400f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Herd: {fileID: 5024721421659279829, guid: 08ac16102e2a71249834934928877e11, type: 3}
   heightmapResolution: 257
   terrainSizeX: 256
   terrainSizeZ: 256
   maxHeight: 256
+  waterLevel: 100
   noiseScale: 1
   octaves: 4
   persistence: 0.5

@@ -148,7 +148,7 @@ MonoBehaviour:
   matchingRadius: 4
   player: {fileID: 0}
   pastureDamping: 1.8
-  pastureSize: 8
+  pastureSize: 6
   normalDamping: 0.1
   cohesionStr: 0.7
   regroupStr: 0.01

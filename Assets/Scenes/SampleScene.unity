@@ -2724,7 +2724,7 @@ GameObject:
   m_Component:
   - component: {fileID: 227406795}
   m_Layer: 0
-  m_Name: herd
+  m_Name: testHerd
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4669,10 +4669,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 471250250}
   terrainPrefab: {fileID: 4932729865215981382, guid: af6e4a7ec0b53274b9d55b1650aeeef8, type: 3}
-  viewRadius: 4
-  updateMoveThreshold: 10
+  viewRadius: 8
+  updateMoveThreshold: 32
   globalNoiseOffset: {x: 0, y: 0}
-  tilesPerFrame: 2
+  tilesPerFrame: 1
 --- !u!4 &393691346
 Transform:
   m_ObjectHideFlags: 0
@@ -11841,8 +11841,20 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4932729865215981382, guid: af6e4a7ec0b53274b9d55b1650aeeef8, type: 3}
+      propertyPath: Herd
+      value: 
+      objectReference: {fileID: 5024721421659279829, guid: 08ac16102e2a71249834934928877e11, type: 3}
+    - target: {fileID: 4932729865215981382, guid: af6e4a7ec0b53274b9d55b1650aeeef8, type: 3}
+      propertyPath: maxHeight
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 4932729865215981382, guid: af6e4a7ec0b53274b9d55b1650aeeef8, type: 3}
       propertyPath: waterLevel
-      value: 200
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4932729865215981382, guid: af6e4a7ec0b53274b9d55b1650aeeef8, type: 3}
+      propertyPath: grassHeightWorld
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -26566,6 +26578,67 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -3987013622949904616, guid: b3903b768546e054c9579e8376395c33, type: 3}
   m_PrefabInstance: {fileID: 1916399699}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &4907788710493887052
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5024721421659279829, guid: 08ac16102e2a71249834934928877e11, type: 3}
+      propertyPath: m_Name
+      value: Herd
+      objectReference: {fileID: 0}
+    - target: {fileID: 5977115083063484695, guid: 08ac16102e2a71249834934928877e11, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.08432138
+      objectReference: {fileID: 0}
+    - target: {fileID: 5977115083063484695, guid: 08ac16102e2a71249834934928877e11, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.9327502
+      objectReference: {fileID: 0}
+    - target: {fileID: 5977115083063484695, guid: 08ac16102e2a71249834934928877e11, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.6579417
+      objectReference: {fileID: 0}
+    - target: {fileID: 5977115083063484695, guid: 08ac16102e2a71249834934928877e11, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5977115083063484695, guid: 08ac16102e2a71249834934928877e11, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5977115083063484695, guid: 08ac16102e2a71249834934928877e11, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5977115083063484695, guid: 08ac16102e2a71249834934928877e11, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5977115083063484695, guid: 08ac16102e2a71249834934928877e11, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5977115083063484695, guid: 08ac16102e2a71249834934928877e11, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5977115083063484695, guid: 08ac16102e2a71249834934928877e11, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7289388895136021341, guid: 08ac16102e2a71249834934928877e11, type: 3}
+      propertyPath: oneInXChanceToSpawn
+      value: 20
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 08ac16102e2a71249834934928877e11, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -26580,6 +26653,7 @@ SceneRoots:
   - {fileID: 393691346}
   - {fileID: 1715892656}
   - {fileID: 227406795}
+  - {fileID: 4907788710493887052}
   - {fileID: 1022074789}
   - {fileID: 577918107}
   - {fileID: 1274199821}

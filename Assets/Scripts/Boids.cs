@@ -38,7 +38,7 @@ public class Boids : MonoBehaviour
     };
     float damping;
     public float pastureDamping = 0.5f;
-    public int pastureSize = 8;
+    public int pastureSize = 6;
     public float normalDamping = 0.12f;
 
 
@@ -156,7 +156,7 @@ public class Boids : MonoBehaviour
         int matchingCount = 0;
         int pastureCount = 0;
         
-        if(found==0){Debug.Log(found);}
+        //if(found==0){Debug.Log(found);}
 
         for (int i = 0; i < found; i++)
         {
