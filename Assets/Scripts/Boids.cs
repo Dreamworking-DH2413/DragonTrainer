@@ -108,7 +108,7 @@ public class Boids : MonoBehaviour
         if (transform.parent != null)
         {
             regroupPos = transform.parent.position;
-            Debug.Log(regroupPos);
+            //Debug.Log(regroupPos);
         }
     }
 
@@ -268,7 +268,7 @@ public class Boids : MonoBehaviour
         //---------------------------------------------------------------------------------
         //---------------------------UPDATE VEL VIA BOID FORCES ---------------------------------------------
         //------------------------------------------------------------------------------------------------------------
-        desiredVel = desiredVel  + predatorForce +  matchingForce + sepForce  + regroupForce + cohesionForce;
+        desiredVel = desiredVel  + predatorForce +regroupForce + matchingForce + sepForce  + cohesionForce;
         //speed limit
         if (desiredVel.sqrMagnitude > maxSpeed*maxSpeed)
         {

@@ -11856,6 +11856,10 @@ PrefabInstance:
       propertyPath: grassHeightWorld
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 4932729865215981382, guid: af6e4a7ec0b53274b9d55b1650aeeef8, type: 3}
+      propertyPath: oneInXChanceToSpawn
+      value: 60
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -26629,6 +26633,10 @@ PrefabInstance:
     - target: {fileID: 5977115083063484695, guid: 08ac16102e2a71249834934928877e11, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7289388895136021341, guid: 08ac16102e2a71249834934928877e11, type: 3}
+      propertyPath: maxSheepAmount
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7289388895136021341, guid: 08ac16102e2a71249834934928877e11, type: 3}
       propertyPath: oneInXChanceToSpawn
