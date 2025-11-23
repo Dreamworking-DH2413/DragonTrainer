@@ -146,7 +146,8 @@ public class DragonControl : MonoBehaviour
 
     void LateUpdate()
     {
-        UpdateVRPlayerPosition();
+        //should be on if wanna test ride dragon
+        //UpdateVRPlayerPosition();
     }
 
     private void HandleFlapInput()

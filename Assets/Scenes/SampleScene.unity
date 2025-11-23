@@ -4667,7 +4667,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98a17f93ab21c1f41b9cfff112c84dcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 471250250}
+  target: {fileID: 234276164}
   terrainPrefab: {fileID: 4932729865215981382, guid: af6e4a7ec0b53274b9d55b1650aeeef8, type: 3}
   viewRadius: 8
   updateMoveThreshold: 32

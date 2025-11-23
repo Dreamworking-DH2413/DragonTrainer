@@ -6,6 +6,8 @@ public class ProceduralTerrain : MonoBehaviour
 {
     //Sheep herd prefab
     public GameObject Herd;
+    public int oneInXChanceToSpawn = 20; //1 in X chance to spawn a herd
+
     [Header("Terrain Settings")]
     [Tooltip("Must be 2^n + 1 (e.g. 257, 513, 1025)")]
     public int heightmapResolution = 257;
@@ -104,8 +106,12 @@ public class ProceduralTerrain : MonoBehaviour
         _data.SetHeights(0, 0, heights);
 
         ApplyTextureSplatmap();
-
-        Instantiate(Herd, this.transform.position, Quaternion.identity);    
+        
+        //Spawn sheep herd with 1 in X chance
+        if(Random.Range(0,oneInXChanceToSpawn+1)>=oneInXChanceToSpawn-1) //1 in X chance to spawn a herd at all
+        {
+            Instantiate(Herd, this.transform.position, Quaternion.identity);    
+        }
     }
 
     float FractalNoise(float x, float y)

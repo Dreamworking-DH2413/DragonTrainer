@@ -7,14 +7,11 @@ public class Herd : MonoBehaviour
     private int minSheepAmount = 6; //must match pasture size in Boids.cs
     private int sheepAmount;
     public float spawningRadius = 5f;
-    public int oneInXChanceToSpawn = 10; //1 in X chance to spawn a herd
+    //public int oneInXChanceToSpawn = 10; //1 in X chance to spawn a herd
     
     void Start()
     {
-        if(Random.Range(0,oneInXChanceToSpawn+1)<=oneInXChanceToSpawn-1) //1 in X chance to spawn a herd at all
-        {
-            return;
-        }
+        
         sheepAmount = Mathf.FloorToInt(Random.value*maxSheepAmount)+minSheepAmount;      
     //spawn sheep in random positions within spawningRadius
         for (int i = 0; i < sheepAmount; i++)
