@@ -1,35 +1,53 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+[ExecuteAlways]
 public class TerrainStreamer : MonoBehaviour
 {
     [Header("Streaming Setup")]
     public Transform target;
     public ProceduralTerrain terrainPrefab;
     public int viewRadius = 2;
-
-    [Tooltip("How far the target must move before we refresh visible tiles.")]
     public float updateMoveThreshold = 32f;
-
-    [Tooltip("Global offset applied to all noise tiles.")]
     public Vector2 globalNoiseOffset;
-
-    [Tooltip("How many tiles we are allowed to spawn per frame.")]
     public int tilesPerFrame = 1;
 
-    // Active tiles in the world
+    [Header("Vertical Offset")]
+    public float heightOffset = 0f;
+
+    [Header("Noise Domain")]
+    public float noiseDomainShift = 10000f;
+
     readonly Dictionary<Vector2Int, ProceduralTerrain> tiles = new();
-
-    // Tiles waiting to be spawned
     readonly Queue<Vector2Int> _spawnQueue = new();
-
-    // Track tiles already queued so we don't enqueue duplicates
     readonly HashSet<Vector2Int> _pendingTiles = new();
 
     Vector3 lastUpdatePos;
 
+    void OnEnable()
+    {
+        if (!target || !terrainPrefab)
+            return;
+
+        if (!Application.isPlaying)
+        {
+            ClearAllTiles(true);
+            lastUpdatePos = target.position;
+            RefreshTiles();
+            SpawnAllQueuedTilesImmediate();
+            ApplyHeightOffsetToExisting();
+        }
+    }
+
     void Start()
     {
+        if (!Application.isPlaying)
+            return;
+
         if (!target || !terrainPrefab)
         {
             Debug.LogError("[TerrainStreamer] Assign target and terrainPrefab.");
@@ -37,26 +55,45 @@ public class TerrainStreamer : MonoBehaviour
             return;
         }
 
-        // Force an initial refresh by placing the "last" position far away
+        ClearAllTiles(false);
+
         lastUpdatePos = target.position - new Vector3(updateMoveThreshold * 2f, 0, updateMoveThreshold * 2f);
         RefreshTiles();
     }
 
     void Update()
     {
-        // Spawn tiles within our per-frame budget
-        int budget = tilesPerFrame;
-        while (budget-- > 0 && _spawnQueue.Count > 0)
-        {
-            SpawnTile(_spawnQueue.Dequeue());
-        }
-
-        // Only refresh when target moves far enough
-        if ((target.position - lastUpdatePos).sqrMagnitude < updateMoveThreshold * updateMoveThreshold)
+        if (!target || !terrainPrefab)
             return;
 
-        lastUpdatePos = target.position;
-        RefreshTiles();
+        if (Application.isPlaying)
+        {
+            int budget = tilesPerFrame;
+            while (budget-- > 0 && _spawnQueue.Count > 0)
+            {
+                SpawnTile(_spawnQueue.Dequeue());
+            }
+
+            if ((target.position - lastUpdatePos).sqrMagnitude < updateMoveThreshold * updateMoveThreshold)
+                return;
+
+            lastUpdatePos = target.position;
+            RefreshTiles();
+        }
+        else
+        {
+            RefreshTiles();
+            SpawnAllQueuedTilesImmediate();
+            ApplyHeightOffsetToExisting();
+        }
+    }
+
+    void OnDisable()
+    {
+        if (!Application.isPlaying)
+        {
+            ClearAllTiles(true);
+        }
     }
 
     void RefreshTiles()
@@ -64,7 +101,6 @@ public class TerrainStreamer : MonoBehaviour
         var center = WorldToTile(target.position);
         var wanted = new HashSet<Vector2Int>();
 
-        // Determine which tiles we want within viewRadius
         for (int dz = -viewRadius; dz <= viewRadius; dz++)
         {
             for (int dx = -viewRadius; dx <= viewRadius; dx++)
@@ -80,7 +116,6 @@ public class TerrainStreamer : MonoBehaviour
             }
         }
 
-        // Find tiles to remove
         var toRemove = new List<Vector2Int>();
         foreach (var kv in tiles)
         {
@@ -107,26 +142,32 @@ public class TerrainStreamer : MonoBehaviour
 
     void SpawnTile(Vector2Int coord)
     {
-        // We're now actively creating this tile, so it's no longer "pending"
         _pendingTiles.Remove(coord);
 
         var pt = Instantiate(terrainPrefab, transform);
 
-        pt.transform.position = new Vector3(
-            coord.x * terrainPrefab.terrainSizeX,
-            0f,
-            coord.y * terrainPrefab.terrainSizeZ
-        );
+        float baseX = coord.x * terrainPrefab.terrainSizeX;
+        float baseZ = coord.y * terrainPrefab.terrainSizeZ;
+        float baseY = transform.position.y + heightOffset;
 
-        // Noise offset chosen so that tiles line up seamlessly in noise-space
-        pt.noiseOffset = globalNoiseOffset + new Vector2(
-            coord.x * terrainPrefab.noiseScale,
-            coord.y * terrainPrefab.noiseScale
-        );
+        pt.transform.position = new Vector3(baseX, baseY, baseZ);
+
+        float nxBase = (coord.x + noiseDomainShift) * terrainPrefab.noiseScale;
+        float nzBase = (coord.y + noiseDomainShift) * terrainPrefab.noiseScale;
+
+        pt.noiseOffset = globalNoiseOffset + new Vector2(nxBase, nzBase);
 
         pt.Generate();
 
         tiles[coord] = pt;
+    }
+
+    void SpawnAllQueuedTilesImmediate()
+    {
+        while (_spawnQueue.Count > 0)
+        {
+            SpawnTile(_spawnQueue.Dequeue());
+        }
     }
 
     void DestroyTile(Vector2Int coord)
@@ -134,12 +175,36 @@ public class TerrainStreamer : MonoBehaviour
         if (tiles.TryGetValue(coord, out var pt))
         {
             if (pt)
-                Destroy(pt.gameObject);
+            {
+                if (Application.isPlaying)
+                    Object.Destroy(pt.gameObject);
+                else
+                    Object.DestroyImmediate(pt.gameObject);
+            }
+
             tiles.Remove(coord);
         }
 
-        // If it was still queued somehow, clean that too
         _pendingTiles.Remove(coord);
+    }
+
+    void ClearAllTiles(bool immediate)
+    {
+        var existing = GetComponentsInChildren<ProceduralTerrain>();
+        foreach (var pt in existing)
+        {
+            if (!pt) continue;
+            if (!pt.gameObject.scene.IsValid()) continue;
+
+            if (immediate)
+                Object.DestroyImmediate(pt.gameObject);
+            else
+                Object.Destroy(pt.gameObject);
+        }
+
+        tiles.Clear();
+        _spawnQueue.Clear();
+        _pendingTiles.Clear();
     }
 
     void RefreshNeighbors()
@@ -155,4 +220,49 @@ public class TerrainStreamer : MonoBehaviour
             kv.Value.GetComponent<Terrain>().SetNeighbors(left, top, right, bottom);
         }
     }
+
+    void ApplyHeightOffsetToExisting()
+    {
+        float baseY = transform.position.y + heightOffset;
+
+        foreach (var kv in tiles)
+        {
+            var pt = kv.Value;
+            if (!pt) continue;
+
+            var pos = pt.transform.position;
+            pos.y = baseY;
+            pt.transform.position = pos;
+        }
+    }
+
+#if UNITY_EDITOR
+    [ContextMenu("Regenerate All Chunks")]
+    void RegenerateAllChunks()
+    {
+        if (Application.isPlaying)
+        {
+            Debug.LogWarning("Regenerate All Chunks only works in Edit Mode.");
+            return;
+        }
+
+        ClearAllTiles(true);
+        lastUpdatePos = target ? target.position : Vector3.zero;
+        RefreshTiles();
+        SpawnAllQueuedTilesImmediate();
+        ApplyHeightOffsetToExisting();
+    }
+
+    void OnValidate()
+    {
+        if (!Application.isPlaying)
+        {
+            EditorApplication.delayCall += () =>
+            {
+                if (this == null) return;
+                ApplyHeightOffsetToExisting();
+            };
+        }
+    }
+#endif
 }

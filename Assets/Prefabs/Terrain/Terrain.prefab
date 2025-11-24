@@ -106,11 +106,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f5b9994ba5e6c444ab7fef99c23400f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heightmapResolution: 257
-  terrainSizeX: 256
-  terrainSizeZ: 256
+  heightmapResolution: 129
+  terrainSizeX: 128
+  terrainSizeZ: 128
   maxHeight: 256
-  noiseScale: 1
+  noiseScale: 0.25
   octaves: 4
   persistence: 0.5
   lacunarity: 2
@@ -118,5 +118,8 @@ MonoBehaviour:
   sandTexture: {fileID: 2800000, guid: db9a72ae773be464b9f57060c5b4eb77, type: 3}
   grassTexture: {fileID: 2800000, guid: 4e211b7b73f6d524c80a91293d6afb81, type: 3}
   grassHeightWorld: 100
-  blendRange: 10
-  textureTileSize: 10
+  blendRange: 5
+  textureTileSize: 6
+  waterMaterial: {fileID: 2100000, guid: 141d9d6ca43b6c843965491604c6deff, type: 2}
+  waterHeight: 0
+  waterOverlapMargin: 0.001
