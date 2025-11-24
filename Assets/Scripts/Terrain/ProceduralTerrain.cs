@@ -4,23 +4,12 @@ using UnityEngine;
 public class ProceduralTerrain : MonoBehaviour
 {
     [Header("Terrain Settings")]
-    [Tooltip("Must be 2^n + 1 (e.g. 257, 513, 1025)")]
     public int heightmapResolution = 257;
-
-    [Tooltip("World size of this terrain tile in X")]
     public float terrainSizeX = 256f;
-
-    [Tooltip("World size of this terrain tile in Z")]
     public float terrainSizeZ = 256f;
-
-    [Tooltip("Maximum height of the terrain in world units")]
     public float maxHeight = 256f;
 
-    [Tooltip("Water level")]
-    public float waterLevel = 100f;
-
     [Header("Noise Settings")]
-    [Tooltip("Noise span per tile in noise space (not world units)")]
     public float noiseScale = 1f;
     public int octaves = 4;
     public float persistence = 0.5f;
@@ -28,29 +17,23 @@ public class ProceduralTerrain : MonoBehaviour
     public Vector2 noiseOffset;
 
     [Header("Texturing")]
-    [Tooltip("Sand texture (used below grassHeightWorld).")]
     public Texture2D sandTexture;
-
-    [Tooltip("Grass texture (used above grassHeightWorld).")]
     public Texture2D grassTexture;
-
-    [Tooltip("World-space height where grass starts.")]
     public float grassHeightWorld = 100f;
-
-    [Tooltip("World-space range over which sand blends into grass.")]
     public float blendRange = 10f;
-
-    [Tooltip("Tiling size for terrain textures.")]
     public float textureTileSize = 10f;
 
-    private Terrain _terrain;
-    private TerrainData _data;
+    [Header("Water")]
+    public Material waterMaterial;
+    public float waterHeight = 0f;
+    public float waterOverlapMargin = 0.001f;
+
+    Terrain _terrain;
+    TerrainData _data;
 
     void Awake()
     {
         _terrain = GetComponent<Terrain>();
-
-        // Clone the TerrainData so each tile has its own independent heightmap.
         _data = Instantiate(_terrain.terrainData);
         _terrain.terrainData = _data;
     }
@@ -70,11 +53,8 @@ public class ProceduralTerrain : MonoBehaviour
             _terrain.terrainData = _data;
         }
 
-        // Configure terrain data for this tile
         _data.heightmapResolution = heightmapResolution;
         _data.size = new Vector3(terrainSizeX, maxHeight, terrainSizeZ);
-
-        // (Optional) make alphamap reasonably detailed
         _data.alphamapResolution = heightmapResolution;
 
         int w = _data.heightmapResolution;
@@ -95,8 +75,8 @@ public class ProceduralTerrain : MonoBehaviour
         }
 
         _data.SetHeights(0, 0, heights);
-
         ApplyTextureSplatmap();
+        CreateOrUpdateWaterPlane();
     }
 
     float FractalNoise(float x, float y)
@@ -110,8 +90,8 @@ public class ProceduralTerrain : MonoBehaviour
         {
             float nx = x * frequency;
             float ny = y * frequency;
-
             float perlin = Mathf.PerlinNoise(nx, ny);
+
             value += perlin * amplitude;
             amplitudeSum += amplitude;
 
@@ -125,14 +105,10 @@ public class ProceduralTerrain : MonoBehaviour
     void ApplyTextureSplatmap()
     {
         if (sandTexture == null || grassTexture == null)
-        {
-            Debug.LogWarning($"{name}: Sand/Grass textures not assigned on ProceduralTerrain.");
             return;
-        }
 
         TerrainData td = _terrain.terrainData;
 
-        // Create terrain layers for sand & grass
         var sandLayer = new TerrainLayer();
         sandLayer.diffuseTexture = sandTexture;
         sandLayer.tileSize = new Vector2(textureTileSize, textureTileSize);
@@ -141,12 +117,11 @@ public class ProceduralTerrain : MonoBehaviour
         grassLayer.diffuseTexture = grassTexture;
         grassLayer.tileSize = new Vector2(textureTileSize, textureTileSize);
 
-        // Order matters: index 0 = sand, index 1 = grass
         td.terrainLayers = new TerrainLayer[] { sandLayer, grassLayer };
 
         int alphaWidth = td.alphamapWidth;
         int alphaHeight = td.alphamapHeight;
-        int layers = td.alphamapLayers; // should be 2 now
+        int layers = td.alphamapLayers;
 
         float[,,] alphas = new float[alphaHeight, alphaWidth, layers];
 
@@ -154,14 +129,10 @@ public class ProceduralTerrain : MonoBehaviour
         {
             for (int x = 0; x < alphaWidth; x++)
             {
-                // Normalized coordinates across the terrain [0,1]
                 float u = (float)x / (alphaWidth - 1);
                 float v = (float)z / (alphaHeight - 1);
-
-                // Sample world-space height from terrain
                 float heightWorld = td.GetInterpolatedHeight(u, v);
 
-                // t = 0 -> pure sand, t = 1 -> pure grass, smooth around grassHeightWorld
                 float t = Mathf.InverseLerp(
                     grassHeightWorld - blendRange,
                     grassHeightWorld + blendRange,
@@ -171,7 +142,6 @@ public class ProceduralTerrain : MonoBehaviour
                 float sandWeight = 1f - t;
                 float grassWeight = t;
 
-                // Ensure weights sum to 1
                 float sum = sandWeight + grassWeight;
                 if (sum > 0f)
                 {
@@ -179,11 +149,48 @@ public class ProceduralTerrain : MonoBehaviour
                     grassWeight /= sum;
                 }
 
-                alphas[z, x, 0] = sandWeight;  // sand layer
-                alphas[z, x, 1] = grassWeight; // grass layer
+                alphas[z, x, 0] = sandWeight;
+                alphas[z, x, 1] = grassWeight;
             }
         }
 
         td.SetAlphamaps(0, 0, alphas);
+    }
+
+    void CreateOrUpdateWaterPlane()
+    {
+        Transform existing = transform.Find("Water");
+
+        GameObject water;
+        if (existing == null)
+        {
+            water = GameObject.CreatePrimitive(PrimitiveType.Plane);
+            water.name = "Water";
+            water.transform.SetParent(transform, false);
+        }
+        else
+        {
+            water = existing.gameObject;
+        }
+
+        float worldWidthX = terrainSizeX + waterOverlapMargin * 2f;
+        float worldWidthZ = terrainSizeZ + waterOverlapMargin * 2f;
+
+        float scaleX = worldWidthX / 10f;
+        float scaleZ = worldWidthZ / 10f;
+
+        water.transform.localScale = new Vector3(scaleX, 1f, scaleZ);
+
+        Vector3 pos = water.transform.localPosition;
+        pos.x = terrainSizeX * 0.5f;
+        pos.z = terrainSizeZ * 0.5f;
+        pos.y = waterHeight - transform.position.y;
+        water.transform.localPosition = pos;
+
+        if (waterMaterial != null)
+        {
+            var renderer = water.GetComponent<MeshRenderer>();
+            renderer.sharedMaterial = waterMaterial;
+        }
     }
 }
