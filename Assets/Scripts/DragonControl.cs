@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.Netcode;
 
-public class DragonControl : MonoBehaviour
+public class DragonControl : NetworkBehaviour
 {
     [Header("Flight Mechanics")]
     [SerializeField] private float flapForce = 50f;           // Forward impulse when flapping
@@ -33,9 +34,12 @@ public class DragonControl : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     
     [Header("VR Player Follow")]
-    [SerializeField] private Transform vrPlayerTransform;      // The VR Player root object
-    [SerializeField] private Vector3 playerOffset = new Vector3(0, 1, 0);  // Offset from dragon (player sits on dragon's back)
-    [SerializeField] private bool rotatePlayerWithDragon = true;  // Whether player rotates with dragon
+    [SerializeField] private Vector3 dragonHeadOffset = new Vector3(0, 2f, 1.5f);  // Offset for host (dragon's head/eyes position)
+    [SerializeField] private Vector3 riderOffset = new Vector3(0, 1.5f, 0);        // Offset for client (rider on dragon's back)
+    [SerializeField] private bool rotatePlayerWithDragon = true;                    // Whether player rotates with dragon
+    
+    // Reference to the Player object (found at runtime)
+    private Transform playerTransform;
 
     private Rigidbody rb;
     private bool isGrounded = false;
@@ -51,7 +55,41 @@ public class DragonControl : MonoBehaviour
     private bool wingsExpanded = true;      // Default to expanded wings
     private Vector3 previousVelocity;       // Track velocity to detect turns
     private Vector3 previousForward;        // Track forward direction to detect turns
+    
+    // Network synchronization
+    private NetworkVariable<Vector3> netPosition = new NetworkVariable<Vector3>();
+    private NetworkVariable<Quaternion> netRotation = new NetworkVariable<Quaternion>();
+    private NetworkVariable<Vector3> netVelocity = new NetworkVariable<Vector3>();
+    private bool networkInitialized = false;  // Track if we've received first network update
 
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        
+        // Initialize network variables with current transform values to prevent reset to (0,0,0)
+        if (IsHost)
+        {
+            netPosition.Value = transform.position;
+            netRotation.Value = transform.rotation;
+            if (rb != null)
+            {
+                netVelocity.Value = rb.linearVelocity;
+            }
+            networkInitialized = true;  // Host is immediately initialized
+        }
+        else
+        {
+            // Clients don't simulate physics, they just receive updates
+            if (rb != null)
+            {
+                rb.isKinematic = true;
+            }
+            
+            // Subscribe to network variable changes to detect first sync
+            netPosition.OnValueChanged += OnNetPositionChanged;
+        }
+    }
+    
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -92,36 +130,26 @@ public class DragonControl : MonoBehaviour
         previousVelocity = rb.linearVelocity;
         previousForward = transform.forward;
         
-        // Find VR Player if not assigned
-        if (vrPlayerTransform == null)
+        // Find the Player object in the scene
+        GameObject playerObject = GameObject.Find("Player");
+        if (playerObject != null)
         {
-            // Try to find SteamVR Player by type
-            var player = FindFirstObjectByType<Valve.VR.InteractionSystem.Player>();
-            if (player != null)
-            {
-                vrPlayerTransform = player.transform;
-                Debug.Log("Found SteamVR Player: " + vrPlayerTransform.name);
-            }
-            else
-            {
-                // Fallback: Try to find by name
-                GameObject playerObj = GameObject.Find("Player");
-                if (playerObj != null)
-                {
-                    vrPlayerTransform = playerObj.transform;
-                    Debug.Log("Found Player object by name: " + vrPlayerTransform.name);
-                }
-                else
-                {
-                    Debug.LogWarning("VR Player not found! Please assign vrPlayerTransform in the inspector.");
-                }
-            }
+            playerTransform = playerObject.transform;
+            Debug.Log("DragonControl: Found Player object");
+        }
+        else
+        {
+            Debug.LogWarning("DragonControl: Player object not found in scene!");
         }
     }
 
     void Update()
     {
         CheckGrounded();
+        
+        // Only host controls the dragon
+        if (!IsHost)
+            return;
         
         // Detect SPACE key press in Update where wasPressedThisFrame is reliable
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
@@ -139,9 +167,21 @@ public class DragonControl : MonoBehaviour
 
     void FixedUpdate()
     {
-        ApplyRotation();
-        HandleFlapInput();  // Check flap request AFTER rotation
-        ApplyThrust();
+        if (IsHost)
+        {
+            // Host: Control the dragon
+            ApplyRotation();
+            HandleFlapInput();
+            ApplyThrust();
+            
+            // Sync to network
+            SyncToNetwork();
+        }
+        else
+        {
+            // Client: Apply networked values
+            ApplyNetworkTransform();
+        }
     }
 
     void LateUpdate()
@@ -358,23 +398,67 @@ public class DragonControl : MonoBehaviour
         Debug.DrawRay(transform.position, Vector3.down * groundCheckDistance, isGrounded ? Color.green : Color.red);
     }
 
+    private void SyncToNetwork()
+    {
+        // Update network variables (host only)
+        netPosition.Value = transform.position;
+        netRotation.Value = transform.rotation;
+        if (rb != null)
+        {
+            netVelocity.Value = rb.linearVelocity;
+        }
+    }
+    
+    private void OnNetPositionChanged(Vector3 previousValue, Vector3 newValue)
+    {
+        // Mark as initialized once we receive the first real position from host
+        if (!networkInitialized && newValue != Vector3.zero)
+        {
+            networkInitialized = true;
+            // Snap to the first received position (no interpolation on first sync)
+            transform.position = newValue;
+            transform.rotation = netRotation.Value;
+            Debug.Log($"Client: First network sync received at position {newValue}");
+        }
+    }
+    
+    private void ApplyNetworkTransform()
+    {
+        // Only apply network transform after we've received the first update from host
+        if (!networkInitialized)
+            return;
+            
+        // Smoothly interpolate to network values (client only)
+        transform.position = Vector3.Lerp(transform.position, netPosition.Value, Time.fixedDeltaTime * 10f);
+        transform.rotation = Quaternion.Slerp(transform.rotation, netRotation.Value, Time.fixedDeltaTime * 10f);
+        
+        if (rb != null && rb.isKinematic)
+        {
+            rb.linearVelocity = netVelocity.Value;
+        }
+    }
+    
     private void UpdateVRPlayerPosition()
     {
-        if (vrPlayerTransform == null)
+        if (playerTransform == null)
             return;
 
-        // Position VR player relative to the dragon in LOCAL space
+        // Determine which offset to use based on player type from GameManager
+        bool isHost = GameManager.Instance != null && GameManager.Instance.IsHost;
+        Vector3 playerOffset = isHost ? dragonHeadOffset : riderOffset;
+
+        // Position Player relative to the dragon in LOCAL space
         // The player offset is applied in the dragon's local coordinate system
         Vector3 worldOffset = transform.TransformDirection(playerOffset);
         Vector3 targetPosition = transform.position + worldOffset;
         
-        vrPlayerTransform.position = targetPosition;
+        playerTransform.position = targetPosition;
 
-        // Rotate the VR player with the dragon if enabled
+        // Rotate the Player with the dragon if enabled
         if (rotatePlayerWithDragon)
         {
             // Match the dragon's rotation exactly so the player experiences all the rolls, pitches, and yaws
-            vrPlayerTransform.rotation = transform.rotation;
+            playerTransform.rotation = transform.rotation;
         }
     }
 }
