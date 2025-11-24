@@ -149,6 +149,7 @@ MonoBehaviour:
   pastureRadius: 10
   sepRadius: 0.53
   predatorRadius: 15
+  senseRadius: 180
   matchingRadius: 4
   player: {fileID: 0}
   pastureDamping: 1.8
