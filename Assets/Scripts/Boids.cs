@@ -24,6 +24,8 @@ public class Boids : MonoBehaviour
     public float pastureRadius = 4f;     // How far we "see" other sheep
     public float sepRadius = 4f;     // How far we "see" other sheep
     public float predatorRadius = 10f;   // how far away we start caring about the player
+    public float senseRadius = 10f;   // how far away we start caring about the player
+
     public float matchingRadius = 10f;   // how far away we start caring about the player
 
     public Transform player;             // set in Awake or inspector
@@ -33,12 +35,12 @@ public class Boids : MonoBehaviour
     Dictionary<string, bool> status = new Dictionary<string, bool>()
     {
         { "regrouping", false },
-        { "pasture", false },
+        { "sensing", false },
         { "hunted", false }
     };
     float damping;
     public float pastureDamping = 0.5f;
-    public int pastureSize = 8;
+    public int pastureSize = 6;
     public float normalDamping = 0.12f;
 
 
@@ -108,7 +110,7 @@ public class Boids : MonoBehaviour
         if (transform.parent != null)
         {
             regroupPos = transform.parent.position;
-            Debug.Log(regroupPos);
+            //Debug.Log(regroupPos);
         }
     }
 
@@ -135,6 +137,14 @@ public class Boids : MonoBehaviour
             predatorForce = Vector3.zero;
             status["hunted"]=false;
         }
+        if (dstToPredator.sqrMagnitude <= senseRadius * senseRadius)// out of range-ignore (!) should prob not be squared???
+        {
+            status["sensing"]=true;
+        }
+        else
+        {
+            status["sensing"]=false;
+        }
     }
 
     void calcBoidForces()
@@ -149,106 +159,109 @@ public class Boids : MonoBehaviour
         matchingForce=Vector3.zero;
         matchingVel = Vector3.zero;
         
-        //see if inside cohesionRadius (biggest radius)
-        //NOTICE ITS THE COHESIONRADIUS DECIDING HOW MUCH THEY SEE CURRENTLY. may need changing
-        int found = SenseNeighborsNonAlloc(transform.position, cohesionRadius, hits, boidMask);
-        int cohesionCount = 0;
-        int matchingCount = 0;
-        int pastureCount = 0;
-        
-        if(found==0){Debug.Log(found);}
-
-        for (int i = 0; i < found; i++)
+        //only calc boid forces
+        if(status["sensing"]==true)
         {
-            var col = hits[i];                                      // Candidate collider (OTHER SHEEP)
-            if (!col) continue;                                     // Safety-ignore (no found)
-            var otherRb = col.attachedRigidbody;                    // Prefer Rigidbody to identify self
-            if (otherRb == rb) continue;                            // if self-ignore
-
-            Vector3 dstToOther = col.transform.position - transform.position;
-            dstToOther.y = 0f;
-            float sqrDst = dstToOther.sqrMagnitude;
-
-            // Accumulate cohesion force
-            //if ((sqrDst <= cohesionRadius * cohesionRadius) && (sqrDst >= pastureRadius * pastureRadius))    // out of range-ignore
-            if (status["hunted"]==true && (sqrDst <= cohesionRadius * cohesionRadius))
-            {   
-                cohesionCount++; //found a neighbour!
-                cohesionCenter += col.transform.position;                   
-            }
+            //see if inside cohesionRadius (biggest radius)
+            //NOTICE ITS THE COHESIONRADIUS DECIDING HOW MUCH THEY SEE CURRENTLY. may need changing
+            int found = SenseNeighborsNonAlloc(transform.position, cohesionRadius, hits, boidMask);
+            int cohesionCount = 0;
+            int matchingCount = 0;
+            int pastureCount = 0;
             
-            // Accumulate sep force
-            if (sqrDst <= sepRadius * sepRadius)// out of range-ignore (!) should prob not be squared???
+            //if(found==0){Debug.Log(found);}
+
+            for (int i = 0; i < found; i++)
             {
-                Vector3 sepAdd = (-dstToOther) * ((sepRadius*sepRadius) / Mathf.Max(dstToOther.sqrMagnitude, 0.1f));//neg because the other way. Falloff-Apply greater force if very close
-                //sepAdd = Vector3.ClampMagnitude(sepAdd, sepMax); // clamp the total separation force (since we dont normalize it)
-                sepForce += sepAdd;
-            }
-            // Accumulate matching force
-            if (status["hunted"] == true && (sqrDst <= matchingRadius * matchingRadius))
-            {
-            
-                matchingCount++; //found a neighbour!
-                matchingVel += otherRb.linearVelocity;
-            
-            }
-            
-            // Accumulate Pasture herd staus
-            if (status["hunted"] == false && (sqrDst <= pastureRadius * pastureRadius))
-            {
-                pastureCount+=1;
-            }
-            
-            
+                var col = hits[i];                                      // Candidate collider (OTHER SHEEP)
+                if (!col) continue;                                     // Safety-ignore (no found)
+                var otherRb = col.attachedRigidbody;                    // Prefer Rigidbody to identify self
+                if (otherRb == rb) continue;                            // if self-ignore
 
-        }
-        // BOID FORCES calcs
-        if (found < pastureSize/2) //dont apply if already found a subgroups (half size of pasture group)
-        {
-            Vector3 toRegroup = regroupPos - transform.position;
-            toRegroup.y = 0f;
+                Vector3 dstToOther = col.transform.position - transform.position;
+                dstToOther.y = 0f;
+                float sqrDst = dstToOther.sqrMagnitude;
 
-            // When close to regroupPos, start pasturing
-            if (toRegroup.sqrMagnitude > pastureRadius * pastureRadius)
-            {
-                regroupForce = toRegroup.normalized * regroupStr;
+                // Accumulate cohesion force
+                //if ((sqrDst <= cohesionRadius * cohesionRadius) && (sqrDst >= pastureRadius * pastureRadius))    // out of range-ignore
+                if (status["hunted"]==true && (sqrDst <= cohesionRadius * cohesionRadius))
+                {   
+                    cohesionCount++; //found a neighbour!
+                    cohesionCenter += col.transform.position;                   
+                }
+                
+                // Accumulate sep force
+                if (sqrDst <= sepRadius * sepRadius)// out of range-ignore (!) should prob not be squared???
+                {
+                    Vector3 sepAdd = (-dstToOther) * ((sepRadius*sepRadius) / Mathf.Max(dstToOther.sqrMagnitude, 0.1f));//neg because the other way. Falloff-Apply greater force if very close
+                    //sepAdd = Vector3.ClampMagnitude(sepAdd, sepMax); // clamp the total separation force (since we dont normalize it)
+                    sepForce += sepAdd;
+                }
+                // Accumulate matching force
+                if (status["hunted"] == true && (sqrDst <= matchingRadius * matchingRadius))
+                {
+                
+                    matchingCount++; //found a neighbour!
+                    matchingVel += otherRb.linearVelocity;
+                
+                }
+                
+                // Accumulate Pasture herd staus
+                if (status["hunted"] == false && (sqrDst <= pastureRadius * pastureRadius))
+                {
+                    pastureCount+=1;
+                }
+                
+                
+
             }
-        }
-        else if (cohesionCount > 0)
-        {
-            regroupForce = Vector3.zero;
-            cohesionCenter = cohesionCenter / cohesionCount;
-            Vector3 centerDir = cohesionCenter - transform.position;
-            centerDir.y = 0f;
-            cohesionForce = centerDir.normalized;   // direction only; accel cap handles magnitude
-            cohesionForce *= cohesionStr;    
-        }
-        if ((matchingCount > 0) && (status["hunted"]==true))
-        {
-            matchingVel = matchingVel / matchingCount;
-            matchingVel = matchingVel - rb.linearVelocity;
-            matchingVel.y = 0f;
-            matchingForce = matchingVel.normalized;   // lets not normalize because we want them to affecteach others vel: Large velocity differences = huge forces, small differences = tiny forces.
-            matchingForce *= matchingStr;
-        }
-        else
-        {
-            matchingForce=Vector3.zero;
-        }
-        if ((pastureCount > pastureSize) && (status["hunted"]==false)) //At least pastureSize not hunted close for pasture to take place
-        {
-            damping = pastureDamping;
-        }
-        else
-        {
-            damping = normalDamping;
-        }
-        
-        
-        sepForce = Vector3.ClampMagnitude(sepForce, sepMax); // clamp the total separation force (since we dont normalize it)
-        sepForce *= sepStr;
-        
+            // BOID FORCES calcs
+            if (found < pastureSize/2) //dont apply if already found a subgroups (half size of pasture group)
+            {
+                Vector3 toRegroup = regroupPos - transform.position;
+                toRegroup.y = 0f;
 
+                // When close to regroupPos, start pasturing
+                if (toRegroup.sqrMagnitude > pastureRadius * pastureRadius)
+                {
+                    regroupForce = toRegroup.normalized * regroupStr;
+                }
+            }
+            else if (cohesionCount > 0)
+            {
+                regroupForce = Vector3.zero;
+                cohesionCenter = cohesionCenter / cohesionCount;
+                Vector3 centerDir = cohesionCenter - transform.position;
+                centerDir.y = 0f;
+                cohesionForce = centerDir.normalized;   // direction only; accel cap handles magnitude
+                cohesionForce *= cohesionStr;    
+            }
+            if ((matchingCount > 0) && (status["hunted"]==true))
+            {
+                matchingVel = matchingVel / matchingCount;
+                matchingVel = matchingVel - rb.linearVelocity;
+                matchingVel.y = 0f;
+                matchingForce = matchingVel.normalized;   // lets not normalize because we want them to affecteach others vel: Large velocity differences = huge forces, small differences = tiny forces.
+                matchingForce *= matchingStr;
+            }
+            else
+            {
+                matchingForce=Vector3.zero;
+            }
+            if ((pastureCount > pastureSize) && (status["hunted"]==false)) //At least pastureSize not hunted close for pasture to take place
+            {
+                damping = pastureDamping;
+            }
+            else
+            {
+                damping = normalDamping;
+            }
+            
+            
+            sepForce = Vector3.ClampMagnitude(sepForce, sepMax); // clamp the total separation force (since we dont normalize it)
+            sepForce *= sepStr;
+        
+        }
 
         
     }
@@ -268,7 +281,7 @@ public class Boids : MonoBehaviour
         //---------------------------------------------------------------------------------
         //---------------------------UPDATE VEL VIA BOID FORCES ---------------------------------------------
         //------------------------------------------------------------------------------------------------------------
-        desiredVel = desiredVel  + predatorForce +  matchingForce + sepForce  + regroupForce + cohesionForce;
+        desiredVel = desiredVel  + predatorForce +regroupForce + matchingForce + sepForce  + cohesionForce;
         //speed limit
         if (desiredVel.sqrMagnitude > maxSpeed*maxSpeed)
         {
@@ -308,11 +321,26 @@ public class Boids : MonoBehaviour
     // Returns how many valid entries were written.
     int SenseNeighborsNonAlloc(Vector3 center, float radius, Collider[] buffer, LayerMask mask)
     {
-        // QueryTriggerInteraction.Collide lets us pick up triggers if agents are triggers
-        // This call writes up to buffer.Length colliders into buffer=hits(!!!) and returns how many
-        int found = Physics.OverlapSphereNonAlloc(center, radius, buffer, mask, QueryTriggerInteraction.Collide);
-
-        // If found > buffer.Length, results are truncated. You can increase maxNeighbors if needed.
-        return Mathf.Min(found, buffer.Length); //can max be buffer-length
+        // Only check siblings (other sheep in the same herd)
+        int found = 0;
+        if (transform.parent == null)
+            return 0;
+        foreach (Transform child in transform.parent)
+        {
+            if (child == transform) continue; // skip self
+            Collider col = child.GetComponent<Collider>();
+            if (col == null) continue;
+            // Optionally check layer mask
+            if (((1 << col.gameObject.layer) & mask) == 0) continue;
+            if ((col.transform.position - center).sqrMagnitude <= radius * radius)
+            {
+                if (found < buffer.Length)
+                {
+                    buffer[found] = col;
+                    found++;
+                }
+            }
+        }
+        return found;
     }
 }
