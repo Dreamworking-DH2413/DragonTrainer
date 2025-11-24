@@ -29,7 +29,7 @@ public class Boids : MonoBehaviour
     public float matchingRadius = 10f;   // how far away we start caring about the player
 
     public Transform player;             // set in Awake or inspector
-
+    public bool printing = false;
 
     //BOIDS FORCES STUFF
     Dictionary<string, bool> status = new Dictionary<string, bool>()
@@ -140,6 +140,7 @@ public class Boids : MonoBehaviour
         if (dstToPredator.sqrMagnitude <= senseRadius * senseRadius)// out of range-ignore (!) should prob not be squared???
         {
             status["sensing"]=true;
+            
         }
         else
         {

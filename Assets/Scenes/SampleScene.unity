@@ -4000,6 +4000,10 @@ PrefabInstance:
       value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
+      propertyPath: printing
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639526715377912509, guid: 0d039c4044774294b998fbd0e44b19b0, type: 3}
       propertyPath: huntedAcc
       value: 40
       objectReference: {fileID: 0}
