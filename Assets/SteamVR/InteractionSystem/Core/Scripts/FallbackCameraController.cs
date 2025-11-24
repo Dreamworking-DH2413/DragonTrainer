@@ -14,7 +14,7 @@ namespace Valve.VR.InteractionSystem
 	public class FallbackCameraController : MonoBehaviour
 	{
 		public float speed = 4.0f;
-		public float shiftSpeed = 16.0f;
+		public float shiftSpeed = 80.0f;
 		public bool showInstructions = true;
 
 		private Vector3 startEulerAngles;
