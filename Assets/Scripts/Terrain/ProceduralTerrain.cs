@@ -30,12 +30,21 @@ public class ProceduralTerrain : MonoBehaviour
 
     Terrain _terrain;
     TerrainData _data;
+    
+    [Header("Sheep and Ring spawn rate")]
+    public int oneInXSheep = 15; //1 in X chance to spawn a herd on this tile
+    public GameObject Herd; //set in inspector
 
     void Awake()
     {
         _terrain = GetComponent<Terrain>();
+        // Clone the TerrainData so each tile has its own independent heightmap.
         _data = Instantiate(_terrain.terrainData);
         _terrain.terrainData = _data;
+        //make collider follow the data of the terrain
+        var terrainCollider = GetComponent<TerrainCollider>();
+        if (terrainCollider != null)
+            terrainCollider.terrainData = _data;
     }
 
     void Start()
@@ -77,6 +86,15 @@ public class ProceduralTerrain : MonoBehaviour
         _data.SetHeights(0, 0, heights);
         ApplyTextureSplatmap();
         CreateOrUpdateWaterPlane();
+
+	//Spawn sheep herd with 1 in X chance
+        int rng = Random.Range(0,oneInXSheep+1);
+        if(rng>=oneInXSheep-1) //1 in X chance to spawn a herd at all
+        {
+            Debug.Log(rng);
+            //Herd object will be child of this terrain tile/thus be destroyed with the tile
+            Instantiate(Herd, this.transform.position, Quaternion.identity, this.transform);        
+        }
     }
 
     float FractalNoise(float x, float y)
