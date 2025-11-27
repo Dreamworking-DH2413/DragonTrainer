@@ -8,6 +8,9 @@ public class Ring : MonoBehaviour
     private Renderer ringRenderer;
     private MaterialPropertyBlock propBlock;
     private bool isActive = false;
+    private bool isStartRing = false;
+    private bool isLastRing = false;
+    private bool hasBeenPassed = false;
     
     void Awake()
     {
@@ -34,13 +37,18 @@ public class Ring : MonoBehaviour
         }
     }
     
-    public void Initialize(RingSystemManager mgr, int index)
+    public void Initialize(RingSystemManager mgr, int index, bool startRing = false, bool lastRing = false)
     {
         manager = mgr;
         ringIndex = index;
+        isStartRing = startRing;
+        isLastRing = lastRing;
         
-        // Set initial inactive state
-        SetActive(false);
+        // Set initial inactive state (unless it's the start ring)
+        if (!isStartRing)
+        {
+            SetActive(false);
+        }
     }
     
     public void SetActive(bool active)
@@ -53,14 +61,23 @@ public class Ring : MonoBehaviour
     {
         if (ringRenderer == null || manager == null) return;
         
-        Color targetColor = isActive ? manager.GetActiveColor() : manager.GetInactiveColor();
+        Color targetColor;
+        
+        if (isStartRing)
+        {
+            targetColor = manager.GetStartRingColor();
+        }
+        else
+        {
+            targetColor = isActive ? manager.GetActiveColor() : manager.GetInactiveColor();
+        }
         
         ringRenderer.GetPropertyBlock(propBlock);
         propBlock.SetColor("_Color", targetColor);
         propBlock.SetColor("_BaseColor", targetColor); // For URP
         
         // Add emission for glowing effect
-        if (isActive)
+        if (isActive || isStartRing)
         {
             Color emissionColor = targetColor * manager.GetEmissionIntensity();
             propBlock.SetColor("_EmissionColor", emissionColor);
@@ -71,24 +88,38 @@ public class Ring : MonoBehaviour
         }
         
         ringRenderer.SetPropertyBlock(propBlock);
-
     }
     
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Ring triggered by tag: " + other.tag);
-        // Check if the dragon passed through
-        if (other.CompareTag("Player") && isActive)
+        if (hasBeenPassed) return; // Prevent double-counting
+        
+        if (other.CompareTag("Player"))
         {
-            manager.OnRingPassed(ringIndex);
-            // Optional: Add particle effect, sound, etc.
+            hasBeenPassed = true;
+            
+            if (isStartRing)
+            {
+                Debug.Log("Start ring passed! Course beginning...");
+                manager.OnStartRingPassed();
+            }
+            else if (isActive)
+            {
+                Debug.Log($"Active ring {ringIndex} passed through!");
+                manager.OnRingPassed(ringIndex, isLastRing);
+            }
+            else
+            {
+                Debug.Log($"Inactive ring {ringIndex} hit - doesn't count as the active ring");
+            }
+                Destroy(gameObject);
         }
     }
     
     // Optional: Add pulsing animation for active ring
     void Update()
     {
-        if (isActive)
+        if (isActive || isStartRing)
         {
             // Pulse effect
             float pulse = Mathf.PingPong(Time.time * 2f, 1f);
