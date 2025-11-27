@@ -87,7 +87,7 @@ public class ProceduralTerrain : MonoBehaviour
         ApplyTextureSplatmap();
         CreateOrUpdateWaterPlane();
 
-	//Spawn sheep herd with 1 in X chance
+	    //Spawn sheep herd with 1 in X chance
         int rng = Random.Range(0,oneInXSheep+1);
         if(rng>=oneInXSheep-1) //1 in X chance to spawn a herd at all
         {

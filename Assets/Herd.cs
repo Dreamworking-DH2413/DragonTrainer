@@ -19,7 +19,7 @@ public class Herd : MonoBehaviour
     //spawn sheep in random positions within spawningRadius
         for (int i = 0; i < sheepAmount; i++)
         { //y should be a bit above ground level dropping the sheep down to avoid spawning inside the terrain
-            Vector3 pos = new Vector3(Random.Range(-spawningRadius, spawningRadius), 650.0f, Random.Range(-spawningRadius, spawningRadius));
+            Vector3 pos = new Vector3(Random.Range(-spawningRadius, spawningRadius), 250.0f, Random.Range(-spawningRadius, spawningRadius));
             //sheep will be child of this herd object/thus be destroyed with the herd when tile is destroyed
             Instantiate(sheepPrefab, this.transform.position + pos, Quaternion.identity, this.transform);
         }
