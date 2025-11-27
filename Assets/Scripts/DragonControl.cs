@@ -38,6 +38,10 @@ public class DragonControl : NetworkBehaviour
     [SerializeField] private Vector3 riderOffset = new Vector3(0, 1.5f, 0);        // Offset for client (rider on dragon's back)
     [SerializeField] private bool rotatePlayerWithDragon = true;                    // Whether player rotates with dragon
     
+
+    [Header("Debug")]
+    [SerializeField] private bool freeze = false;                     // Freeze dragon movement for debugging
+
     // Reference to the Player object (found at runtime)
     private Transform playerTransform;
 
@@ -149,11 +153,15 @@ public class DragonControl : NetworkBehaviour
         
         // Only host controls the dragon
         if (!IsHost)
+        {
+            Debug.Log("[DragonControl] Update skipped - not server");
             return;
-        
+        }
+
         // Detect SPACE key press in Update where wasPressedThisFrame is reliable
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
+            Debug.Log("[DragonControl] SPACE key pressed - flap requested.");
             flapRequested = true;
         }
         
@@ -167,6 +175,28 @@ public class DragonControl : NetworkBehaviour
 
     void FixedUpdate()
     {
+        if (freeze)
+        {
+            // Freeze dragon physics and control, but allow manual inspector manipulation
+            if (!rb.isKinematic)
+            {
+                rb.isKinematic = true; // Make kinematic so Rigidbody doesn't override transform
+            }
+            
+            if (IsHost)
+            {
+                // Still sync transform changes to network (for inspector edits)
+                SyncToNetwork();
+            }
+            return;
+        }
+        
+        // Ensure Rigidbody is not kinematic when not frozen (only for host)
+        if (IsHost && rb.isKinematic)
+        {
+            rb.isKinematic = false;
+        }
+
         if (IsHost)
         {
             // Host: Control the dragon
@@ -460,5 +490,10 @@ public class DragonControl : NetworkBehaviour
             // Match the dragon's rotation exactly so the player experiences all the rolls, pitches, and yaws
             playerTransform.rotation = transform.rotation;
         }
+    }
+
+    public void RequestFlap()
+    {
+        flapRequested = true;
     }
 }

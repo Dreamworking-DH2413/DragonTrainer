@@ -1,8 +1,10 @@
+using System;
 using UnityEngine;
 
 public class VRRig : MonoBehaviour
 {
     public Transform head;
+    public Transform player;
     public Transform leftHand;
     public Transform rightHand;
 
@@ -10,19 +12,21 @@ public class VRRig : MonoBehaviour
     public Transform tracker2;
 
     public Transform dragon;
-    public Transform leftWingRoot;
-    public Transform rightWingRoot;
+    public Transform leftWingTarget;
+    public Transform rightWingTarget;
 
     public Transform leftOuterArm;
     public Transform rightOuterArm;
 
-    public float wingSpanScale = 1.0f;
+    public float wingSpanCompensation = 5.0f;
+    public float headToBodyCompensation = 3.0f;
+    public float wingMovementMultiplier = 3.0f;
     public float followSpeed = 20f;
 
     private Vector3 startLeftOuterWingLocal;
     private Vector3 startRightOuterWingLocal;
-    private Vector3 startLeftTrackerPosition;
-    private Vector3 startRightTrackerPosition;
+    private Vector3 startLeftTrackerLocalPosition;
+    private Vector3 startRightTrackerLocalPosition;
 
     void Start()
     {
@@ -30,8 +34,8 @@ public class VRRig : MonoBehaviour
         Vector3 dragonRight = dragon.right;
         Vector3 dragonUp = dragon.up;
 
-        Vector3 toLeftWing = leftWingRoot.position - leftWingRoot.position;
-        Vector3 toRightWing = rightWingRoot.position - rightWingRoot.position;
+        Vector3 toLeftWing = leftWingTarget.position - leftWingTarget.position;
+        Vector3 toRightWing = rightWingTarget.position - rightWingTarget.position;
 
         // Project each offset onto the dragon's local axes
         startLeftOuterWingLocal = new Vector3(
@@ -48,35 +52,72 @@ public class VRRig : MonoBehaviour
 
         if (tracker1)
         {
-            startLeftTrackerPosition = tracker1.position;
+            startLeftTrackerLocalPosition = transform.InverseTransformPoint(tracker1.position);
         }
 
         if (tracker2)
         {
-            startRightTrackerPosition = tracker2.position;
+            startRightTrackerLocalPosition = transform.InverseTransformPoint(tracker2.position);
         }
     }
 
     void Update()
     {
-        if (tracker1 && leftOuterArm)
+        if (tracker1 && leftWingTarget && dragon)
         {
-            leftOuterArm.position = tracker1.position * wingSpanScale;
+            // Convert tracker world position to dragon's local space
+            Vector3 trackerLocalPos = dragon.InverseTransformPoint(tracker1.position);
+            
+            // Apply offsets in local space with multiplied x-axis movement
+            Vector3 targetLocalPos = new Vector3(
+                (trackerLocalPos.x * wingMovementMultiplier) - wingSpanCompensation,
+                trackerLocalPos.y * 10,
+                trackerLocalPos.z - headToBodyCompensation
+            );
+            
+            // Convert back to world space and apply
+            leftWingTarget.position = dragon.TransformPoint(targetLocalPos);
         }
 
-        if (tracker2 && rightOuterArm && rightWingRoot && dragon)
+        if (tracker2 && rightWingTarget && dragon)
         {
-            Vector3 tracker2Relative = (tracker2.position - startRightTrackerPosition) * wingSpanScale;
+            // Convert tracker world position to dragon's local space
+            Vector3 trackerLocalPos = dragon.InverseTransformPoint(tracker2.position);
+            
+            // Apply offsets in local space with multiplied x-axis movement
+            Vector3 targetLocalPos = new Vector3(
+                (trackerLocalPos.x * wingMovementMultiplier) + wingSpanCompensation,
+                trackerLocalPos.y * 10,
+                trackerLocalPos.z - headToBodyCompensation
+            );
+            
+            // Convert back to world space and apply
+            rightWingTarget.position = dragon.TransformPoint(targetLocalPos);
+        }
+    }
 
-            Vector3 dragonToWing = dragon.right * tracker2Relative.x +
-                dragon.up * tracker2Relative.y + 
-                dragon.forward * tracker2Relative.z;
-
-            rightOuterArm.position = rightWingRoot.position +
-                dragon.right * startRightOuterWingLocal.x + 
-                dragon.up * startRightOuterWingLocal.y +
-                dragon.forward * startRightOuterWingLocal.z +
-                dragonToWing;
+    private void FixedUpdate()
+    {
+        // calculate the velocity of the trackers relative to this VRRig object
+        if (tracker1 && tracker2)
+        {
+            // Convert current positions to VRRig's local space
+            Vector3 leftTrackerLocalPos = transform.InverseTransformPoint(tracker1.position);
+            Vector3 leftTrackerVelocity = (leftTrackerLocalPos - startLeftTrackerLocalPosition) / Time.fixedDeltaTime;
+            startLeftTrackerLocalPosition = leftTrackerLocalPos;
+            
+            Vector3 rightTrackerLocalPos = transform.InverseTransformPoint(tracker2.position);
+            Vector3 rightTrackerVelocity = (rightTrackerLocalPos - startRightTrackerLocalPosition) / Time.fixedDeltaTime;
+            startRightTrackerLocalPosition = rightTrackerLocalPos;
+            
+            // if the Y velocity is greater than a threshold, we call a function to trigger the wing flap and move the dragon up
+            if (leftTrackerVelocity.y < -1.0f || rightTrackerVelocity.y < -1.0f)
+            {
+                Debug.Log("[VRRig] Left tracker velocity: " + leftTrackerVelocity.ToString("F3"));
+                Debug.Log("[VRRig] Tracker flap detected.");
+                // Call function to trigger left wing flap
+                dragon.GetComponent<DragonControl>().RequestFlap();
+            }
         }
     }
 }
