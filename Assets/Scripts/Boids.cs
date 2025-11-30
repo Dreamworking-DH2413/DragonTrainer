@@ -271,9 +271,9 @@ public class Boids : MonoBehaviour
     {
         
         // --- Sense and reCalc forces (throttled) ---
-        if (Time.fixedTime >= nextSenseTime)
-        {
-        nextSenseTime += senseInterval; //book next sense session
+        //if (Time.fixedTime >= nextSenseTime)
+        //{
+        //nextSenseTime += senseInterval; //book next sense session
         calcBoidForces();
         
         //}
@@ -315,7 +315,7 @@ public class Boids : MonoBehaviour
         
        
         
-        }
+        //}
     }
     
     // Uses Unity’s physics broadphase to collect nearby colliders into a reused buffer.

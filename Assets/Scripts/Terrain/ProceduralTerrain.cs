@@ -37,8 +37,14 @@ public class ProceduralTerrain : MonoBehaviour
     void Awake()
     {
         _terrain = GetComponent<Terrain>();
+
+        // Clone the TerrainData so each tile has its own independent heightmap.
         _data = Instantiate(_terrain.terrainData);
         _terrain.terrainData = _data;
+        //make collider follow the data of the terrain
+        var terrainCollider = GetComponent<TerrainCollider>();
+        if (terrainCollider != null)
+            terrainCollider.terrainData = _data;
     }
 
     void Start()

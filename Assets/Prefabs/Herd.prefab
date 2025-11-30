@@ -46,5 +46,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sheepPrefab: {fileID: 5835491702330930414, guid: 645bb63fdb249fc49b80a81a02503361, type: 3}
   maxSheepAmount: 10
+  minSheepAmount: 12
   spawningRadius: 5
-  oneInXChanceToSpawn: 10
+  player: {fileID: 0}

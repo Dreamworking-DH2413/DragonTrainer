@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Herd : MonoBehaviour
 {
-    public Boids sheepPrefab;   // assign prefab that has Boids on root
+    public GameObject sheepPrefab;   // assign prefab that has Boids on root
     public int maxSheepAmount = 20;
     public int minSheepAmount = 12; //must match pasture size in Boids.cs
     private int sheepAmount;
@@ -27,8 +27,9 @@ public class Herd : MonoBehaviour
         { //y should be a bit above ground level dropping the sheep down to avoid spawning inside the terrain
             Vector3 pos = new Vector3(Random.Range(-spawningRadius, spawningRadius), 650.0f, Random.Range(-spawningRadius, spawningRadius));
             //sheep will be child of this herd object/thus be destroyed with the herd when tile is destroyed
-            Boids newSheep = Instantiate(sheepPrefab, this.transform.position + pos, Quaternion.identity, this.transform);
-            newSheep.player = player; //pass player reference to sheep
+            var go = Instantiate(sheepPrefab, this.transform.position + pos, Quaternion.identity, this.transform);
+            Boids boid = go.GetComponent<Boids>();
+            boid.player = player;   //pass player reference to sheep
         }
         
         //Debug.Log("spawned Sheep Herd of size: " + sheepAmount);
