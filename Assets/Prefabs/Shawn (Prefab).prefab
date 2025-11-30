@@ -144,7 +144,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   maxNeighbors: 64
-  senseHz: 6.5
+  senseHz: 5
   cohesionRadius: 17
   pastureRadius: 10
   sepRadius: 0.53
