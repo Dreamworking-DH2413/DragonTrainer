@@ -34,7 +34,8 @@ public class Boids : MonoBehaviour
     //BOIDS FORCES STUFF
     Dictionary<string, bool> status = new Dictionary<string, bool>()
     {
-        { "regrouping", false },
+        {"beach", false },
+        { "water", false },
         { "sensing", false },
         { "hunted", false }
     };
@@ -50,6 +51,7 @@ public class Boids : MonoBehaviour
     public float sepMax = 3.5f;
     public float predatorStr = 1.5f;     // strength of the avoidance
     public float matchingStr = 0.8f;      // str of mathching vel of surrounding fleeing cheep
+    public float waterStr = 700.0f;
 
 
 
@@ -62,6 +64,7 @@ public class Boids : MonoBehaviour
     private Vector3 sepForce;
     private Vector3 predatorForce;
     private Vector3 matchingForce;
+    //private Vector3 waterForce;
     
 
 
@@ -98,13 +101,7 @@ public class Boids : MonoBehaviour
 
         nextSenseTime = Time.fixedTime + Random.value * senseInterval;        // Stagger first sensing so they dont all check simultaniously//Mayb can use 0 inst of Time.time (?)
 
-        //For predator position (player/dragon)
-        // Auto-find player if not assigned in Inspector
-        if (player == null)
-        {
-            GameObject p = GameObject.Find("FallbackObjects"); // Use Find by name instead
-            if (p != null) player = p.transform;
-        }
+        
 
         //lost sheep regroup pos
         if (transform.parent != null)
@@ -112,6 +109,22 @@ public class Boids : MonoBehaviour
             regroupPos = transform.parent.position;
             //Debug.Log(regroupPos);
         }
+        else{
+            Debug.Log("NO HERD PARENT");
+        }
+    }
+
+    //runs after herd has passed all references (player will be set by herd correctly this way)
+    void start()
+    {
+     //For predator position (player/dragon)
+        // Auto-find player if not assigned in Inspector or passed by herd parent
+        if (player == null)
+        {
+            Debug.Log("FAIL!!! finding player");
+            GameObject p = GameObject.Find("FallbackObjects"); // Use Find by name instead
+            if (p != null) player = p.transform;
+        }   
     }
 
     void Update()
@@ -158,6 +171,7 @@ public class Boids : MonoBehaviour
         sepForce = Vector3.zero;
         matchingForce=Vector3.zero;
         matchingVel = Vector3.zero;
+
         
         //only calc boid forces
         if(status["sensing"]==true)
@@ -216,7 +230,7 @@ public class Boids : MonoBehaviour
 
             }
             // BOID FORCES calcs
-            if (found < pastureSize/2) //dont apply if already found a subgroups (half size of pasture group)
+            if (found < pastureSize/2) //if sheep alone calc regoupForce. Dont apply if already found a subgroups (half size of pasture group)
             {
                 Vector3 toRegroup = regroupPos - transform.position;
                 toRegroup.y = 0f;
@@ -248,7 +262,7 @@ public class Boids : MonoBehaviour
             {
                 matchingForce=Vector3.zero;
             }
-            if ((pastureCount > pastureSize) && (status["hunted"]==false)) //At least pastureSize not hunted close for pasture to take place
+            if ((pastureCount > pastureSize) && (status["hunted"]==false) && (status["beach"]==false)) //At least pastureSize not hunted and not beach close sheep for pasture to take place
             {
                 damping = pastureDamping;
             }
@@ -260,10 +274,49 @@ public class Boids : MonoBehaviour
             
             sepForce = Vector3.ClampMagnitude(sepForce, sepMax); // clamp the total separation force (since we dont normalize it)
             sepForce *= sepStr;
+
+            if (status["water"]==true) //re add regrouping force even if in a (sub/) group if in water (set to 0 otherwise)
+            {
+                Vector3 toRegroup = regroupPos - transform.position;
+                toRegroup.y = 0f;
+
+                // When close to regroupPos, start pasturing
+                if (toRegroup.sqrMagnitude > (pastureRadius * pastureRadius)/2) //smaller radius because if spawn is close to water
+                {
+                    regroupForce = toRegroup.normalized * regroupStr;
+                }
+            }
         
         }
 
         
+    }
+
+    void checkWater()
+    {
+        //simple water avoidance at y=0 plane by changing direction of vel
+        if (transform.position.y < 101.0f) //water level + some margin //may need +-100
+        {
+            //Debug.Log("Afraid of water!");
+            status["water"] = true;
+            //Debug.Log(transform.position.y);
+            
+        }
+        else if
+        (transform.position.y < 105.0f) //close to water level + some margin //may need +-100
+        {
+            //Debug.Log("B E A C H vibes!");
+            status["water"] = false;
+
+            status["beach"] = true;
+            //Debug.Log(transform.position.y);
+            
+        }else
+        {
+            status["water"] = false;
+            status["beach"] = false;
+
+        }
     }
 
     //==============================================
@@ -278,10 +331,22 @@ public class Boids : MonoBehaviour
         
         //}
         calcPredatorForce(); //we afford do every update because its only 1 item we look for
+        checkWater();
         //---------------------------------------------------------------------------------
         //---------------------------UPDATE VEL VIA BOID FORCES ---------------------------------------------
         //------------------------------------------------------------------------------------------------------------
-        desiredVel = desiredVel  + predatorForce +regroupForce + matchingForce + sepForce  + cohesionForce;
+        if(status["water"]==false){
+            desiredVel = desiredVel  + predatorForce +regroupForce + matchingForce + sepForce  + cohesionForce;
+
+        }
+        else
+        {
+            desiredVel =  desiredVel + regroupForce*waterStr; //go back towards regroup pos if in water
+            if (desiredVel.sqrMagnitude<1.0f) desiredVel= desiredVel.normalized; //small nudge to avoid getting stuck
+
+        }
+        
+        
         //speed limit
         if (desiredVel.sqrMagnitude > maxSpeed*maxSpeed)
         {
@@ -294,7 +359,7 @@ public class Boids : MonoBehaviour
         Vector3 currVel = rb.linearVelocity; // includes gravity Y
         Vector3 newVelXZ = new Vector3(currVel.x, 0f, currVel.z);
         float maxAcc=0f;
-        if (status["hunted"] == true)  maxAcc=huntedAcc;
+        if (status["hunted"] == true || status["water"] == true)  maxAcc=huntedAcc;
         else{maxAcc=restAcc;}
 
         newVelXZ = Vector3.MoveTowards(newVelXZ, desiredVel, maxAcc * Time.fixedDeltaTime);
@@ -305,6 +370,7 @@ public class Boids : MonoBehaviour
         {
 
             rb.linearVelocity = new Vector3(newVelXZ.x, currVel.y, newVelXZ.z);
+            
             /*
             Quaternion want = Quaternion.LookRotation(newVelXZ, Vector3.up);
             Quaternion next = Quaternion.RotateTowards(rb.rotation, want, turnSpeed * Time.fixedDeltaTime);
