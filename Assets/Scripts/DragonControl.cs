@@ -191,6 +191,9 @@ public class DragonControl : NetworkBehaviour
             wingsExpanded = !wingsExpanded;
             Debug.Log("Wings " + (wingsExpanded ? "EXPANDED" : "RETRACTED"));
         }
+
+        UpdateVRPlayerPosition();
+
     }
 
     void FixedUpdate()
@@ -220,23 +223,25 @@ public class DragonControl : NetworkBehaviour
         if (IsHost)
         {
             // Host: Control the dragon
+            /*
             ApplyRotation();
             HandleFlapInput();
             ApplyThrust();
+            */
             
             // Sync to network
-            SyncToNetwork();
+            //SyncToNetwork();
         }
         else
         {
             // Client: Apply networked values
-            ApplyNetworkTransform();
+            //ApplyNetworkTransform();
         }
     }
 
     void LateUpdate()
     {
-        UpdateVRPlayerPosition();
+        //UpdateVRPlayerPosition();
     }
 
     private void HandleFlapInput()

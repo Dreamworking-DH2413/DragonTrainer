@@ -49,14 +49,14 @@ Terrain:
   m_TreeCrossFadeLength: 5
   m_TreeMaximumFullLODCount: 50
   m_DetailObjectDistance: 80
-  m_DetailObjectDensity: 1
+  m_DetailObjectDensity: 0.49
   m_HeightmapPixelError: 5
   m_SplatMapDistance: 1000
   m_HeightmapMinimumLODSimplification: 0
   m_HeightmapMaximumLOD: 0
   m_ShadowCastingMode: 2
   m_DrawHeightmap: 1
-  m_DrawInstanced: 0
+  m_DrawInstanced: 1
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
   m_IgnoreQualitySettings: 0
@@ -106,11 +106,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f5b9994ba5e6c444ab7fef99c23400f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heightmapResolution: 129
-  terrainSizeX: 128
-  terrainSizeZ: 128
+  heightmapResolution: 33
+  terrainSizeX: 64
+  terrainSizeZ: 64
   maxHeight: 256
-  noiseScale: 0.25
+  noiseScale: 0.125
   octaves: 4
   persistence: 0.5
   lacunarity: 2

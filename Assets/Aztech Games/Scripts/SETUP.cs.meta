@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: b417723767db63e41bf0acaf761d945d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 270737
+  packageName: Plane Controller (Glider)
+  packageVersion: 1.0
+  assetPath: Assets/Aztech Games/Scripts/SETUP.cs
+  uploadId: 651523
