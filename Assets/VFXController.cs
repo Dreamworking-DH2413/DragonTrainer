@@ -27,6 +27,8 @@ public class MouthControlledFire : MonoBehaviour
     [SerializeField] private float minLifetime = 0.5f;
     [SerializeField] private float maxLifetime = 2f;
     
+    private AudioSource audioSource;
+    
     [Header("Debug")]
     [SerializeField] private bool showDebugLogs = true;
     
@@ -34,8 +36,12 @@ public class MouthControlledFire : MonoBehaviour
     private float targetSpawnRate = 0f;
     private bool wasPlaying = false;
     
+    
     void Start()
     {
+        // Get Fire sound
+        audioSource = GetComponent<AudioSource>();
+        
         // Find MouthDetectionReceiver if not assigned
         if (mouthReceiver == null)
         {
@@ -67,11 +73,13 @@ public class MouthControlledFire : MonoBehaviour
         // Initialize VFX state
         if (!playOnMouthOpen)
         {
+            audioSource.Play();
             fireVFX.SetBool("ConstantSpawnrate", true);
             wasPlaying = true;
         }
         else
         {
+            audioSource.Stop();
             fireVFX.SetBool("ConstantSpawnrate", false);
             wasPlaying = false;
         }
@@ -95,10 +103,12 @@ public class MouthControlledFire : MonoBehaviour
             if (shouldPlay && !wasPlaying)
             {
                 fireVFX.SetBool("ConstantSpawnrate", true);
+                audioSource.Play();
                 wasPlaying = true;
             }
             else if (!shouldPlay && wasPlaying)
             {
+                audioSource.Stop();
                 fireVFX.SetBool("ConstantSpawnrate", false);
                 wasPlaying = false;
             }

@@ -3,7 +3,7 @@ using UnityEngine;
 public class VFXRaycast : MonoBehaviour
 {
     
-    public float maxDistance = 10f;
+    public float maxDistance = 1f;
     public LayerMask hitLayers;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -21,9 +21,13 @@ public class VFXRaycast : MonoBehaviour
         if (Physics.Raycast(ray, out hit, maxDistance, hitLayers))
         {
             Debug.Log("VFX is touching: " + hit.collider.name);
-
-            // Example: place an effect at the hit point
-            // VFXImpactEffect.transform.position = hit.point;
+            Sheep sheep = hit.collider.GetComponent<Sheep>();
+            if (sheep != null)
+            {
+                sheep.PlayHitSound();
+                sheep.BurnStep();
+            }
+            
         }
         else
         {
