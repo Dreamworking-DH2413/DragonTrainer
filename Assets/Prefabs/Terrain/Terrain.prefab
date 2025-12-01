@@ -107,7 +107,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Herd: {fileID: 5024721421659279829, guid: 08ac16102e2a71249834934928877e11, type: 3}
-  oneInXSheep: 60
+  oneInXSheep: 30
   heightmapResolution: 129
   terrainSizeX: 128
   terrainSizeZ: 128

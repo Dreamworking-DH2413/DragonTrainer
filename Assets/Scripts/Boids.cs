@@ -16,7 +16,7 @@ public class Boids : MonoBehaviour
     // SENSING NEIGHBOUR BOIDS
     public LayerMask boidMask;            // Layer that all sheep are on (e.g., "Boid")
     public int maxNeighbors = 64;         // Size of reusable hits buffer
-    public float senseHz = 5f;    // Each sheep senses ~10×/sec
+    public float senseHz = 30f;    // Each sheep senses ~10×/sec
     float senseInterval;
     public float cohesionRadius = 4f;     // How far we "see" other sheep
     //public float regroupRadius = 4f;     // How far we "see" other sheep
@@ -123,7 +123,7 @@ public class Boids : MonoBehaviour
     {
         
         Vector3 dstToPredator = player.position - transform.position;
-        dstToPredator.y = 0f;
+        //dstToPredator.y = 0f; dst also depend on height
         
         if (dstToPredator.sqrMagnitude <= predatorRadius * predatorRadius)// out of range-ignore (!) should prob not be squared???
         {
