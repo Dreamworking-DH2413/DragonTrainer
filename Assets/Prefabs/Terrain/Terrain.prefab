@@ -47,8 +47,8 @@ Terrain:
   m_TreeDistance: 5000
   m_TreeBillboardDistance: 50
   m_TreeCrossFadeLength: 5
-  m_TreeMaximumFullLODCount: 50
-  m_DetailObjectDistance: 80
+  m_TreeMaximumFullLODCount: 200
+  m_DetailObjectDistance: 300
   m_DetailObjectDensity: 1
   m_HeightmapPixelError: 5
   m_SplatMapDistance: 1000
@@ -125,5 +125,15 @@ MonoBehaviour:
   waterMaterial: {fileID: 2100000, guid: 141d9d6ca43b6c843965491604c6deff, type: 2}
   waterHeight: 0
   waterOverlapMargin: 0.001
-  oneInXSheep: 15
-  Herd: {fileID: 5024721421659279829, guid: 08ac16102e2a71249834934928877e11, type: 3}
+  treePrefabs:
+  - {fileID: 8611277020438068099, guid: b80fef45eeec8094d98f40312d14d44a, type: 3}
+  - {fileID: 8803308067417721927, guid: 5485ab882460ffe4cb7c54332649cb35, type: 3}
+  - {fileID: 8362357380895874623, guid: 7ff90f8959676444da81de66551095a3, type: 3}
+  - {fileID: 6939488113106216980, guid: c8cb8935bce718e4c9477c5c731ff0ad, type: 3}
+  - {fileID: 15955583710220226, guid: 0163b19779740a743af27849851782f2, type: 3}
+  treeNoiseScale: 0.05
+  treeDensityThreshold: 0.65
+  treeSpacing: 8
+  minTreeHeight: 100
+  maxTreeHeight: 200
+  treeSizeRange: {x: 0.8, y: 1.5}

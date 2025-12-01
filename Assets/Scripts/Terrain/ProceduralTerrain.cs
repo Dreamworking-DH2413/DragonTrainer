@@ -31,6 +31,15 @@ public class ProceduralTerrain : MonoBehaviour
     public float waterHeight = 0f;
     public float waterOverlapMargin = 0.001f;
 
+    [Header("Tree Generation")]
+    public GameObject[] treePrefabs;
+    public float treeNoiseScale = 0.05f;
+    public float treeDensityThreshold = 0.5f;
+    public float treeSpacing = 8f;
+    public float minTreeHeight = 80f;
+    public float maxTreeHeight = 200f;
+    public Vector2 treeSizeRange = new Vector2(0.8f, 1.5f);
+
     Terrain _terrain;
     TerrainData _data;
 
@@ -86,6 +95,7 @@ public class ProceduralTerrain : MonoBehaviour
         _data.SetHeights(0, 0, heights);
         ApplyTextureSplatmap();
         CreateOrUpdateWaterPlane();
+        GenerateTrees();
         //Spawn sheep herd with 1 in X chance
         int rng = Random.Range(0,oneInXSheep+1);
         if(rng>=oneInXSheep-1) //1 in X chance to spawn a herd at all
@@ -209,5 +219,106 @@ public class ProceduralTerrain : MonoBehaviour
             var renderer = water.GetComponent<MeshRenderer>();
             renderer.sharedMaterial = waterMaterial;
         }
+    }
+
+    void GenerateTrees()
+    {
+        if (treePrefabs == null || treePrefabs.Length == 0)
+            return;
+
+        // Clear existing trees that are children of this terrain
+        Transform treesParent = transform.Find("Trees");
+        if (treesParent != null)
+        {
+            if (Application.isPlaying)
+                Destroy(treesParent.gameObject);
+            else
+                DestroyImmediate(treesParent.gameObject);
+        }
+
+        treesParent = new GameObject("Trees").transform;
+        treesParent.SetParent(transform, false);
+
+        TerrainData td = _terrain.terrainData;
+        Vector3 terrainPos = transform.position;
+
+        // Sample in a grid pattern with spacing
+        int samplesX = Mathf.CeilToInt(terrainSizeX / treeSpacing);
+        int samplesZ = Mathf.CeilToInt(terrainSizeZ / treeSpacing);
+
+        for (int z = 0; z < samplesZ; z++)
+        {
+            for (int x = 0; x < samplesX; x++)
+            {
+                // World position for this sample
+                float worldX = x * treeSpacing;
+                float worldZ = z * treeSpacing;
+
+                // Add slight randomness using a different noise octave
+                float jitterX = (NoiseAt(worldX * 0.1f + noiseOffset.x, worldZ * 0.1f + noiseOffset.y + 1000f) - 0.5f) * treeSpacing * 0.5f;
+                float jitterZ = (NoiseAt(worldX * 0.1f + noiseOffset.x + 2000f, worldZ * 0.1f + noiseOffset.y) - 0.5f) * treeSpacing * 0.5f;
+
+                worldX += jitterX;
+                worldZ += jitterZ;
+
+                // Keep within terrain bounds
+                if (worldX < 0 || worldX >= terrainSizeX || worldZ < 0 || worldZ >= terrainSizeZ)
+                    continue;
+
+                // Sample forest density noise
+                float densityNoise = NoiseAt(
+                    (worldX + terrainPos.x) * treeNoiseScale + noiseOffset.x,
+                    (worldZ + terrainPos.z) * treeNoiseScale + noiseOffset.y
+                );
+
+                // Only place tree if density is above threshold
+                if (densityNoise < treeDensityThreshold)
+                    continue;
+
+                // Get terrain height at this position
+                float normalizedX = worldX / terrainSizeX;
+                float normalizedZ = worldZ / terrainSizeZ;
+                float height = td.GetInterpolatedHeight(normalizedX, normalizedZ);
+
+                // Only place trees in suitable height range (not underwater, not too high)
+                if (height < minTreeHeight || height > maxTreeHeight)
+                    continue;
+
+                // Select tree prefab deterministically based on position
+                int treeIndex = Mathf.FloorToInt(NoiseAt(
+                    (worldX + terrainPos.x) * 0.01f + noiseOffset.x + 5000f,
+                    (worldZ + terrainPos.z) * 0.01f + noiseOffset.y + 5000f
+                ) * treePrefabs.Length) % treePrefabs.Length;
+
+                GameObject treePrefab = treePrefabs[treeIndex];
+                if (treePrefab == null)
+                    continue;
+
+                // Spawn tree
+                Vector3 treePos = new Vector3(worldX, height, worldZ);
+                GameObject tree = Instantiate(treePrefab, treesParent);
+                tree.transform.localPosition = treePos;
+
+                // Deterministic rotation
+                float rotation = NoiseAt(
+                    (worldX + terrainPos.x) * 0.01f + noiseOffset.x + 3000f,
+                    (worldZ + terrainPos.z) * 0.01f + noiseOffset.y + 3000f
+                ) * 360f;
+                tree.transform.localRotation = Quaternion.Euler(0, rotation, 0);
+
+                // Deterministic scale
+                float scaleNoise = NoiseAt(
+                    (worldX + terrainPos.x) * 0.01f + noiseOffset.x + 4000f,
+                    (worldZ + terrainPos.z) * 0.01f + noiseOffset.y + 4000f
+                );
+                float scale = Mathf.Lerp(treeSizeRange.x, treeSizeRange.y, scaleNoise);
+                tree.transform.localScale = Vector3.one * scale;
+            }
+        }
+    }
+
+    float NoiseAt(float x, float y)
+    {
+        return Mathf.PerlinNoise(x, y);
     }
 }
