@@ -16,7 +16,7 @@ public class Boids : MonoBehaviour
     // SENSING NEIGHBOUR BOIDS
     public LayerMask boidMask;            // Layer that all sheep are on (e.g., "Boid")
     public int maxNeighbors = 64;         // Size of reusable hits buffer
-    public float senseHz = 0.05f;    // Each sheep senses ~10×/sec
+    public float senseHz = 30f;    // Each sheep senses ~10×/sec
     float senseInterval;
     public float cohesionRadius = 4f;     // How far we "see" other sheep
     //public float regroupRadius = 4f;     // How far we "see" other sheep
@@ -82,10 +82,10 @@ public class Boids : MonoBehaviour
         rb = GetComponent<Rigidbody>();                       // Grab Rigidbody once
         rb.useGravity = true;                                 // Let physics keep us on the ground
         rb.interpolation = RigidbodyInterpolation.Interpolate;// Smooth visuals between physics steps
-        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        //rb.collisionDetectionMode = CollisionDetectionMode.Continuous; //set to discrete in inspector inst for optimization.
 
         // Start with a random XZ heading so all sheep don’t move identically
-        Vector2 rnd = Random.insideUnitCircle.normalized;     // 2D random on the plane
+        Vector2 rnd = Random.insideUnitCircle.normalized;     // 2D random on the plane //!
         heading = new Vector3(rnd.x, 0f, rnd.y);              // Set XZ (L/R), keep y (UP) = 0
         if (heading.sqrMagnitude < 1e-4f) heading = Vector3.forward;// Fallback just in case
 
@@ -96,7 +96,7 @@ public class Boids : MonoBehaviour
         hits = new Collider[maxNeighbors];                              // Allocate once; reuse forever
         senseInterval = 1f / senseHz;   // e.g., 5 Hz -> 0.2 s
 
-        nextSenseTime = Time.fixedTime + Random.value * senseInterval;        // Stagger first sensing //Mayb can use 0 inst of Time.time (?)
+        nextSenseTime = Time.fixedTime + Random.value * senseInterval;        // Stagger first sensing so they dont all check simultaniously//Mayb can use 0 inst of Time.time (?)
 
         //For predator position (player/dragon)
         // Auto-find player if not assigned in Inspector
@@ -123,7 +123,7 @@ public class Boids : MonoBehaviour
     {
         
         Vector3 dstToPredator = player.position - transform.position;
-        dstToPredator.y = 0f;
+        //dstToPredator.y = 0f; dst also depend on height
         
         if (dstToPredator.sqrMagnitude <= predatorRadius * predatorRadius)// out of range-ignore (!) should prob not be squared???
         {
@@ -273,7 +273,7 @@ public class Boids : MonoBehaviour
         // --- Sense and reCalc forces (throttled) ---
         //if (Time.fixedTime >= nextSenseTime)
         //{
-         //   nextSenseTime += senseInterval; //book next sense session
+        //nextSenseTime += senseInterval; //book next sense session
         calcBoidForces();
         
         //}
@@ -315,6 +315,7 @@ public class Boids : MonoBehaviour
         
        
         
+        //}
     }
     
     // Uses Unity’s physics broadphase to collect nearby colliders into a reused buffer.

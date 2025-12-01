@@ -4,6 +4,26 @@ using Unity.Netcode;
 
 public class DragonControl : NetworkBehaviour
 {
+    public enum FlightMode
+    {
+        Keyboard,           // Traditional keyboard controls with acceleration
+        VRController        // VR controller rotation-based controls with constant speed
+    }
+    
+    [Header("Flight Mode")]
+    [SerializeField] private FlightMode flightMode = FlightMode.Keyboard;
+    
+    [Header("VR Controller Setup")]
+    [SerializeField] private Transform leftHandController;    // Left hand controller transform
+    [SerializeField] private Transform rightHandController;   // Right hand controller transform
+    
+    [Header("VR Flight Settings")]
+    [SerializeField] private float vrRotationThreshold = 15f;  // Minimum controller angle (degrees) to trigger rotation
+    [SerializeField] private float vrPitchSensitivity = 1f;    // Multiplier for controller pitch to rotation speed
+    [SerializeField] private float vrRollSensitivity = 1f;     // Multiplier for controller roll to rotation speed
+    [SerializeField] private float vrYawSensitivity = 1f;      // Multiplier for controller yaw to rotation speed
+    [SerializeField] private bool useAverageRotation = true;   // Average both controllers or use right hand only
+    
     [Header("Flight Mechanics")]
     [SerializeField] private float flapForce = 50f;           // Forward impulse when flapping
     [SerializeField] private float flapUpForce = 50f;         // Upward impulse when flapping
@@ -38,6 +58,10 @@ public class DragonControl : NetworkBehaviour
     [SerializeField] private Vector3 riderOffset = new Vector3(0, 1.5f, 0);        // Offset for client (rider on dragon's back)
     [SerializeField] private bool rotatePlayerWithDragon = true;                    // Whether player rotates with dragon
     
+
+    [Header("Debug")]
+    [SerializeField] private bool freeze = false;                     // Freeze dragon movement for debugging
+
     // Reference to the Player object (found at runtime)
     private Transform playerTransform;
 
@@ -149,11 +173,15 @@ public class DragonControl : NetworkBehaviour
         
         // Only host controls the dragon
         if (!IsHost)
+        {
+            Debug.Log("[DragonControl] Update skipped - not server");
             return;
-        
+        }
+
         // Detect SPACE key press in Update where wasPressedThisFrame is reliable
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
+            Debug.Log("[DragonControl] SPACE key pressed - flap requested.");
             flapRequested = true;
         }
         
@@ -167,6 +195,28 @@ public class DragonControl : NetworkBehaviour
 
     void FixedUpdate()
     {
+        if (freeze)
+        {
+            // Freeze dragon physics and control, but allow manual inspector manipulation
+            if (!rb.isKinematic)
+            {
+                rb.isKinematic = true; // Make kinematic so Rigidbody doesn't override transform
+            }
+            
+            if (IsHost)
+            {
+                // Still sync transform changes to network (for inspector edits)
+                SyncToNetwork();
+            }
+            return;
+        }
+        
+        // Ensure Rigidbody is not kinematic when not frozen (only for host)
+        if (IsHost && rb.isKinematic)
+        {
+            rb.isKinematic = false;
+        }
+
         if (IsHost)
         {
             // Host: Control the dragon
@@ -247,6 +297,18 @@ public class DragonControl : NetworkBehaviour
 
     private void ApplyRotation()
     {
+        if (flightMode == FlightMode.Keyboard)
+        {
+            ApplyKeyboardRotation();
+        }
+        else if (flightMode == FlightMode.VRController)
+        {
+            ApplyVRControllerRotation();
+        }
+    }
+
+    private void ApplyKeyboardRotation()
+    {
         // Get input
         float pitchInput = 0f;
         float yawInput = 0f;
@@ -287,6 +349,105 @@ public class DragonControl : NetworkBehaviour
         }
     }
 
+    private void ApplyVRControllerRotation()
+    {
+        // Get controller rotation in world space
+        Quaternion controllerRotation = GetControllerRotation();
+        
+        if (controllerRotation == Quaternion.identity)
+        {
+            // No valid controller input, no rotation applied
+            return;
+        }
+
+        // Convert controller rotation to LOCAL space relative to the dragon/player
+        // This makes controller input independent of dragon's current orientation
+        Transform referenceTransform = playerTransform != null ? playerTransform : transform;
+        Quaternion localControllerRotation = Quaternion.Inverse(referenceTransform.rotation) * controllerRotation;
+        
+        // Extract pitch, yaw, and roll from LOCAL controller rotation
+        Vector3 controllerEuler = localControllerRotation.eulerAngles;
+        
+        // Convert euler angles to -180 to 180 range
+        float pitch = controllerEuler.x > 180f ? controllerEuler.x - 360f : controllerEuler.x;
+        float yaw = controllerEuler.y > 180f ? controllerEuler.y - 360f : controllerEuler.y;
+        float roll = controllerEuler.z > 180f ? controllerEuler.z - 360f : controllerEuler.z;
+        
+        // Convert controller angles to rotation inputs (like keyboard)
+        // Only apply rotation if angle exceeds threshold (deadzone)
+        float pitchInput = 0f;
+        float yawInput = 0f;
+        float rollInput = 0f;
+        
+        // Pitch (forward/back tilt)
+        if (Mathf.Abs(pitch) > vrRotationThreshold)
+        {
+            // Normalize: -1 to 1 range based on how far past threshold
+            pitchInput = Mathf.Clamp(pitch / 90f, -1f, 1f) * vrPitchSensitivity;
+        }
+        
+        // Yaw (left/right twist)
+        if (Mathf.Abs(yaw) > vrRotationThreshold)
+        {
+            yawInput = Mathf.Clamp(yaw / 90f, -1f, 1f) * vrYawSensitivity;
+        }
+        
+        // Roll (left/right tilt)
+        if (Mathf.Abs(roll) > vrRotationThreshold)
+        {
+            rollInput = Mathf.Clamp(roll / 90f, -1f, 1f) * vrRollSensitivity;
+        }
+        
+        // Apply rotations using the same method as keyboard (in local space)
+        if (pitchInput != 0f)
+        {
+            transform.Rotate(pitchInput * pitchSpeed * Time.fixedDeltaTime, 0, 0, Space.Self);
+        }
+        
+        if (yawInput != 0f)
+        {
+            transform.Rotate(0, yawInput * yawSpeed * Time.fixedDeltaTime, 0, Space.Self);
+        }
+        
+        if (rollInput != 0f)
+        {
+            transform.Rotate(0, 0, rollInput * rollSpeed * Time.fixedDeltaTime, Space.Self);
+        }
+    }
+
+    private Quaternion GetControllerRotation()
+    {
+        if (useAverageRotation)
+        {
+            // Average both controllers
+            bool hasLeft = leftHandController != null;
+            bool hasRight = rightHandController != null;
+            
+            if (hasLeft && hasRight)
+            {
+                return Quaternion.Slerp(leftHandController.rotation, rightHandController.rotation, 0.5f);
+            }
+            else if (hasLeft)
+            {
+                return leftHandController.rotation;
+            }
+            else if (hasRight)
+            {
+                return rightHandController.rotation;
+            }
+        }
+        else
+        {
+            // Use right hand only
+            if (rightHandController != null)
+            {
+                return rightHandController.rotation;
+            }
+        }
+        
+        return Quaternion.identity;
+    }
+
     private void ApplyThrust()
     {
         if (rb == null)
@@ -298,6 +459,7 @@ public class DragonControl : NetworkBehaviour
         // Apply scaled gravity (reduces gravity effect)
         rb.AddForce(Physics.gravity * (gravityScale - 1f), ForceMode.Acceleration);
 
+        // Both modes use the same flapping/gliding physics
         if (isCurrentlyFlapping)
         {
             // During flap animation state: Apply drag for flapping state
@@ -460,5 +622,10 @@ public class DragonControl : NetworkBehaviour
             // Match the dragon's rotation exactly so the player experiences all the rolls, pitches, and yaws
             playerTransform.rotation = transform.rotation;
         }
+    }
+
+    public void RequestFlap()
+    {
+        flapRequested = true;
     }
 }

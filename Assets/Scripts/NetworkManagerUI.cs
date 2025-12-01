@@ -23,6 +23,14 @@ public class NetworkManagerUI : MonoBehaviour
         hostButton.onClick.AddListener(OnHostClicked);
         joinButton.onClick.AddListener(OnJoinClicked);
 
+        // Configure transport port BEFORE any connection attempts
+        var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+        if (transport != null)
+        {
+            transport.ConnectionData.Port = port;
+            Debug.Log($"[NETWORK] ✓ Transport port configured to: {port}");
+        }
+
         // Subscribe to connection events
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
@@ -100,6 +108,7 @@ public class NetworkManagerUI : MonoBehaviour
             {
                 NetworkManager.Singleton.StartHost();
                 Debug.Log($"[NETWORK] ✓ StartHost() called successfully");
+                
             }
             catch (System.Exception e)
             {
