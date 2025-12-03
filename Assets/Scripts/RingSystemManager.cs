@@ -6,7 +6,7 @@ public class RingSystemManager : MonoBehaviour
     [Header("Ring Settings")]
     public GameObject ringPrefab;
     public int courseLength = 20; // Total rings in the course (excluding start ring)
-    public int ringsAheadVisible = 5; // How many rings to keep visible ahead
+    public bool spawnStartRingOnInit = false; // Set to false if using TerrainStartRingSpawner
     public float ringSpacing = 50f;
     public float pathWidth = 20f;
     public float pathHeight = 15f;
@@ -20,45 +20,30 @@ public class RingSystemManager : MonoBehaviour
     [Header("Timer Integration")]
     public TimerManager timerManager;
     
-    [Header("Start Ring Management")]
-    public static RingSystemManager Instance { get; private set; }
-    
     private Queue<Ring> activeRings = new Queue<Ring>();
     private List<Ring> allCourseRings = new List<Ring>();
-    private List<Ring> allStartRings = new List<Ring>(); // Track all start rings in the world
+    private List<Ring> allStartRings = new List<Ring>(); // Track all start rings
     private Vector3 nextRingPosition;
+    private Quaternion currentPathRotation = Quaternion.identity;
     private int currentActiveRingIndex = 0;
     private int ringsPassedThrough = 0;
-    private bool courseStarted = false;
+    public bool courseStarted = false;
     private bool courseCompleted = false;
     private Ring startRing;
     
     void Start()
     {
-        // Set up singleton
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
+        nextRingPosition = transform.position;
         
-        // Don't generate a start ring here anymore - let terrain chunks do it
-    }
-    
-    // Called by terrain chunks to register their start rings
-    public void RegisterStartRing(Ring ring)
-    {
-        if (!allStartRings.Contains(ring))
+        // Only generate start ring if not using terrain spawner
+        if (spawnStartRingOnInit)
         {
-            allStartRings.Add(ring);
+            GenerateStartRing();
         }
-    }
-    
-    // Called by terrain chunks when they're destroyed
-    public void UnregisterStartRing(Ring ring)
-    {
-        allStartRings.Remove(ring);
+        else
+        {
+            Debug.Log("RingSystemManager initialized. Waiting for terrain-spawned start ring...");
+        }
     }
     
     void GenerateStartRing()
@@ -73,30 +58,27 @@ public class RingSystemManager : MonoBehaviour
         
         startRing.Initialize(this, -1, true); // -1 index indicates start ring
         startRing.SetActive(true);
+        RegisterStartRing(startRing);
         
-        Debug.Log("Start ring created! Fly through it to begin the course.");
+        Debug.Log($"Start ring created at position: {nextRingPosition}");
     }
     
-    public void OnStartRingPassed()
+    public void OnStartRingPassed(Ring passedStartRing)
     {
-        if (courseStarted)
-        {
-            Debug.Log("Course already started, ignoring duplicate call");
-            return;
-        }
-        
         courseStarted = true;
-        courseCompleted = false;
-        Debug.Log("=== START RING PASSED ===");
-        Debug.Log("Course started! Generating all rings...");
-        
-        // Hide all other start rings
-        HideAllStartRings();
+        // Destroy all other start rings
+        foreach (Ring sr in allStartRings)
+        {
+            if (sr != null && sr != startRing)
+                Destroy(sr.gameObject);
+        }
+        nextRingPosition = passedStartRing.transform.position;
+
+        allStartRings.Clear();
         
         // Start timer
         if (timerManager != null)
         {
-            Debug.Log("Starting timer...");
             timerManager.StartTimer();
             Debug.Log($"Timer running: {timerManager.IsRunning()}");
         }
@@ -120,49 +102,48 @@ public class RingSystemManager : MonoBehaviour
             allCourseRings[0].SetActive(true);
         }
     }
-    
-    void HideAllStartRings()
-    {
-        foreach (Ring ring in allStartRings)
-        {
-            if (ring != null)
-            {
-                ring.gameObject.SetActive(false);
-            }
-        }
-    }
-    
-    void ShowAllStartRings()
-    {
-        foreach (Ring ring in allStartRings)
-        {
-            if (ring != null)
-            {
-                ring.gameObject.SetActive(true);
-            }
-        }
-    }
-    
+
     void GenerateEntireCourse()
     {
-        // Start from the position of the start ring that was passed
-        nextRingPosition = startRing != null ? startRing.transform.position : transform.position;
-        
+        Debug.Log("GENERATING ENTIRE COURSE...");
         for (int i = 0; i < courseLength; i++)
         {
-            // Calculate next ring position with some randomization
-            nextRingPosition += Vector3.forward * ringSpacing;
-            nextRingPosition.x += Random.Range(-pathWidth, pathWidth);
-            nextRingPosition.y += Random.Range(-pathHeight, pathHeight);
-            
-            // Random rotation for variety
-            Quaternion rotation = Quaternion.Euler(
-                Random.Range(-15f, 15f),
-                Random.Range(-30f, 30f),
-                Random.Range(-15f, 15f)
+            // Apply incremental rotation changes to create a winding path
+            Vector3 rotationDelta = new Vector3(
+                Random.Range(-30f, 30f),  // Pitch variation (up/down)
+                Random.Range(-50f, 50f),  // Yaw variation (horizontal turns)
+                Random.Range(-25f, 25f)   // Roll variation
             );
             
-            GameObject ringObj = Instantiate(ringPrefab, nextRingPosition, rotation);
+            currentPathRotation *= Quaternion.Euler(rotationDelta);
+            
+            // Calculate forward direction based on current path rotation
+            Vector3 forwardDirection = currentPathRotation * Vector3.forward;
+            
+            // Move forward in the rotated direction
+            nextRingPosition += forwardDirection * ringSpacing;
+            
+            // Add some perpendicular variation for more organic paths
+            Vector3 rightDirection = currentPathRotation * Vector3.right;
+            Vector3 upDirection = currentPathRotation * Vector3.up;
+            
+            nextRingPosition += rightDirection * Random.Range(-pathWidth * 0.4f, pathWidth * 0.4f);
+            nextRingPosition += upDirection * Random.Range(-pathHeight * 0.5f, pathHeight * 0.5f);
+            
+            // Ensure rings stay above a minimum height (adjust this value as needed)
+            if (nextRingPosition.y < 10f)
+            {
+                nextRingPosition.y = 10f + Random.Range(0f, pathHeight);
+            }
+            
+            // Apply additional random rotation to each ring for visual variety
+            Quaternion ringRotation = currentPathRotation * Quaternion.Euler(
+                Random.Range(-20f, 20f),
+                Random.Range(-20f, 20f),
+                Random.Range(-20f, 20f)
+            );
+            
+            GameObject ringObj = Instantiate(ringPrefab, nextRingPosition, ringRotation);
             Ring ring = ringObj.GetComponent<Ring>();
             
             if (ring == null)
@@ -174,8 +155,6 @@ public class RingSystemManager : MonoBehaviour
             ring.Initialize(this, i, false, isLastRing);
             allCourseRings.Add(ring);
         }
-        
-        Debug.Log($"Generated {courseLength} rings for the course!");
     }
     
     public void OnRingPassed(int ringIndex, bool isLastRing)
@@ -188,7 +167,7 @@ public class RingSystemManager : MonoBehaviour
             ringsPassedThrough++;
             currentActiveRingIndex++;
             
-            Debug.Log($"Ring {ringIndex + 1}/{courseLength} passed! Total hits: {ringsPassedThrough}");
+           //Debug.Log($"Ring {ringIndex + 1}/{courseLength} passed! Total hits: {ringsPassedThrough}");
             
             if (isLastRing)
             {
@@ -205,34 +184,10 @@ public class RingSystemManager : MonoBehaviour
         }
     }
     
-    public void OnRingMissed(int ringIndex)
-    {
-        if (!courseStarted || courseCompleted) return;
-        
-        // If the player flew past the active ring without hitting it
-        if (ringIndex == currentActiveRingIndex)
-        {
-            Debug.Log($"Ring {ringIndex + 1} missed! Moving to next ring.");
-            currentActiveRingIndex++;
-            
-            // Check if that was the last ring
-            if (currentActiveRingIndex >= allCourseRings.Count)
-            {
-                CompleteCourse();
-            }
-            else
-            {
-                // Activate next ring
-                allCourseRings[currentActiveRingIndex].SetActive(true);
-            }
-        }
-    }
-    
     void CompleteCourse()
     {
         courseCompleted = true;
-        courseStarted = false; // Allow starting a new course
-        
+        courseStarted = false;
         // Stop timer
         if (timerManager != null)
         {
@@ -248,16 +203,27 @@ public class RingSystemManager : MonoBehaviour
             }
         }
         allCourseRings.Clear();
-        currentActiveRingIndex = 0;
-        ringsPassedThrough = 0;
-        
-        // Show all start rings again
-        ShowAllStartRings();
         
         Debug.Log($"=== COURSE COMPLETED ===");
         Debug.Log($"Time: {timerManager?.GetFormattedTime() ?? "N/A"}");
         Debug.Log($"Rings Hit: {ringsPassedThrough}/{courseLength}");
         Debug.Log($"Accuracy: {(float)ringsPassedThrough / courseLength * 100f:F1}%");
+    }
+
+    public void RegisterStartRing(Ring ring)
+    {
+        if (!allStartRings.Contains(ring))
+        {
+            allStartRings.Add(ring);
+        }
+    }
+
+    public void UnregisterStartRing(Ring ring)
+    {
+        if (allStartRings.Contains(ring))
+        {
+            allStartRings.Remove(ring);
+        }
     }
     
     public Color GetActiveColor()

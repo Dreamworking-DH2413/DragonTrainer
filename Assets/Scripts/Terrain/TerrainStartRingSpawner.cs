@@ -9,16 +9,23 @@ public class TerrainStartRingSpawner : MonoBehaviour
     public float heightAboveTerrain = 20f;
     public float randomOffsetRange = 10f;
     
+    [Header("Manager Reference")]
+    private RingSystemManager ringSystemManager;
+    
     private Ring spawnedRing;
     
     void Start()
     {
-        // Only spawn if we have a ring prefab and the RingSystemManager exists
-        if (ringPrefab == null || RingSystemManager.Instance == null)
+        ringSystemManager = FindFirstObjectByType<RingSystemManager>();
+
+        if (ringSystemManager == null)
+        {
+            Debug.LogError("TerrainStartRingSpawner: No RingSystemManager found in the scene.");
             return;
-        
+        }
+
         // Random chance to spawn a start ring on this chunk
-        if (Random.value < spawnChance)
+        if (Random.value < spawnChance && ringSystemManager.courseStarted == false)
         {
             SpawnStartRing();
         }
@@ -43,33 +50,28 @@ public class TerrainStartRingSpawner : MonoBehaviour
         
         // Add random offset within the chunk
         spawnPos.x += Random.Range(-randomOffsetRange, randomOffsetRange);
-        spawnPos.z += Random.Range(-randomOffsetRange, randomOffsetRange);
+        spawnPos.z += Random.Range(randomOffsetRange/2, randomOffsetRange);
         
         // Spawn the ring
         GameObject ringObj = Instantiate(ringPrefab, spawnPos, Quaternion.identity);
         spawnedRing = ringObj.GetComponent<Ring>();
         
-        if (spawnedRing == null)
-        {
-            spawnedRing = ringObj.AddComponent<Ring>();
-        }
-        
         // Initialize as start ring
-        spawnedRing.Initialize(RingSystemManager.Instance, -1, true);
+        spawnedRing.Initialize(ringSystemManager, -1, true);
         spawnedRing.SetActive(true);
         
         // Register with the manager
-        RingSystemManager.Instance.RegisterStartRing(spawnedRing);
+        ringSystemManager.RegisterStartRing(spawnedRing);
         
-        Debug.Log($"Start ring spawned at {spawnPos}");
+       // Debug.Log($"Start ring spawned at {spawnPos}");
     }
     
     void OnDestroy()
     {
-        // Unregister the ring when this terrain chunk is destroyed
-        if (spawnedRing != null && RingSystemManager.Instance != null)
+        // Unregister and clean up the ring when this terrain chunk is destroyed
+        if (spawnedRing != null && ringSystemManager != null)
         {
-            RingSystemManager.Instance.UnregisterStartRing(spawnedRing);
+            ringSystemManager.UnregisterStartRing(spawnedRing);
             Destroy(spawnedRing.gameObject);
         }
     }

@@ -10,7 +10,6 @@ public class Ring : MonoBehaviour
     private bool isActive = false;
     private bool isStartRing = false;
     private bool isLastRing = false;
-    private bool hasBeenPassed = false;
     
     void Awake()
     {
@@ -92,16 +91,13 @@ public class Ring : MonoBehaviour
     
     void OnTriggerEnter(Collider other)
     {
-        if (hasBeenPassed) return; // Prevent double-counting
         
         if (other.CompareTag("Player"))
-        {
-            hasBeenPassed = true;
-            
+        {            
             if (isStartRing)
             {
                 Debug.Log("Start ring passed! Course beginning...");
-                manager.OnStartRingPassed();
+                manager.OnStartRingPassed(this);
             }
             else if (isActive)
             {
