@@ -107,10 +107,10 @@ public class Boids : MonoBehaviour
         if (transform.parent != null)
         {
             regroupPos = transform.parent.position;
-            //Debug.Log(regroupPos);
+            //// Debug.Log(regroupPos);
         }
         else{
-            Debug.Log("NO HERD PARENT");
+            // Debug.Log("NO HERD PARENT");
         }
     }
 
@@ -121,7 +121,7 @@ public class Boids : MonoBehaviour
         // Auto-find player if not assigned in Inspector or passed by herd parent
         if (player == null)
         {
-            Debug.Log("FAIL!!! finding player");
+            // Debug.Log("FAIL!!! finding player");
             GameObject p = GameObject.Find("FallbackObjects"); // Use Find by name instead
             if (p != null) player = p.transform;
         }   
@@ -190,7 +190,7 @@ public class Boids : MonoBehaviour
             int matchingCount = 0;
             int pastureCount = 0;
             
-            //if(found==0){Debug.Log(found);}
+            //if(found==0){// Debug.Log(found);}
 
             for (int i = 0; i < found; i++)
             {
@@ -304,19 +304,19 @@ public class Boids : MonoBehaviour
         //simple water avoidance at y=0 plane by changing direction of vel
         if (transform.position.y < 101.0f) //water level + some margin //may need +-100
         {
-            //Debug.Log("Afraid of water!");
+            //// Debug.Log("Afraid of water!");
             status["water"] = true;
-            //Debug.Log(transform.position.y);
+            //// Debug.Log(transform.position.y);
             
         }
         else if
         (transform.position.y < 105.0f) //close to water level + some margin //may need +-100
         {
-            //Debug.Log("B E A C H vibes!");
+            //// Debug.Log("B E A C H vibes!");
             status["water"] = false;
 
             status["beach"] = true;
-            //Debug.Log(transform.position.y);
+            //// Debug.Log(transform.position.y);
             
         }else
         {

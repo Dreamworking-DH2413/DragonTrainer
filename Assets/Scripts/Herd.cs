@@ -21,7 +21,7 @@ public class Herd : MonoBehaviour
             if (p != null) player = p.transform;
             else
             {
-                Debug.Log("M E G A F A I L");
+                // Debug.Log("M E G A F A I L");
 
             }
         }
@@ -37,7 +37,7 @@ public class Herd : MonoBehaviour
             boid.player = player;   //pass player reference to sheep
         }
         
-        //Debug.Log("spawned Sheep Herd of size: " + sheepAmount);
+        //// Debug.Log("spawned Sheep Herd of size: " + sheepAmount);
 
         
     }
@@ -52,7 +52,7 @@ public class Herd : MonoBehaviour
             if(!playerDetected)
             {
                 playerDetected=true;
-                Debug.Log("Sheep Herd detected player at distance: " + distanceToPlayer);
+                // Debug.Log("Sheep Herd detected player at distance: " + distanceToPlayer);
             }
         }
         else
@@ -60,7 +60,7 @@ public class Herd : MonoBehaviour
             if(playerDetected)
             {
                 playerDetected=false;
-                Debug.Log("Sheep Herd lost sight of player at distance: " + distanceToPlayer);
+                // Debug.Log("Sheep Herd lost sight of player at distance: " + distanceToPlayer);
             }
         }*/
     }

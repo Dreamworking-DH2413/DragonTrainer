@@ -125,7 +125,7 @@ public class DragonControl : NetworkBehaviour
         // Configure animator to not interfere with physics
         if (animator != null)
         {
-            Debug.Log("Rigged dragon detected! Configuring animator for physics control...");
+            // Debug.Log("Rigged dragon detected! Configuring animator for physics control...");
             
             // Disable root motion so animator doesn't override Rigidbody movement
             animator.applyRootMotion = false;
@@ -133,15 +133,15 @@ public class DragonControl : NetworkBehaviour
             // Set update mode to Fixed so animator updates in sync with physics (FixedUpdate)
             animator.updateMode = AnimatorUpdateMode.Fixed;
             
-            Debug.Log("Animator configured: Root Motion = " + animator.applyRootMotion + 
-                     ", Update Mode = " + animator.updateMode);
+            // Debug.Log("Animator configured: Root Motion = " + animator.applyRootMotion + 
+                    //  ", Update Mode = " + animator.updateMode);
         }
         
         // CRITICAL FIX FOR RIGGED MODELS:
         // Ensure Rigidbody is on the root object with the script
         if (rb == null)
         {
-            Debug.LogError("No Rigidbody found on " + gameObject.name + "! Adding one automatically.");
+            // Debug.LogError("No Rigidbody found on " + gameObject.name + "! Adding one automatically.");
             rb = gameObject.AddComponent<Rigidbody>();
             rb.mass = 10f;
             rb.linearDamping = glideDrag;
@@ -159,11 +159,11 @@ public class DragonControl : NetworkBehaviour
         if (playerObject != null)
         {
             playerTransform = playerObject.transform;
-            Debug.Log("DragonControl: Found Player object");
+            // Debug.Log("DragonControl: Found Player object");
         }
         else
         {
-            Debug.LogWarning("DragonControl: Player object not found in scene!");
+            // Debug.LogWarning("DragonControl: Player object not found in scene!");
         }
     }
 
@@ -174,14 +174,14 @@ public class DragonControl : NetworkBehaviour
         // Only host controls the dragon
         if (!IsHost)
         {
-            Debug.Log("[DragonControl] Update skipped - not server");
+            // Debug.Log("[DragonControl] Update skipped - not server");
             return;
         }
 
         // Detect SPACE key press in Update where wasPressedThisFrame is reliable
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
-            Debug.Log("[DragonControl] SPACE key pressed - flap requested.");
+            // Debug.Log("[DragonControl] SPACE key pressed - flap requested.");
             flapRequested = true;
         }
         
@@ -189,7 +189,7 @@ public class DragonControl : NetworkBehaviour
         if (Keyboard.current.leftShiftKey.wasPressedThisFrame)
         {
             wingsExpanded = !wingsExpanded;
-            Debug.Log("Wings " + (wingsExpanded ? "EXPANDED" : "RETRACTED"));
+            // Debug.Log("Wings " + (wingsExpanded ? "EXPANDED" : "RETRACTED"));
         }
 
         UpdateVRPlayerPosition();
@@ -250,7 +250,7 @@ public class DragonControl : NetworkBehaviour
         if (flapRequested)
         {
             flapRequested = false;  // Reset flag
-            Debug.Log("SPACE pressed! Cooldown: " + flapCooldownTimer + ", Grounded: " + isGrounded);
+            // Debug.Log("SPACE pressed! Cooldown: " + flapCooldownTimer + ", Grounded: " + isGrounded);
             
             // Only allow flap if cooldown has expired
             if (flapCooldownTimer <= 0f)
@@ -259,7 +259,7 @@ public class DragonControl : NetworkBehaviour
             }
             else
             {
-                Debug.Log("Flap blocked - cooldown still active: " + flapCooldownTimer);
+                // Debug.Log("Flap blocked - cooldown still active: " + flapCooldownTimer);
             }
         }
     }
@@ -275,7 +275,7 @@ public class DragonControl : NetworkBehaviour
         Vector3 upwardForce = transform.up * flapUpForce;
         Vector3 totalForce = forwardForce + upwardForce;
         
-        Debug.Log("FLAP! Applying impulse: " + totalForce + " | Forward: " + forwardForce + " | Up: " + upwardForce);
+        // Debug.Log("FLAP! Applying impulse: " + totalForce + " | Forward: " + forwardForce + " | Up: " + upwardForce);
         
         rb.AddForce(totalForce, ForceMode.Impulse);
     }
@@ -585,7 +585,7 @@ public class DragonControl : NetworkBehaviour
             // Snap to the first received position (no interpolation on first sync)
             transform.position = newValue;
             transform.rotation = netRotation.Value;
-            Debug.Log($"Client: First network sync received at position {newValue}");
+            // Debug.Log($"Client: First network sync received at position {newValue}");
         }
     }
     

@@ -46,11 +46,11 @@ public class DragonGliderPhysics : MonoBehaviour
         if (playerObject != null)
         {
             playerTransform = playerObject.transform;
-            Debug.Log("DragonGliderPhysics: Found Player object");
+            // Debug.Log("DragonGliderPhysics: Found Player object");
         }
         else
         {
-            Debug.LogWarning("DragonGliderPhysics: Player object not found in scene!");
+            // Debug.LogWarning("DragonGliderPhysics: Player object not found in scene!");
         }
     }
 

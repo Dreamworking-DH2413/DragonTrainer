@@ -38,13 +38,13 @@ public class TimerManager : MonoBehaviour
     {
         isRunning = true;
         elapsedTime = 0f;
-        Debug.Log("Timer started!");
+        // Debug.Log("Timer started!");
     }
     
     public void StopTimer()
     {
         isRunning = false;
-        Debug.Log($"Timer stopped at: {GetFormattedTime()}");
+        // Debug.Log($"Timer stopped at: {GetFormattedTime()}");
     }
     
     public void ResetTimer()

@@ -14,7 +14,7 @@ public class Sheep : MonoBehaviour
     public void BurnStep()
     {
         dissolveAmount += Time.deltaTime * 0.5f;
-        Debug.Log(dissolveAmount);
+        // Debug.Log(dissolveAmount);
         burnControl.SetDissolveBoth(dissolveAmount);
 
         if (dissolveAmount >= 0.75f)

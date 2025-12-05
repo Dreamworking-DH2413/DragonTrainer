@@ -59,7 +59,7 @@ public class TerrainStreamer : MonoBehaviour
 
         if (!target || !terrainPrefab)
         {
-            Debug.LogError("[TerrainStreamer] Assign target and terrainPrefab.");
+            // Debug.LogError("[TerrainStreamer] Assign target and terrainPrefab.");
             enabled = false;
             return;
         }
@@ -268,7 +268,7 @@ public class TerrainStreamer : MonoBehaviour
     {
         if (Application.isPlaying)
         {
-            Debug.LogWarning("Regenerate All Chunks only works in Edit Mode.");
+            // Debug.LogWarning("Regenerate All Chunks only works in Edit Mode.");
             return;
         }
 

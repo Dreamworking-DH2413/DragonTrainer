@@ -20,7 +20,7 @@ public class VFXRaycast : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, maxDistance, hitLayers))
         {
-            Debug.Log("VFX is touching: " + hit.collider.name);
+            // Debug.Log("VFX is touching: " + hit.collider.name);
             Sheep sheep = hit.collider.GetComponent<Sheep>();
             if (sheep != null)
             {

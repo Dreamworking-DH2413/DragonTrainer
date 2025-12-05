@@ -41,7 +41,7 @@ public class RingSystemManager : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         if (player == null)
         {
-            Debug.LogWarning("Player not found! Make sure player GameObject is tagged as 'Player'");
+            // Debug.LogWarning("Player not found! Make sure player GameObject is tagged as 'Player'");
         }
         nextRingPosition = transform.position;
         
@@ -52,7 +52,7 @@ public class RingSystemManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("RingSystemManager initialized. Waiting for terrain-spawned start ring...");
+            // Debug.Log("RingSystemManager initialized. Waiting for terrain-spawned start ring...");
         }
     }
     
@@ -70,12 +70,12 @@ public class RingSystemManager : MonoBehaviour
         startRing.SetActive(true);
         RegisterStartRing(startRing);
         
-        Debug.Log($"Start ring created at position: {nextRingPosition}");
+        // Debug.Log($"Start ring created at position: {nextRingPosition}");
     }
     
     public void OnStartRingPassed(Ring passedStartRing)
     {
-        Debug.Log("[RingSystemManager] Start ring passed! Beginning course...");
+        // Debug.Log("[RingSystemManager] Start ring passed! Beginning course...");
         
         courseStarted = true;
         Vector3 soundPosition = player != null ? player.transform.position : passedStartRing.transform.position;
@@ -95,11 +95,11 @@ public class RingSystemManager : MonoBehaviour
         if (timerManager != null)
         {
             timerManager.StartTimer();
-            Debug.Log($"[RingSystemManager] Timer running: {timerManager.IsRunning()}");
+            // Debug.Log($"[RingSystemManager] Timer running: {timerManager.IsRunning()}");
         }
         else
         {
-            Debug.LogError("[RingSystemManager] TimerManager is NULL! Did you assign it in the Inspector?");
+            // Debug.LogError("[RingSystemManager] TimerManager is NULL! Did you assign it in the Inspector?");
         }
         
         // Destroy start ring
@@ -120,7 +120,7 @@ public class RingSystemManager : MonoBehaviour
 
     void GenerateEntireCourse()
     {
-        Debug.Log("[RingSystemManager] GENERATING ENTIRE COURSE...");
+        // Debug.Log("[RingSystemManager] GENERATING ENTIRE COURSE...");
         for (int i = 0; i < courseLength; i++)
         {
             // Apply incremental rotation changes to create a winding path
@@ -182,7 +182,7 @@ public class RingSystemManager : MonoBehaviour
             ringsPassedThrough++;
             currentActiveRingIndex++;
             
-           //Debug.Log($"Ring {ringIndex + 1}/{courseLength} passed! Total hits: {ringsPassedThrough}");
+           //// Debug.Log($"Ring {ringIndex + 1}/{courseLength} passed! Total hits: {ringsPassedThrough}");
             
             Ring currentRing = allCourseRings[ringIndex];
             Vector3 soundPosition = player != null ? player.transform.position : currentRing.transform.position;
@@ -224,10 +224,10 @@ public class RingSystemManager : MonoBehaviour
         }
         allCourseRings.Clear();
         
-        Debug.Log($"=== COURSE COMPLETED ===");
-        Debug.Log($"Time: {timerManager?.GetFormattedTime() ?? "N/A"}");
-        Debug.Log($"Rings Hit: {ringsPassedThrough}/{courseLength}");
-        Debug.Log($"Accuracy: {(float)ringsPassedThrough / courseLength * 100f:F1}%");
+        // Debug.Log($"=== COURSE COMPLETED ===");
+        // Debug.Log($"Time: {timerManager?.GetFormattedTime() ?? "N/A"}");
+        // Debug.Log($"Rings Hit: {ringsPassedThrough}/{courseLength}");
+        // Debug.Log($"Accuracy: {(float)ringsPassedThrough / courseLength * 100f:F1}%");
     }
 
     public void RegisterStartRing(Ring ring)

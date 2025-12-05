@@ -96,18 +96,18 @@ public class Ring : MonoBehaviour
         {        
             if (isStartRing)
             {
-                Debug.Log("Start ring passed! Course beginning...");
+                // Debug.Log("Start ring passed! Course beginning...");
                 manager.OnStartRingPassed(this);
             }
             else if (isActive)
             {
                 
-                Debug.Log($"Active ring {ringIndex} passed through!");
+                // Debug.Log($"Active ring {ringIndex} passed through!");
                 manager.OnRingPassed(ringIndex, isLastRing);
             }
             else
             {
-                Debug.Log($"Inactive ring {ringIndex} hit - doesn't count as the active ring");
+                // Debug.Log($"Inactive ring {ringIndex} hit - doesn't count as the active ring");
             }
                 Destroy(gameObject);
         }

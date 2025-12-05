@@ -48,7 +48,7 @@ public class MouthControlledFire : MonoBehaviour
             mouthReceiver = FindObjectOfType<MouthDetectionReceiver>();
             if (mouthReceiver == null)
             {
-                Debug.LogError("MouthDetectionReceiver not found! Please add it to the scene.");
+                // Debug.LogError("MouthDetectionReceiver not found! Please add it to the scene.");
                 enabled = false;
                 return;
             }
@@ -60,7 +60,7 @@ public class MouthControlledFire : MonoBehaviour
             fireVFX = GetComponent<VisualEffect>();
             if (fireVFX == null)
             {
-                Debug.LogError("VisualEffect component not found! Please attach this script to a GameObject with VFX Graph.");
+                // Debug.LogError("VisualEffect component not found! Please attach this script to a GameObject with VFX Graph.");
                 enabled = false;
                 return;
             }
@@ -86,7 +86,7 @@ public class MouthControlledFire : MonoBehaviour
         
         if (showDebugLogs)
         {
-            Debug.Log($"MouthControlledFire initialized. Play on mouth open: {playOnMouthOpen}");
+            // Debug.Log($"MouthControlledFire initialized. Play on mouth open: {playOnMouthOpen}");
         }
     }
     
@@ -147,7 +147,7 @@ public class MouthControlledFire : MonoBehaviour
     {
         if (showDebugLogs)
         {
-            Debug.Log($"Mouth opened - Fire {(playOnMouthOpen ? "ON" : "OFF")}");
+            // Debug.Log($"Mouth opened - Fire {(playOnMouthOpen ? "ON" : "OFF")}");
         }
     }
     
@@ -155,7 +155,7 @@ public class MouthControlledFire : MonoBehaviour
     {
         if (showDebugLogs)
         {
-            Debug.Log($"Mouth closed - Fire {(playOnMouthOpen ? "OFF" : "ON")}");
+            // Debug.Log($"Mouth closed - Fire {(playOnMouthOpen ? "OFF" : "ON")}");
         }
     }
     
@@ -175,7 +175,7 @@ public class MouthControlledFire : MonoBehaviour
         playOnMouthOpen = value;
         if (showDebugLogs)
         {
-            Debug.Log($"Play on mouth open set to: {value}");
+            // Debug.Log($"Play on mouth open set to: {value}");
         }
     }
     
@@ -184,7 +184,7 @@ public class MouthControlledFire : MonoBehaviour
         playOnMouthOpen = !playOnMouthOpen;
         if (showDebugLogs)
         {
-            Debug.Log($"Toggled play mode. Now: {(playOnMouthOpen ? "play on open" : "play on close")}");
+            // Debug.Log($"Toggled play mode. Now: {(playOnMouthOpen ? "play on open" : "play on close")}");
         }
     }
 }

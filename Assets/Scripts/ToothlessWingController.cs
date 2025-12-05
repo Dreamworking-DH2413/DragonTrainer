@@ -116,20 +116,20 @@ public class ToothlessWingController : MonoBehaviour
 
         if (armatureRoot == null)
         {
-            Debug.LogError("Armature root not found! Please assign it manually.");
+            // Debug.LogError("Armature root not found! Please assign it manually.");
             return;
         }
 
         // Build bone cache
         boneCache.Clear();
         BuildBoneCache(armatureRoot);
-        Debug.Log($"Built bone cache with {boneCache.Count} bones");
+        // Debug.Log($"Built bone cache with {boneCache.Count} bones");
 
         // Setup wing bones
         SetupWingBones();
 
         isInitialized = true;
-        Debug.Log("Wing controller initialized!");
+        // Debug.Log("Wing controller initialized!");
     }
 
     void BuildBoneCache(Transform root)
@@ -159,11 +159,11 @@ public class ToothlessWingController : MonoBehaviour
                     foldedRotation = boneCache[boneName].localRotation    // Will be set when captured
                 };
                 leftWingBones.Add(boneData);
-                Debug.Log($"Added left wing bone: {boneName}");
+                // Debug.Log($"Added left wing bone: {boneName}");
             }
             else
             {
-                Debug.LogWarning($"Left wing bone not found: {boneName}");
+                // Debug.LogWarning($"Left wing bone not found: {boneName}");
             }
         }
 
@@ -180,15 +180,15 @@ public class ToothlessWingController : MonoBehaviour
                     foldedRotation = boneCache[boneName].localRotation    // Will be set when captured
                 };
                 rightWingBones.Add(boneData);
-                Debug.Log($"Added right wing bone: {boneName}");
+                // Debug.Log($"Added right wing bone: {boneName}");
             }
             else
             {
-                Debug.LogWarning($"Right wing bone not found: {boneName}");
+                // Debug.LogWarning($"Right wing bone not found: {boneName}");
             }
         }
 
-        Debug.Log($"Setup complete: {leftWingBones.Count} left bones, {rightWingBones.Count} right bones");
+        // Debug.Log($"Setup complete: {leftWingBones.Count} left bones, {rightWingBones.Count} right bones");
     }
 
     void LateUpdate()
@@ -280,7 +280,7 @@ public class ToothlessWingController : MonoBehaviour
     {
         if (!isInitialized)
         {
-            Debug.LogWarning("Initialize first!");
+            // Debug.LogWarning("Initialize first!");
             return;
         }
 
@@ -294,14 +294,14 @@ public class ToothlessWingController : MonoBehaviour
             bone.extendedRotation = bone.bone.localRotation;
         }
 
-        Debug.Log("✓ Captured EXTENDED wing pose!");
+        // Debug.Log("✓ Captured EXTENDED wing pose!");
     }
 
     public void CaptureFoldedPose()
     {
         if (!isInitialized)
         {
-            Debug.LogWarning("Initialize first!");
+            // Debug.LogWarning("Initialize first!");
             return;
         }
 
@@ -315,7 +315,7 @@ public class ToothlessWingController : MonoBehaviour
             bone.foldedRotation = bone.bone.localRotation;
         }
 
-        Debug.Log("✓ Captured FOLDED wing pose!");
+        // Debug.Log("✓ Captured FOLDED wing pose!");
     }
 
     // Public API methods

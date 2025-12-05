@@ -24,6 +24,6 @@ public class GameManager : MonoBehaviour
         IsHost = isHost;
         IsClient = !isHost;
         string playerType = isHost ? "HOST (Dragon)" : "CLIENT (Rider)";
-        Debug.Log($"GameManager: Player type set to {playerType}");
+        // Debug.Log($"GameManager: Player type set to {playerType}");
     }
 }
