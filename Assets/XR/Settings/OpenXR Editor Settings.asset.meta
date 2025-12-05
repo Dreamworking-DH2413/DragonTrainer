@@ -1,8 +1,14 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/XR/Settings/OpenXR Editor Settings.asset.meta
 guid: e6f02e26921660d488c0167899e83b91
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000
+========
+guid: 4c23e746e9bebfe47a747ff6d727a96f
+PrefabImporter:
+  externalObjects: {}
+>>>>>>>> timer:Assets/Prefabs/RingSystemManager.prefab.meta
   userData: 
   assetBundleName: 
   assetBundleVariant: 

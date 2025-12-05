@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/XR/Settings/OpenXR Package Settings.asset.meta
+guid: 39c4cd2fe0bde81459cfc3779d5d0d8a
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+========
+guid: 2e964124868dfce4bbb91f2eaa240929
+PrefabImporter:
+  externalObjects: {}
+>>>>>>>> timer:Assets/Prefabs/Timer.prefab.meta
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

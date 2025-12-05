@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4311710378485469977}
   - component: {fileID: 7770919896816719134}
   - component: {fileID: 4932729865215981382}
+  - component: {fileID: 7258907667427674824}
   m_Layer: 0
   m_Name: Terrain
   m_TagString: Untagged
@@ -137,3 +138,20 @@ MonoBehaviour:
   minTreeHeight: 100
   maxTreeHeight: 200
   treeSizeRange: {x: 0.8, y: 1.5}
+--- !u!114 &7258907667427674824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2511787714671051367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2f89a05ed2d0aa459a53bd519959da6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ringPrefab: {fileID: 4085767035716779606, guid: 0498659152178fd46b9d31dd7439f750, type: 3}
+  spawnChance: 0.15
+  heightAboveTerrain: 20
+  randomOffsetRange: 10
+  ringSystemManager: {fileID: 0}

@@ -45,10 +45,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ringPrefab: {fileID: 4085767035716779606, guid: 0498659152178fd46b9d31dd7439f750, type: 3}
-  initialRingsAhead: 10
+  courseLength: 3
+  spawnStartRingOnInit: 0
   ringSpacing: 200
   pathWidth: 40
   pathHeight: 30
   activeRingColor: {r: 1, g: 0.0077953134, b: 0, a: 1}
   inactiveRingColor: {r: 1, g: 1, b: 1, a: 1}
+  startRingColor: {r: 0, g: 1, b: 1, a: 1}
   emissionIntensity: 5
+  timerManager: {fileID: 0}
