@@ -19,13 +19,18 @@ public class Herd : MonoBehaviour
         {
             GameObject p = GameObject.Find("FallbackObjects"); // Use Find by name instead
             if (p != null) player = p.transform;
+            else
+            {
+                Debug.Log("M E G A F A I L");
+
+            }
         }
         
         sheepAmount = Mathf.FloorToInt(Random.value*maxSheepAmount)+minSheepAmount;      
     //spawn sheep in random positions within spawningRadius
         for (int i = 0; i < sheepAmount; i++)
         { //y should be a bit above ground level dropping the sheep down to avoid spawning inside the terrain
-            Vector3 pos = new Vector3(Random.Range(-spawningRadius, spawningRadius), 250.0f, Random.Range(-spawningRadius, spawningRadius));
+            Vector3 pos = new Vector3(Random.Range(-spawningRadius, spawningRadius), 10.0f, Random.Range(-spawningRadius, spawningRadius));
             //sheep will be child of this herd object/thus be destroyed with the herd when tile is destroyed
             var go = Instantiate(sheepPrefab, this.transform.position + pos, Quaternion.identity, this.transform);
             Boids boid = go.GetComponent<Boids>();

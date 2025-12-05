@@ -28,7 +28,7 @@ public class ProceduralTerrain : MonoBehaviour
 
     [Header("Water")]
     public Material waterMaterial;
-    public float waterHeight = 0f;
+    public float waterHeight = 100f;
     public float waterOverlapMargin = 0.001f;
 
     [Header("Tree Generation")]
@@ -96,13 +96,15 @@ public class ProceduralTerrain : MonoBehaviour
         ApplyTextureSplatmap();
         CreateOrUpdateWaterPlane();
         GenerateTrees();
-        //Spawn sheep herd with 1 in X chance
-        int rng = Random.Range(0,oneInXSheep+1);
-        if(rng>=oneInXSheep-1) //1 in X chance to spawn a herd at all
+        // Calculate center of terrain tile
+        Vector3 center = transform.position + new Vector3(terrainSizeX * 0.5f, 0f, terrainSizeZ * 0.5f); //corner + half size
+        float terrainY = _terrain.SampleHeight(center) + _terrain.transform.position.y; //local origin height + worldspace height
+        int rng = Random.Range(0, oneInXSheep + 1);
+        center.y = terrainY;
+        if (rng >= oneInXSheep - 1 && terrainY > waterHeight+3.0f) //spawn only on land with some margin
         {
-            Debug.Log(rng);
-            //Herd object will be child of this terrain tile/thus be destroyed with the tile
-            Instantiate(Herd, this.transform.position, Quaternion.identity, this.transform);        
+            //Debug.Log($"Spawning herd, rng={rng}, terrainY={terrainY}");
+            Instantiate(Herd, center, Quaternion.identity, this.transform);
         }
     }
 

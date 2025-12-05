@@ -22,11 +22,20 @@ public class TerrainStreamer : MonoBehaviour
     [Header("Noise Domain")]
     public float noiseDomainShift = 10000f;
 
+    [Header("Tree Generation")]
+    public bool generateTrees = true;
+    public bool generateTreesOnlyInPlayMode = true;
+
     readonly Dictionary<Vector2Int, ProceduralTerrain> tiles = new();
     readonly Queue<Vector2Int> _spawnQueue = new();
     readonly HashSet<Vector2Int> _pendingTiles = new();
 
     Vector3 lastUpdatePos;
+
+#if UNITY_EDITOR
+    bool _prevGenerateTrees;
+    bool _prevGenerateTreesOnlyInPlayMode;
+#endif
 
     void OnEnable()
     {
@@ -157,7 +166,24 @@ public class TerrainStreamer : MonoBehaviour
 
         pt.noiseOffset = globalNoiseOffset + new Vector2(nxBase, nzBase);
 
+        // Set tree generation flag based on streamer settings
+        bool shouldGenerateTrees = generateTrees && (!generateTreesOnlyInPlayMode || Application.isPlaying);
+        
+        // Temporarily disable tree generation if needed
+        GameObject[] originalTreePrefabs = null;
+        if (!shouldGenerateTrees && pt.treePrefabs != null && pt.treePrefabs.Length > 0)
+        {
+            originalTreePrefabs = pt.treePrefabs;
+            pt.treePrefabs = new GameObject[0];
+        }
+
         pt.Generate();
+        
+        // Restore tree prefabs
+        if (originalTreePrefabs != null)
+        {
+            pt.treePrefabs = originalTreePrefabs;
+        }
 
         tiles[coord] = pt;
     }
@@ -257,10 +283,24 @@ public class TerrainStreamer : MonoBehaviour
     {
         if (!Application.isPlaying)
         {
+            bool treeSettingsChanged = (_prevGenerateTrees != generateTrees) || 
+                                      (_prevGenerateTreesOnlyInPlayMode != generateTreesOnlyInPlayMode);
+            
+            _prevGenerateTrees = generateTrees;
+            _prevGenerateTreesOnlyInPlayMode = generateTreesOnlyInPlayMode;
+
             EditorApplication.delayCall += () =>
             {
                 if (this == null) return;
-                ApplyHeightOffsetToExisting();
+                
+                if (treeSettingsChanged)
+                {
+                    RegenerateAllChunks();
+                }
+                else
+                {
+                    ApplyHeightOffsetToExisting();
+                }
             };
         }
     }

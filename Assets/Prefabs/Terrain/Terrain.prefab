@@ -123,7 +123,7 @@ MonoBehaviour:
   blendRange: 5
   textureTileSize: 6
   waterMaterial: {fileID: 2100000, guid: 141d9d6ca43b6c843965491604c6deff, type: 2}
-  waterHeight: 0
+  waterHeight: 100
   waterOverlapMargin: 0.001
   treePrefabs:
   - {fileID: 8611277020438068099, guid: b80fef45eeec8094d98f40312d14d44a, type: 3}
