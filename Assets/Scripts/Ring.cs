@@ -93,7 +93,7 @@ public class Ring : MonoBehaviour
     {
         
         if (other.CompareTag("Player"))
-        {            
+        {        
             if (isStartRing)
             {
                 Debug.Log("Start ring passed! Course beginning...");
@@ -101,6 +101,7 @@ public class Ring : MonoBehaviour
             }
             else if (isActive)
             {
+                
                 Debug.Log($"Active ring {ringIndex} passed through!");
                 manager.OnRingPassed(ringIndex, isLastRing);
             }
@@ -112,7 +113,6 @@ public class Ring : MonoBehaviour
         }
     }
     
-    // Optional: Add pulsing animation for active ring
     void Update()
     {
         if (isActive || isStartRing)

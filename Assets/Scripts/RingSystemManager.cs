@@ -19,7 +19,10 @@ public class RingSystemManager : MonoBehaviour
     
     [Header("Timer Integration")]
     public TimerManager timerManager;
-    
+
+    public AudioClip ringPassSound;
+    public AudioClip finalRingPassSound;
+    private GameObject player;
     private Queue<Ring> activeRings = new Queue<Ring>();
     private List<Ring> allCourseRings = new List<Ring>();
     private List<Ring> allStartRings = new List<Ring>(); // Track all start rings
@@ -30,9 +33,16 @@ public class RingSystemManager : MonoBehaviour
     public bool courseStarted = false;
     private bool courseCompleted = false;
     private Ring startRing;
-    
+
     void Start()
     {
+        AudioClip ringPassSound = Resources.Load<AudioClip>("Sound/SFX/FlyThroughRing");
+        AudioClip finalRingPassSound = Resources.Load<AudioClip>("Sound/SFX/FinalRing");
+        player = GameObject.FindGameObjectWithTag("Player");
+        if (player == null)
+        {
+            Debug.LogWarning("Player not found! Make sure player GameObject is tagged as 'Player'");
+        }
         nextRingPosition = transform.position;
         
         // Only generate start ring if not using terrain spawner
@@ -66,6 +76,9 @@ public class RingSystemManager : MonoBehaviour
     public void OnStartRingPassed(Ring passedStartRing)
     {
         courseStarted = true;
+        Vector3 soundPosition = player != null ? player.transform.position : passedStartRing.transform.position;
+        AudioSource.PlayClipAtPoint(ringPassSound, soundPosition);
+
         // Destroy all other start rings
         foreach (Ring sr in allStartRings)
         {
@@ -131,9 +144,9 @@ public class RingSystemManager : MonoBehaviour
             nextRingPosition += upDirection * Random.Range(-pathHeight * 0.5f, pathHeight * 0.5f);
             
             // Ensure rings stay above a minimum height (adjust this value as needed)
-            if (nextRingPosition.y < 10f)
+            if (nextRingPosition.y < 50f)
             {
-                nextRingPosition.y = 10f + Random.Range(0f, pathHeight);
+                nextRingPosition.y = 50f + Random.Range(0f, pathHeight);
             }
             
             // Apply additional random rotation to each ring for visual variety
@@ -169,12 +182,17 @@ public class RingSystemManager : MonoBehaviour
             
            //Debug.Log($"Ring {ringIndex + 1}/{courseLength} passed! Total hits: {ringsPassedThrough}");
             
+            Ring currentRing = allCourseRings[ringIndex];
+            Vector3 soundPosition = player != null ? player.transform.position : currentRing.transform.position;
+            
             if (isLastRing)
             {
+                AudioSource.PlayClipAtPoint(finalRingPassSound, soundPosition);
                 CompleteCourse();
             }
             else
             {
+                AudioSource.PlayClipAtPoint(ringPassSound, soundPosition);
                 // Activate next ring
                 if (currentActiveRingIndex < allCourseRings.Count)
                 {

@@ -4847,6 +4847,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c641b897d8e699046b129166c32ce7af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ringPassSound: {fileID: 8300000, guid: 39add1cde5f29d34daeb250470fcbeed, type: 3}
 --- !u!135 &3546430416027281981
 SphereCollider:
   m_ObjectHideFlags: 0
