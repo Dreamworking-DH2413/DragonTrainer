@@ -19,8 +19,14 @@ public class DragonGliderPhysics : MonoBehaviour
     [Header("Forward Thrust")]
     public float glideThrust = 15f;
 
+    [Header("VR Player Follow")]
+    public Vector3 dragonHeadOffset = new Vector3(0, 2f, 1.5f);  // Offset for host (dragon's head/eyes position)
+    public Vector3 riderOffset = new Vector3(0, 1.5f, 0);        // Offset for client (rider on dragon's back)
+    public bool rotatePlayerWithDragon = true;                    // Whether player rotates with dragon
+
     Rigidbody rb;
     GliderSurface_Controller surfaces;
+    private Transform playerTransform;
 
     void Awake()
     {
@@ -30,6 +36,18 @@ public class DragonGliderPhysics : MonoBehaviour
         // Make sure physics isn't super wild
         rb.linearDamping = 0.1f;
         rb.angularDamping = 2f;   // helps stop spinning
+
+        // Find the Player object in the scene
+        GameObject playerObject = GameObject.Find("Player");
+        if (playerObject != null)
+        {
+            playerTransform = playerObject.transform;
+            Debug.Log("DragonGliderPhysics: Found Player object");
+        }
+        else
+        {
+            Debug.LogWarning("DragonGliderPhysics: Player object not found in scene!");
+        }
     }
 
     void FixedUpdate()
@@ -72,6 +90,33 @@ public class DragonGliderPhysics : MonoBehaviour
             // drag
             Vector3 drag = -velocity.normalized * dragCoefficient * speed * speed;
             rb.AddForce(drag, ForceMode.Force);
+        }
+
+        // 6) Update player position to follow dragon
+        UpdateVRPlayerPosition();
+    }
+
+    private void UpdateVRPlayerPosition()
+    {
+        if (playerTransform == null)
+            return;
+
+        // Determine which offset to use based on player type from GameManager
+        bool isHost = GameManager.Instance != null && GameManager.Instance.IsHost;
+        Vector3 playerOffset = isHost ? dragonHeadOffset : riderOffset;
+
+        // Position Player relative to the dragon in LOCAL space
+        // The player offset is applied in the dragon's local coordinate system
+        Vector3 worldOffset = transform.TransformDirection(playerOffset);
+        Vector3 targetPosition = transform.position + worldOffset;
+        
+        playerTransform.position = targetPosition;
+
+        // Rotate the Player with the dragon if enabled
+        if (rotatePlayerWithDragon)
+        {
+            // Match the dragon's rotation exactly so the player experiences all the rolls, pitches, and yaws
+            playerTransform.rotation = transform.rotation;
         }
     }
 }
