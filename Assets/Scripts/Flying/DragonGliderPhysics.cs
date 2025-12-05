@@ -17,7 +17,11 @@ public class DragonGliderPhysics : MonoBehaviour
     public float angularDamping = 2f;        // stabilizing torque
 
     [Header("Forward Thrust")]
-    public float glideThrust = 15f;
+    private float glideThrust = 0.0f;
+    public float maxThrust = 10000f;
+    public float minThrust = 100f;
+    public float thrustMultiplier = 500f;
+    
 
     [Header("VR Player Follow")]
     public Vector3 dragonHeadOffset = new Vector3(0, 2f, 1.5f);  // Offset for host (dragon's head/eyes position)
@@ -118,5 +122,11 @@ public class DragonGliderPhysics : MonoBehaviour
             // Match the dragon's rotation exactly so the player experiences all the rolls, pitches, and yaws
             playerTransform.rotation = transform.rotation;
         }
+    }
+
+    public void SetThrustByVelocity(float avgVelocityY)
+    {
+        float thrust = Mathf.Clamp(-avgVelocityY * thrustMultiplier, minThrust, maxThrust);
+        glideThrust = thrust;
     }
 }

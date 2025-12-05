@@ -111,12 +111,15 @@ public class VRRig : MonoBehaviour
             startRightTrackerLocalPosition = rightTrackerLocalPos;
             
             // if the Y velocity is greater than a threshold, we call a function to trigger the wing flap and move the dragon up
-            if (leftTrackerVelocity.y < -1.0f || rightTrackerVelocity.y < -1.0f)
+            if (leftTrackerVelocity.y < -0.0f || rightTrackerVelocity.y < -0.0f)
             {
                 Debug.Log("[VRRig] Left tracker velocity: " + leftTrackerVelocity.ToString("F3"));
                 Debug.Log("[VRRig] Tracker flap detected.");
+                // avg velocity of both trackers
+                float avgVelocityY = (leftTrackerVelocity.y + rightTrackerVelocity.y) / 2.0f;
+            
                 // Call function to trigger left wing flap
-                dragon.GetComponent<DragonControl>().RequestFlap();
+                // dragon.GetComponent<DragonGliderPhysics>().SetThrustByVelocity(avgVelocityY);
             }
         }
     }
