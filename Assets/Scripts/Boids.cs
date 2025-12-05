@@ -134,6 +134,13 @@ public class Boids : MonoBehaviour
     
     void calcPredatorForce()
     {
+        // Check if player reference is assigned
+        if (player == null)
+        {
+            predatorForce = Vector3.zero;
+            status["hunted"] = false;
+            return;
+        }
         
         Vector3 dstToPredator = player.position - transform.position;
         //dstToPredator.y = 0f; dst also depend on height

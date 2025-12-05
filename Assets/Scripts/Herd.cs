@@ -17,7 +17,7 @@ public class Herd : MonoBehaviour
         // Auto-find player if not assigned in Inspector
         if (player == null)
         {
-            GameObject p = GameObject.Find("FallbackObjects"); // Use Find by name instead
+            GameObject p = GameObject.Find("Player"); // Use Find by name instead
             if (p != null) player = p.transform;
             else
             {

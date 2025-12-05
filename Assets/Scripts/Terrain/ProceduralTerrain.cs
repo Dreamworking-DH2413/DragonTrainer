@@ -288,10 +288,15 @@ public class ProceduralTerrain : MonoBehaviour
                     continue;
 
                 // Select tree prefab deterministically based on position
-                int treeIndex = Mathf.FloorToInt(NoiseAt(
+                float noiseValue = NoiseAt(
                     (worldX + terrainPos.x) * 0.01f + noiseOffset.x + 5000f,
                     (worldZ + terrainPos.z) * 0.01f + noiseOffset.y + 5000f
-                ) * treePrefabs.Length) % treePrefabs.Length;
+                );
+                int treeIndex = Mathf.Abs(Mathf.FloorToInt(noiseValue * treePrefabs.Length)) % treePrefabs.Length;
+                
+                // Additional safety check
+                if (treeIndex < 0 || treeIndex >= treePrefabs.Length)
+                    continue;
 
                 GameObject treePrefab = treePrefabs[treeIndex];
                 if (treePrefab == null)
