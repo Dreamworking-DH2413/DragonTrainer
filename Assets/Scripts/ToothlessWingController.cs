@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Animations.Rigging;
 
 /// <summary>
 /// Simple wing controller for Toothless that uses the imported bone hierarchy
@@ -49,10 +50,22 @@ public class ToothlessWingController : MonoBehaviour
     
     [Tooltip("How smoothly curve changes blend")]
     public float curveBlendSpeed = 3f;
+    
+    [Header("Debug")]
+    [Tooltip("Show debug info in console")]
+    public bool showDebugInfo = false;
+    
+    [Header("Manual Curve Test")]
+    [Range(-90f, 90f)]
+    [Tooltip("Manual curve override for testing (only works when automaticControl is OFF)")]
+    public float manualCurveTest = 0f;
 
     [Header("Setup")]
     public Transform armatureRoot;
     public bool autoFindArmature = true;
+    
+    [Tooltip("RigBuilder component - will auto-find if not assigned")]
+    public RigBuilder rigBuilder;
     
     [Header("IK Compatibility")]
     [Tooltip("Skip animating shoulder, elbow, and forearm bones - let IK control them for flapping")]
@@ -103,8 +116,17 @@ public class ToothlessWingController : MonoBehaviour
     // Cached bone references for curve application
     private Transform leftWristBone;
     private Transform rightWristBone;
+    private Transform leftForearmBone;
+    private Transform rightForearmBone;
     private Transform leftShoulderBone;
     private Transform rightShoulderBone;
+    
+    // Store base rotations to apply curve additively
+    private Quaternion leftWristBaseRotation;
+    private Quaternion rightWristBaseRotation;
+    private Quaternion leftForearmBaseRotation;
+    private Quaternion rightForearmBaseRotation;
+    private bool rotationsCaptured = false;
 
     // Wing bone names from Blender
     private string[] leftWingBoneNames = new string[] {
@@ -121,6 +143,16 @@ public class ToothlessWingController : MonoBehaviour
     {
         Initialize();
         AutoFindTargetsIfNeeded();
+        
+        // Find RigBuilder if not assigned
+        if (rigBuilder == null)
+        {
+            rigBuilder = GetComponent<RigBuilder>();
+            if (rigBuilder != null)
+            {
+                Debug.Log("Auto-found RigBuilder component");
+            }
+        }
     }
 
     void Update()
@@ -183,6 +215,11 @@ public class ToothlessWingController : MonoBehaviour
             float verticalOffset = leftWingTarget.position.y - leftShoulderBone.position.y;
             float targetCurve = CalculateCurveAmount(verticalOffset);
             currentLeftCurve = Mathf.Lerp(currentLeftCurve, targetCurve, Time.deltaTime * curveBlendSpeed);
+
+            if (showDebugInfo && Time.frameCount % 30 == 0) // Log every 30 frames
+            {
+                Debug.Log($"Left Wing - Distance: {distance:F2}, Fold: {currentLeftFold:F2}, VertOffset: {verticalOffset:F2}, Curve: {currentLeftCurve:F2}");
+            }
         }
 
         // Update right wing
@@ -225,15 +262,21 @@ public class ToothlessWingController : MonoBehaviour
         // Negative offset = target below shoulder = downstroke = forward curve (positive)
         // Positive offset = target above shoulder = upstroke = backward curve (negative)
         
+        // Use a more aggressive multiplier to map vertical offset to curve amount
+        // Typical vertical offset might be 0.5-2.0 units, so multiply to reach the max curve values
+        float sensitivity = 10f; // How sensitive to vertical movement
+        
         if (verticalOffset < 0)
         {
-            // Downstroke - forward cup
-            return Mathf.Clamp(Mathf.Abs(verticalOffset) * 2f, 0f, downstrokeCurve);
+            // Downstroke - forward cup (positive degrees)
+            float curveAmount = Mathf.Abs(verticalOffset) * sensitivity;
+            return Mathf.Clamp(curveAmount, 0f, downstrokeCurve);
         }
         else
         {
-            // Upstroke - backward bend
-            return Mathf.Clamp(-verticalOffset * 2f, -upstrokeCurve, 0f);
+            // Upstroke - backward bend (negative degrees)
+            float curveAmount = verticalOffset * sensitivity;
+            return Mathf.Clamp(-curveAmount, -upstrokeCurve, 0f);
         }
     }
 
@@ -332,11 +375,15 @@ public class ToothlessWingController : MonoBehaviour
 
         // Debug.Log($"Setup complete: {leftWingBones.Count} left bones, {rightWingBones.Count} right bones");
 
-        // Cache wrist and shoulder bones for automatic control
+        // Cache wrist, forearm, and shoulder bones for automatic control
         if (boneCache.ContainsKey("WingWrist.L"))
             leftWristBone = boneCache["WingWrist.L"];
         if (boneCache.ContainsKey("WingWrist.R"))
             rightWristBone = boneCache["WingWrist.R"];
+        if (boneCache.ContainsKey("WingForeArm.L"))
+            leftForearmBone = boneCache["WingForeArm.L"];
+        if (boneCache.ContainsKey("WingForeArm.R"))
+            rightForearmBone = boneCache["WingForeArm.R"];
         if (boneCache.ContainsKey("WingShoulder.L"))
             leftShoulderBone = boneCache["WingShoulder.L"];
         if (boneCache.ContainsKey("WingShoulder.R"))
@@ -347,33 +394,9 @@ public class ToothlessWingController : MonoBehaviour
     {
         if (!isInitialized) return;
 
-        // Animate wings (fingers)
+        // Animate wings - curve is now integrated into the finger animation
         AnimateWing(leftWingBones, leftWingFold);
         AnimateWing(rightWingBones, rightWingFold);
-
-        // Apply natural curve to wrists (happens after IK)
-        if (automaticControl)
-        {
-            ApplyNaturalCurve();
-        }
-    }
-
-    void ApplyNaturalCurve()
-    {
-        // Apply subtle wrist rotation for natural wing flex
-        if (leftWristBone != null)
-        {
-            // Apply curve as additional local rotation (additive to IK result)
-            Quaternion curveRotation = Quaternion.Euler(currentLeftCurve, 0, 0);
-            leftWristBone.localRotation *= curveRotation;
-        }
-
-        if (rightWristBone != null)
-        {
-            // Apply curve as additional local rotation (additive to IK result)
-            Quaternion curveRotation = Quaternion.Euler(currentRightCurve, 0, 0);
-            rightWristBone.localRotation *= curveRotation;
-        }
     }
 
     void AnimateWing(List<WingBoneData> bones, float foldAmount)
@@ -400,9 +423,58 @@ public class ToothlessWingController : MonoBehaviour
         }
     }
 
+    // Cache for child bone base rotations to avoid spinning
+    private Dictionary<Transform, Quaternion> childBoneBaseRotations = new Dictionary<Transform, Quaternion>();
+
+    void ApplyCurveToChildBones(Transform parentBone, float baseCurveDegrees)
+    {
+        // Apply progressive curve to child bones (finger segments)
+        // Each segment gets a portion of the total curve for smooth bending
+        int childIndex = 0;
+        foreach (Transform child in parentBone)
+        {
+            // Skip non-bone children
+            if (!child.name.StartsWith("Bone.")) continue;
+            
+            // Store base rotation on first encounter
+            if (!childBoneBaseRotations.ContainsKey(child))
+            {
+                childBoneBaseRotations[child] = child.localRotation;
+            }
+            
+            childIndex++;
+            
+            // Distribute curve across segments: 30% -> 40% -> 30%
+            float segmentMultiplier;
+            if (childIndex == 1)
+                segmentMultiplier = 0.3f; // First segment
+            else if (childIndex == 2)
+                segmentMultiplier = 0.4f; // Middle segment (most curve)
+            else
+                segmentMultiplier = 0.3f; // Final segment
+            
+            float segmentCurve = baseCurveDegrees * segmentMultiplier;
+            Quaternion curveRot = Quaternion.Euler(segmentCurve, 0, 0);
+            
+            // Apply curve to the BASE rotation, not the current rotation
+            child.localRotation = childBoneBaseRotations[child] * curveRot;
+        }
+    }
+
     void AnimateWingProcedural(List<WingBoneData> bones, float foldAmount)
     {
         bool isLeftWing = bones.Count > 0 && bones[0].boneName.Contains(".L");
+        
+        // Use manual curve test when automatic control is off
+        float curveAmount;
+        if (!automaticControl)
+        {
+            curveAmount = manualCurveTest;
+        }
+        else
+        {
+            curveAmount = isLeftWing ? currentLeftCurve : currentRightCurve;
+        }
 
         foreach (var boneData in bones)
         {
@@ -444,7 +516,19 @@ public class ToothlessWingController : MonoBehaviour
                 float fingerSpacing = isLeftWing ? leftFingerSpacing : rightFingerSpacing;
                 float fingerFold = (fingerSpread + (fingerNum * fingerSpacing)) * foldAmount;
                 
-                foldRotation = baseRotation * Quaternion.Euler(0, 0, fingerFold);
+                // Calculate curve for this finger
+                // Bone 1 = farthest from body (outer edge) = maximum curve (2.0x)
+                // Bone 6 = closest to body = minimal curve (0.1x)
+                // So we reverse the lerp
+                float fingerCurveMultiplier = Mathf.Lerp(2.0f, 0.1f, (fingerNum - 1) / 5.0f);
+                float baseCurveDegrees = curveAmount * 3.0f * fingerCurveMultiplier;
+                
+                // Apply curve to this bone (first segment of finger)
+                Quaternion curveRotation = Quaternion.Euler(baseCurveDegrees * 0.3f, 0, 0);
+                foldRotation = baseRotation * curveRotation * Quaternion.Euler(0, 0, fingerFold);
+                
+                // Apply progressive curve to child bones for smooth bend
+                ApplyCurveToChildBones(boneData.bone, baseCurveDegrees);
             }
 
             boneData.bone.localRotation = foldRotation;
@@ -543,6 +627,10 @@ public class ToothlessWingController : MonoBehaviour
         leftWingFold = targetLeft;
         rightWingFold = targetRight;
     }
+
+    // Public getters for editor display
+    public float GetCurrentLeftCurve() => currentLeftCurve;
+    public float GetCurrentRightCurve() => currentRightCurve;
 }
 
 #if UNITY_EDITOR
@@ -577,8 +665,8 @@ public class ToothlessWingControllerEditor : UnityEditor.Editor
 
             // Show debug info
             UnityEditor.EditorGUILayout.LabelField("Current State:", UnityEditor.EditorStyles.boldLabel);
-            UnityEditor.EditorGUILayout.LabelField($"Left Fold: {controller.leftWingFold:F2}");
-            UnityEditor.EditorGUILayout.LabelField($"Right Fold: {controller.rightWingFold:F2}");
+            UnityEditor.EditorGUILayout.LabelField($"Left Fold: {controller.leftWingFold:F2} | Curve: {controller.GetCurrentLeftCurve():F2}°");
+            UnityEditor.EditorGUILayout.LabelField($"Right Fold: {controller.rightWingFold:F2} | Curve: {controller.GetCurrentRightCurve():F2}°");
             
             if (controller.leftWingTarget == null || controller.rightWingTarget == null)
             {
