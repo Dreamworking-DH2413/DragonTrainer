@@ -28,6 +28,11 @@ public class VRRig : MonoBehaviour
     private Vector3 startRightOuterWingLocal;
     private Vector3 startLeftTrackerLocalPosition;
     private Vector3 startRightTrackerLocalPosition;
+    
+    // Smoothed target positions to reduce choppiness
+    private Vector3 smoothedLeftTargetPos;
+    private Vector3 smoothedRightTargetPos;
+    private bool isInitialized = false;
 
     void Start()
     {
@@ -66,34 +71,53 @@ public class VRRig : MonoBehaviour
     {
         if (tracker1 && leftWingTarget && targetsParent)
         {
-            // Convert tracker world position to targetsParent's local space
             Vector3 trackerLocalPos = transform.InverseTransformPoint(tracker1.position);
             
-            // Apply offsets in local space with multiplied x-axis movement
+            // Calculate desired position in local space with multiplied x-axis movement
             Vector3 targetLocalPos = new Vector3(
                 (trackerLocalPos.x * wingMovementMultiplier) - wingSpanCompensation,
                 trackerLocalPos.y * 10 + 0.25f,
                 trackerLocalPos.z - headToBodyCompensation
             );
             
-            // Convert back to world space and apply
-            leftWingTarget.position = targetsParent.TransformPoint(targetLocalPos);
+            // Convert to world space
+            Vector3 desiredWorldPos = targetsParent.TransformPoint(targetLocalPos);
+            
+            // Initialize smoothed position on first frame
+            if (!isInitialized)
+            {
+                smoothedLeftTargetPos = desiredWorldPos;
+            }
+            
+            // Smoothly interpolate to reduce choppiness
+            smoothedLeftTargetPos = Vector3.Lerp(smoothedLeftTargetPos, desiredWorldPos, Time.deltaTime * followSpeed);
+            leftWingTarget.position = smoothedLeftTargetPos;
         }
 
         if (tracker2 && rightWingTarget && targetsParent)
         {
-            // Convert tracker world position to targetsParent's local space
             Vector3 trackerLocalPos = transform.InverseTransformPoint(tracker2.position);
             
-            // Apply offsets in local space with multiplied x-axis movement
+            // Calculate desired position in local space with multiplied x-axis movement
             Vector3 targetLocalPos = new Vector3(
                 (trackerLocalPos.x * wingMovementMultiplier) + wingSpanCompensation,
                 trackerLocalPos.y * 10 + 0.25f,
                 trackerLocalPos.z - headToBodyCompensation
             );
             
-            // Convert back to world space and apply
-            rightWingTarget.position = targetsParent.TransformPoint(targetLocalPos);
+            // Convert to world space
+            Vector3 desiredWorldPos = targetsParent.TransformPoint(targetLocalPos);
+            
+            // Initialize smoothed position on first frame
+            if (!isInitialized)
+            {
+                smoothedRightTargetPos = desiredWorldPos;
+                isInitialized = true;
+            }
+            
+            // Smoothly interpolate to reduce choppiness
+            smoothedRightTargetPos = Vector3.Lerp(smoothedRightTargetPos, desiredWorldPos, Time.deltaTime * followSpeed);
+            rightWingTarget.position = smoothedRightTargetPos;
         }
     }
 
