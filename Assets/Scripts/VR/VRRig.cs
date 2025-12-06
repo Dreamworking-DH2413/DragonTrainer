@@ -12,6 +12,7 @@ public class VRRig : MonoBehaviour
     public Transform tracker2;
 
     public Transform dragon;
+    public Transform targetsParent;
     public Transform leftWingTarget;
     public Transform rightWingTarget;
 
@@ -63,36 +64,36 @@ public class VRRig : MonoBehaviour
 
     void Update()
     {
-        if (tracker1 && leftWingTarget && dragon)
+        if (tracker1 && leftWingTarget && targetsParent)
         {
-            // Convert tracker world position to dragon's local space
-            Vector3 trackerLocalPos = dragon.InverseTransformPoint(tracker1.position);
+            // Convert tracker world position to targetsParent's local space
+            Vector3 trackerLocalPos = transform.InverseTransformPoint(tracker1.position);
             
             // Apply offsets in local space with multiplied x-axis movement
             Vector3 targetLocalPos = new Vector3(
                 (trackerLocalPos.x * wingMovementMultiplier) - wingSpanCompensation,
-                trackerLocalPos.y * 10,
+                trackerLocalPos.y * 10 + 0.25f,
                 trackerLocalPos.z - headToBodyCompensation
             );
             
             // Convert back to world space and apply
-            leftWingTarget.position = dragon.TransformPoint(targetLocalPos);
+            leftWingTarget.position = targetsParent.TransformPoint(targetLocalPos);
         }
 
-        if (tracker2 && rightWingTarget && dragon)
+        if (tracker2 && rightWingTarget && targetsParent)
         {
-            // Convert tracker world position to dragon's local space
-            Vector3 trackerLocalPos = dragon.InverseTransformPoint(tracker2.position);
+            // Convert tracker world position to targetsParent's local space
+            Vector3 trackerLocalPos = transform.InverseTransformPoint(tracker2.position);
             
             // Apply offsets in local space with multiplied x-axis movement
             Vector3 targetLocalPos = new Vector3(
                 (trackerLocalPos.x * wingMovementMultiplier) + wingSpanCompensation,
-                trackerLocalPos.y * 10,
+                trackerLocalPos.y * 10 + 0.25f,
                 trackerLocalPos.z - headToBodyCompensation
             );
             
             // Convert back to world space and apply
-            rightWingTarget.position = dragon.TransformPoint(targetLocalPos);
+            rightWingTarget.position = targetsParent.TransformPoint(targetLocalPos);
         }
     }
 
