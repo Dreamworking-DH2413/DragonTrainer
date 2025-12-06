@@ -22,6 +22,8 @@ public class DragonGliderPhysics : MonoBehaviour
     public float minThrust = 100f;
     public float thrustMultiplier = 500f;
     
+    [Header("Debug")]
+    public bool freezeDragon = false;
 
     [Header("VR Player Follow")]
     public Vector3 dragonHeadOffset = new Vector3(0, 2f, 1.5f);  // Offset for host (dragon's head/eyes position)
@@ -56,6 +58,20 @@ public class DragonGliderPhysics : MonoBehaviour
 
     void FixedUpdate()
     {
+        // Debug freeze mode
+        if (freezeDragon)
+        {
+            rb.useGravity = false;
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            UpdateVRPlayerPosition();
+            return;
+        }
+        else
+        {
+            rb.useGravity = true;
+        }
+
         // 1) Update inputs (uses Horizontal/Vertical)
         surfaces.GetInputs();
 

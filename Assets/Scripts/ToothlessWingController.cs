@@ -7,7 +7,11 @@ using System.Collections.Generic;
 /// </summary>
 public class ToothlessWingController : MonoBehaviour
 {
-    [Header("Control")]
+    [Header("Control Mode")]
+    [Tooltip("Enable automatic wing control based on IK target positions")]
+    public bool automaticControl = true;
+    
+    [Header("Manual Control (when automaticControl = false)")]
     [Range(0f, 1f)]
     [Tooltip("0 = Wings Extended, 1 = Wings Folded")]
     public float leftWingFold = 0f;
@@ -18,6 +22,33 @@ public class ToothlessWingController : MonoBehaviour
 
     [Range(0.1f, 5f)]
     public float animationSpeed = 1f;
+
+    [Header("Automatic Control - IK Targets")]
+    [Tooltip("Left wing IK target transform")]
+    public Transform leftWingTarget;
+    
+    [Tooltip("Right wing IK target transform")]
+    public Transform rightWingTarget;
+    
+    [Header("Automatic Control - Folding")]
+    [Tooltip("Distance beyond which wings don't fold at all")]
+    public float foldThresholdDistance = 2.0f;
+    
+    [Tooltip("Distance at which wings are fully folded")]
+    public float minFoldDistance = 0.5f;
+    
+    [Tooltip("How quickly wings respond to distance changes")]
+    public float foldSmoothSpeed = 5f;
+    
+    [Header("Automatic Control - Natural Curve")]
+    [Tooltip("Degrees of forward cup during downstroke (target below shoulder)")]
+    public float downstrokeCurve = 15f;
+    
+    [Tooltip("Degrees of backward bend during upstroke (target above shoulder)")]
+    public float upstrokeCurve = 10f;
+    
+    [Tooltip("How smoothly curve changes blend")]
+    public float curveBlendSpeed = 3f;
 
     [Header("Setup")]
     public Transform armatureRoot;
@@ -63,6 +94,18 @@ public class ToothlessWingController : MonoBehaviour
     private Dictionary<string, Transform> boneCache = new Dictionary<string, Transform>();
     private bool isInitialized = false;
 
+    // Auto-control state
+    private float currentLeftFold = 0f;
+    private float currentRightFold = 0f;
+    private float currentLeftCurve = 0f;
+    private float currentRightCurve = 0f;
+    
+    // Cached bone references for curve application
+    private Transform leftWristBone;
+    private Transform rightWristBone;
+    private Transform leftShoulderBone;
+    private Transform rightShoulderBone;
+
     // Wing bone names from Blender
     private string[] leftWingBoneNames = new string[] {
         "WingShoulder.L", "WingElbow.L", "WingForeArm.L", "WingWrist.L",
@@ -77,6 +120,7 @@ public class ToothlessWingController : MonoBehaviour
     void Start()
     {
         Initialize();
+        AutoFindTargetsIfNeeded();
     }
 
     void Update()
@@ -92,6 +136,104 @@ public class ToothlessWingController : MonoBehaviour
         {
             captureFoldedPose = false;
             CaptureFoldedPose();
+        }
+
+        // Update automatic control
+        if (automaticControl && isInitialized)
+        {
+            UpdateAutomaticControl();
+        }
+    }
+
+    void AutoFindTargetsIfNeeded()
+    {
+        // Auto-find IK targets if not assigned
+        if (leftWingTarget == null)
+        {
+            GameObject targetObj = GameObject.Find("LeftWingTarget");
+            if (targetObj != null)
+            {
+                leftWingTarget = targetObj.transform;
+                Debug.Log("Auto-found LeftWingTarget");
+            }
+        }
+
+        if (rightWingTarget == null)
+        {
+            GameObject targetObj = GameObject.Find("RightWingTarget");
+            if (targetObj != null)
+            {
+                rightWingTarget = targetObj.transform;
+                Debug.Log("Auto-found RightWingTarget");
+            }
+        }
+    }
+
+    void UpdateAutomaticControl()
+    {
+        // Update left wing
+        if (leftWingTarget != null && leftShoulderBone != null)
+        {
+            float distance = Vector3.Distance(leftWingTarget.position, leftShoulderBone.position);
+            float targetFold = CalculateFoldAmount(distance);
+            currentLeftFold = Mathf.Lerp(currentLeftFold, targetFold, Time.deltaTime * foldSmoothSpeed);
+            leftWingFold = currentLeftFold;
+
+            // Calculate curve based on vertical position
+            float verticalOffset = leftWingTarget.position.y - leftShoulderBone.position.y;
+            float targetCurve = CalculateCurveAmount(verticalOffset);
+            currentLeftCurve = Mathf.Lerp(currentLeftCurve, targetCurve, Time.deltaTime * curveBlendSpeed);
+        }
+
+        // Update right wing
+        if (rightWingTarget != null && rightShoulderBone != null)
+        {
+            float distance = Vector3.Distance(rightWingTarget.position, rightShoulderBone.position);
+            float targetFold = CalculateFoldAmount(distance);
+            currentRightFold = Mathf.Lerp(currentRightFold, targetFold, Time.deltaTime * foldSmoothSpeed);
+            rightWingFold = currentRightFold;
+
+            // Calculate curve based on vertical position
+            float verticalOffset = rightWingTarget.position.y - rightShoulderBone.position.y;
+            float targetCurve = CalculateCurveAmount(verticalOffset);
+            currentRightCurve = Mathf.Lerp(currentRightCurve, targetCurve, Time.deltaTime * curveBlendSpeed);
+        }
+    }
+
+    float CalculateFoldAmount(float distance)
+    {
+        // Beyond threshold = no fold
+        if (distance >= foldThresholdDistance)
+        {
+            return 0f;
+        }
+        
+        // At or below min distance = full fold
+        if (distance <= minFoldDistance)
+        {
+            return 1f;
+        }
+        
+        // Linear interpolation between min and threshold
+        float foldRange = foldThresholdDistance - minFoldDistance;
+        float foldAmount = 1f - ((distance - minFoldDistance) / foldRange);
+        return Mathf.Clamp01(foldAmount);
+    }
+
+    float CalculateCurveAmount(float verticalOffset)
+    {
+        // Negative offset = target below shoulder = downstroke = forward curve (positive)
+        // Positive offset = target above shoulder = upstroke = backward curve (negative)
+        
+        if (verticalOffset < 0)
+        {
+            // Downstroke - forward cup
+            return Mathf.Clamp(Mathf.Abs(verticalOffset) * 2f, 0f, downstrokeCurve);
+        }
+        else
+        {
+            // Upstroke - backward bend
+            return Mathf.Clamp(-verticalOffset * 2f, -upstrokeCurve, 0f);
         }
     }
 
@@ -189,15 +331,49 @@ public class ToothlessWingController : MonoBehaviour
         }
 
         // Debug.Log($"Setup complete: {leftWingBones.Count} left bones, {rightWingBones.Count} right bones");
+
+        // Cache wrist and shoulder bones for automatic control
+        if (boneCache.ContainsKey("WingWrist.L"))
+            leftWristBone = boneCache["WingWrist.L"];
+        if (boneCache.ContainsKey("WingWrist.R"))
+            rightWristBone = boneCache["WingWrist.R"];
+        if (boneCache.ContainsKey("WingShoulder.L"))
+            leftShoulderBone = boneCache["WingShoulder.L"];
+        if (boneCache.ContainsKey("WingShoulder.R"))
+            rightShoulderBone = boneCache["WingShoulder.R"];
     }
 
     void LateUpdate()
     {
         if (!isInitialized) return;
 
-        // Animate wings
+        // Animate wings (fingers)
         AnimateWing(leftWingBones, leftWingFold);
         AnimateWing(rightWingBones, rightWingFold);
+
+        // Apply natural curve to wrists (happens after IK)
+        if (automaticControl)
+        {
+            ApplyNaturalCurve();
+        }
+    }
+
+    void ApplyNaturalCurve()
+    {
+        // Apply subtle wrist rotation for natural wing flex
+        if (leftWristBone != null)
+        {
+            // Apply curve as additional local rotation (additive to IK result)
+            Quaternion curveRotation = Quaternion.Euler(currentLeftCurve, 0, 0);
+            leftWristBone.localRotation *= curveRotation;
+        }
+
+        if (rightWristBone != null)
+        {
+            // Apply curve as additional local rotation (additive to IK result)
+            Quaternion curveRotation = Quaternion.Euler(currentRightCurve, 0, 0);
+            rightWristBone.localRotation *= curveRotation;
+        }
     }
 
     void AnimateWing(List<WingBoneData> bones, float foldAmount)
@@ -385,6 +561,37 @@ public class ToothlessWingControllerEditor : UnityEditor.Editor
         if (GUILayout.Button("Initialize"))
         {
             controller.Initialize();
+        }
+
+        UnityEditor.EditorGUILayout.Space();
+        
+        // Show automatic control status
+        if (controller.automaticControl)
+        {
+            UnityEditor.EditorGUILayout.HelpBox(
+                "AUTOMATIC CONTROL ENABLED\n\n" +
+                "Wings will automatically fold/extend based on IK target distance from shoulders.\n" +
+                "Natural curve will be applied based on target vertical position.\n\n" +
+                "Disable 'Automatic Control' above to use manual sliders.",
+                UnityEditor.MessageType.Info);
+
+            // Show debug info
+            UnityEditor.EditorGUILayout.LabelField("Current State:", UnityEditor.EditorStyles.boldLabel);
+            UnityEditor.EditorGUILayout.LabelField($"Left Fold: {controller.leftWingFold:F2}");
+            UnityEditor.EditorGUILayout.LabelField($"Right Fold: {controller.rightWingFold:F2}");
+            
+            if (controller.leftWingTarget == null || controller.rightWingTarget == null)
+            {
+                UnityEditor.EditorGUILayout.HelpBox(
+                    "⚠️ IK Targets not assigned! Assign LeftWingTarget and RightWingTarget references.",
+                    UnityEditor.MessageType.Warning);
+            }
+        }
+        else
+        {
+            UnityEditor.EditorGUILayout.HelpBox(
+                "Manual control mode - use the sliders above to control wing folding.",
+                UnityEditor.MessageType.Info);
         }
 
         UnityEditor.EditorGUILayout.Space();
