@@ -24,6 +24,18 @@ public class VRRig : MonoBehaviour
     public float wingMovementMultiplier = 3.0f;
     public float followSpeed = 20f;
 
+    [Header("Target Position Constraints")]
+    public float minXOutward = -8f;  // How far out each wing can go (negative for left, positive for right)
+    public float maxXInward = -0.5f; // How close to centerline (prevents crossing body)
+    
+    [Header("Y Bounds (interpolated by X position)")]
+    public Vector2 yBoundsAtOutward = new Vector2(-2f, 3f);  // Y bounds when wing is fully extended (at minXOutward)
+    public Vector2 yBoundsAtInward = new Vector2(-1f, 2f);   // Y bounds when wing is close to body (at maxXInward)
+    
+    [Header("Z Bounds (interpolated by X position)")]
+    public Vector2 zBoundsAtOutward = new Vector2(-5f, 2f);  // Z bounds when wing is fully extended (at minXOutward)
+    public Vector2 zBoundsAtInward = new Vector2(-3f, 1f);   // Z bounds when wing is close to body (at maxXInward)
+
     private Vector3 startLeftOuterWingLocal;
     private Vector3 startRightOuterWingLocal;
     private Vector3 startLeftTrackerLocalPosition;
@@ -80,6 +92,22 @@ public class VRRig : MonoBehaviour
                 trackerLocalPos.z - headToBodyCompensation
             );
             
+            // Clamp X first
+            float clampedX = Mathf.Clamp(targetLocalPos.x, minXOutward, maxXInward);
+            
+            // Interpolate Y and Z bounds based on X position (0 = outward, 1 = inward)
+            float xNormalized = Mathf.InverseLerp(minXOutward, maxXInward, clampedX);
+            
+            float yMin = Mathf.Lerp(yBoundsAtOutward.x, yBoundsAtInward.x, xNormalized);
+            float yMax = Mathf.Lerp(yBoundsAtOutward.y, yBoundsAtInward.y, xNormalized);
+            float clampedY = Mathf.Clamp(targetLocalPos.y, yMin, yMax);
+            
+            float zMin = Mathf.Lerp(zBoundsAtOutward.x, zBoundsAtInward.x, xNormalized);
+            float zMax = Mathf.Lerp(zBoundsAtOutward.y, zBoundsAtInward.y, xNormalized);
+            float clampedZ = Mathf.Clamp(targetLocalPos.z, zMin, zMax);
+            
+            targetLocalPos = new Vector3(clampedX, clampedY, clampedZ);
+            
             // Convert to world space
             Vector3 desiredWorldPos = targetsParent.TransformPoint(targetLocalPos);
             
@@ -104,6 +132,22 @@ public class VRRig : MonoBehaviour
                 trackerLocalPos.y * 10 + 0.25f,
                 trackerLocalPos.z - headToBodyCompensation
             );
+            
+            // Clamp X first
+            float clampedX = Mathf.Clamp(targetLocalPos.x, -maxXInward, -minXOutward);
+            
+            // Interpolate Y and Z bounds based on X position (0 = outward, 1 = inward)
+            float xNormalized = Mathf.InverseLerp(-minXOutward, -maxXInward, clampedX);
+            
+            float yMin = Mathf.Lerp(yBoundsAtOutward.x, yBoundsAtInward.x, xNormalized);
+            float yMax = Mathf.Lerp(yBoundsAtOutward.y, yBoundsAtInward.y, xNormalized);
+            float clampedY = Mathf.Clamp(targetLocalPos.y, yMin, yMax);
+            
+            float zMin = Mathf.Lerp(zBoundsAtOutward.x, zBoundsAtInward.x, xNormalized);
+            float zMax = Mathf.Lerp(zBoundsAtOutward.y, zBoundsAtInward.y, xNormalized);
+            float clampedZ = Mathf.Clamp(targetLocalPos.z, zMin, zMax);
+            
+            targetLocalPos = new Vector3(clampedX, clampedY, clampedZ);
             
             // Convert to world space
             Vector3 desiredWorldPos = targetsParent.TransformPoint(targetLocalPos);
