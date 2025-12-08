@@ -1,7 +1,8 @@
 using System;
 using UnityEngine;
+using Unity.Netcode;
 
-public class VRRig : MonoBehaviour
+public class VRRig : NetworkBehaviour
 {
     public Transform head;
     public Transform player;
@@ -81,6 +82,17 @@ public class VRRig : MonoBehaviour
 
     void Update()
     {
+        // Only host controls the trackers and targets
+        // In network mode: only run on host
+        // In single-player: always run
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
+        {
+            if (!IsHost)
+            {
+                return; // Clients don't run this script
+            }
+        }
+        
         if (tracker1 && leftWingTarget && targetsParent)
         {
             Vector3 trackerLocalPos = transform.InverseTransformPoint(tracker1.position);
@@ -167,6 +179,19 @@ public class VRRig : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // Only host controls the trackers and thrust
+        // In network mode: only run on host
+        // In single-player: always run
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
+        {
+            Debug.Log("[VRRig] Networked mode detected.");
+            if (!IsHost)
+            {
+                Debug.Log("[VRRig] Not host, skipping FixedUpdate.");
+                return; // Clients don't run this script
+            }
+        }
+        
         // calculate the velocity of the trackers relative to this VRRig object
         if (tracker1 && tracker2)
         {

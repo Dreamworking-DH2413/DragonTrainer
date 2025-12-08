@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity.Netcode;
 
 public class ToothlessHeadController : MonoBehaviour
 {
@@ -13,51 +14,65 @@ public class ToothlessHeadController : MonoBehaviour
     [Header("Smoothing")]
     public float smoothSpeed = 5f; // Higher = faster response
     
-    private Vector3 currentTargetPosition;
+    private float initialOffsetDistance;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         if (aimTarget != null)
         {
-            currentTargetPosition = aimTarget.transform.position;
+            // Store the initial offset distance and never recalculate it
+            initialOffsetDistance = aimTarget.transform.localPosition.magnitude;
         }
     }
 
     // Update is called once per frame
     void Update()
     {
+        // Only the host should control the head
+        if (!NetworkManager.Singleton.IsHost)
+        {
+            return;
+        }
+        
         if (VRCamera != null && aimTarget != null)
         {
             Transform parent = aimTarget.transform.parent;
             
             if (parent != null)
             {
-                // Calculate the offset direction (10 meters from parent)
-                float offsetDistance = aimTarget.transform.localPosition.magnitude;
+                // Get camera's parent (VR rig)
+                Transform cameraParent = VRCamera.transform.parent;
                 
-                // Get the camera's local rotation relative to parent
-                Quaternion localCameraRotation = Quaternion.Inverse(parent.rotation) * VRCamera.transform.rotation;
-                Vector3 cameraEuler = localCameraRotation.eulerAngles;
-                
-                // Normalize angles to -180 to 180 range
-                float pitch = cameraEuler.x > 180 ? cameraEuler.x - 360 : cameraEuler.x;
-                float yaw = cameraEuler.y > 180 ? cameraEuler.y - 360 : cameraEuler.y;
-                
-                // Clamp the angles
-                pitch = Mathf.Clamp(pitch, -maxVerticalAngle, maxVerticalAngle);
-                yaw = Mathf.Clamp(yaw, -maxHorizontalAngle, maxHorizontalAngle);
-                
-                // Create clamped rotation
-                Quaternion clampedLocalRotation = Quaternion.Euler(pitch, yaw, 0);
-                Vector3 worldDirection = parent.rotation * (clampedLocalRotation * Vector3.forward);
-                
-                // Calculate target position
-                Vector3 targetPosition = parent.position + worldDirection * offsetDistance;
-                
-                // Smoothly interpolate to the target position
-                currentTargetPosition = Vector3.Lerp(currentTargetPosition, targetPosition, smoothSpeed * Time.deltaTime);
-                aimTarget.transform.position = currentTargetPosition;
+                if (cameraParent != null)
+                {
+                    // Get the camera's local rotation relative to its own parent (VR rig)
+                    Vector3 cameraLocalEuler = VRCamera.transform.localEulerAngles;
+                    
+                    // Normalize angles to -180 to 180 range
+                    float pitch = cameraLocalEuler.x > 180 ? cameraLocalEuler.x - 360 : cameraLocalEuler.x;
+                    float yaw = cameraLocalEuler.y > 180 ? cameraLocalEuler.y - 360 : cameraLocalEuler.y;
+                    
+                    // Clamp the angles
+                    pitch = Mathf.Clamp(pitch, -maxVerticalAngle, maxVerticalAngle);
+                    yaw = Mathf.Clamp(yaw, -maxHorizontalAngle, maxHorizontalAngle);
+                    
+                    // Create clamped local rotation
+                    Quaternion clampedLocalRotation = Quaternion.Euler(pitch, yaw, 0);
+                    
+                    // Calculate local direction vector from clamped rotation
+                    Vector3 localDirection = clampedLocalRotation * Vector3.forward;
+                    
+                    // Set the aimTarget's local position directly using the fixed initial distance
+                    Vector3 targetLocalPosition = localDirection * initialOffsetDistance;
+                    
+                    // Smoothly interpolate in local space
+                    aimTarget.transform.localPosition = Vector3.Lerp(
+                        aimTarget.transform.localPosition, 
+                        targetLocalPosition, 
+                        smoothSpeed * Time.deltaTime
+                    );
+                }
             }
         }
     }

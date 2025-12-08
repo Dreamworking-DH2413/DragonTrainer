@@ -1,8 +1,9 @@
 using UnityEngine;
 using AztechGames;
+using Unity.Netcode;
 
 [RequireComponent(typeof(Rigidbody))]
-public class DragonGliderPhysics : MonoBehaviour
+public class DragonGliderPhysics : NetworkBehaviour
 {
     [Header("Lift / Drag")]
     public float liftCoefficient = 0.05f;     // much smaller than before
@@ -34,6 +35,12 @@ public class DragonGliderPhysics : MonoBehaviour
     Rigidbody rb;
     GliderSurface_Controller surfaces;
     private Transform playerTransform;
+    
+    // Network synchronization
+    private NetworkVariable<Vector3> netPosition = new NetworkVariable<Vector3>(Vector3.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private NetworkVariable<Quaternion> netRotation = new NetworkVariable<Quaternion>(Quaternion.identity, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private NetworkVariable<Vector3> netVelocity = new NetworkVariable<Vector3>(Vector3.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private NetworkVariable<Vector3> netAngularVelocity = new NetworkVariable<Vector3>(Vector3.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     void Awake()
     {
@@ -58,6 +65,37 @@ public class DragonGliderPhysics : MonoBehaviour
     }
 
     void FixedUpdate()
+    {
+        // Network synchronization
+        bool isNetworked = NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening;
+        
+        if (isNetworked)
+        {
+            if (IsServer)
+            {
+                // Host: Run physics simulation
+                RunPhysicsSimulation();
+                
+                // Sync to network
+                netPosition.Value = transform.position;
+                netRotation.Value = transform.rotation;
+                netVelocity.Value = rb.linearVelocity;
+                netAngularVelocity.Value = rb.angularVelocity;
+            }
+            else
+            {
+                // Clients: Apply received physics state
+                ApplyNetworkPhysics();
+            }
+        }
+        else
+        {
+            // Single player: Run normal physics
+            RunPhysicsSimulation();
+        }
+    }
+    
+    void RunPhysicsSimulation()
     {
         // Debug freeze mode
         if (freezeDragon)
@@ -120,7 +158,17 @@ public class DragonGliderPhysics : MonoBehaviour
             Vector3 drag = -velocity.normalized * dragCoefficient * speed * speed;
             rb.AddForce(drag, ForceMode.Force);
         }
-
+    }
+    
+    void ApplyNetworkPhysics()
+    {
+        // Smoothly interpolate to network position and rotation
+        transform.position = Vector3.Lerp(transform.position, netPosition.Value, Time.fixedDeltaTime * 10f);
+        transform.rotation = Quaternion.Slerp(transform.rotation, netRotation.Value, Time.fixedDeltaTime * 10f);
+        
+        // Apply network velocities
+        rb.linearVelocity = netVelocity.Value;
+        rb.angularVelocity = netAngularVelocity.Value;
     }
 
     void Update()
