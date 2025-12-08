@@ -126,7 +126,6 @@ public class ToothlessWingController : MonoBehaviour
     private Quaternion rightWristBaseRotation;
     private Quaternion leftForearmBaseRotation;
     private Quaternion rightForearmBaseRotation;
-    private bool rotationsCaptured = false;
 
     // Wing bone names from Blender
     private string[] leftWingBoneNames = new string[] {
