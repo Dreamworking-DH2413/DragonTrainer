@@ -83,12 +83,6 @@ public class DragonGliderPhysics : NetworkBehaviour
     Rigidbody rb;
     GliderSurface_Controller surfaces;
     Transform playerTransform;
-    
-    // Network synchronization
-    private NetworkVariable<Vector3> netPosition = new NetworkVariable<Vector3>(Vector3.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    private NetworkVariable<Quaternion> netRotation = new NetworkVariable<Quaternion>(Quaternion.identity, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    private NetworkVariable<Vector3> netVelocity = new NetworkVariable<Vector3>(Vector3.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    private NetworkVariable<Vector3> netAngularVelocity = new NetworkVariable<Vector3>(Vector3.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     void Awake()
     {
@@ -107,33 +101,24 @@ public class DragonGliderPhysics : NetworkBehaviour
             playerTransform = playerObject.transform;
     }
 
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        
+        // NetworkRigidbody + NetworkTransform will handle all syncing
+        // Server runs physics, NetworkRigidbody syncs to clients
+        // Clients: NetworkRigidbody automatically sets kinematic and applies synced physics
+        // No manual intervention needed - let NetworkRigidbody do its job
+    }
+
     void FixedUpdate()
     {
-        // Network synchronization
+        // Only run physics simulation on server or in single-player
+        // NetworkTransform handles syncing to clients automatically
         bool isNetworked = NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening;
         
-        if (isNetworked)
+        if (!isNetworked || IsServer)
         {
-            if (IsServer)
-            {
-                // Host: Run physics simulation
-                RunPhysicsSimulation();
-                
-                // Sync to network
-                netPosition.Value = transform.position;
-                netRotation.Value = transform.rotation;
-                netVelocity.Value = rb.linearVelocity;
-                netAngularVelocity.Value = rb.angularVelocity;
-            }
-            else
-            {
-                // Clients: Apply received physics state
-                ApplyNetworkPhysics();
-            }
-        }
-        else
-        {
-            // Single player: Run normal physics
             RunPhysicsSimulation();
         }
     }
@@ -327,22 +312,10 @@ public class DragonGliderPhysics : NetworkBehaviour
             float aoaDrag = 1f + Mathf.Abs(aoa) * aoaDragMultiplier;
             rb.AddForce(-velocity.normalized * dragCoefficient * speed * speed * aoaDrag, ForceMode.Force);
         }
-
-        /* ---------------- VR RIDER FOLLOW ---------------- */
-
-        UpdateVRPlayerPosition();
     }
     
-    void ApplyNetworkPhysics()
+    void Update()
     {
-        // Smoothly interpolate to network position and rotation
-        transform.position = Vector3.Lerp(transform.position, netPosition.Value, Time.fixedDeltaTime * 10f);
-        transform.rotation = Quaternion.Slerp(transform.rotation, netRotation.Value, Time.fixedDeltaTime * 10f);
-        
-        // Apply network velocities
-        rb.linearVelocity = netVelocity.Value;
-        rb.angularVelocity = netAngularVelocity.Value;
-        
         // Update player position for clients
         UpdateVRPlayerPosition();
     }

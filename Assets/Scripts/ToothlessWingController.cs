@@ -211,14 +211,15 @@ public class ToothlessWingController : MonoBehaviour
             currentLeftFold = Mathf.Lerp(currentLeftFold, targetFold, Time.deltaTime * foldSmoothSpeed);
             leftWingFold = currentLeftFold;
 
-            // Calculate curve based on vertical position
-            float verticalOffset = leftWingTarget.position.y - leftShoulderBone.position.y;
+            // Calculate curve based on vertical position IN LOCAL SPACE (relative to dragon's orientation)
+            Vector3 localOffset = transform.InverseTransformPoint(leftWingTarget.position);
+            float verticalOffset = localOffset.y; // Now this is relative to the dragon's local up direction
             float targetCurve = CalculateCurveAmount(verticalOffset);
             currentLeftCurve = Mathf.Lerp(currentLeftCurve, targetCurve, Time.deltaTime * curveBlendSpeed);
 
             if (showDebugInfo && Time.frameCount % 30 == 0) // Log every 30 frames
             {
-                Debug.Log($"Left Wing - Distance: {distance:F2}, Fold: {currentLeftFold:F2}, VertOffset: {verticalOffset:F2}, Curve: {currentLeftCurve:F2}");
+                Debug.Log($"Left Wing - Distance: {distance:F2}, Fold: {currentLeftFold:F2}, LocalVertOffset: {verticalOffset:F2}, Curve: {currentLeftCurve:F2}");
             }
         }
 
@@ -230,8 +231,9 @@ public class ToothlessWingController : MonoBehaviour
             currentRightFold = Mathf.Lerp(currentRightFold, targetFold, Time.deltaTime * foldSmoothSpeed);
             rightWingFold = currentRightFold;
 
-            // Calculate curve based on vertical position
-            float verticalOffset = rightWingTarget.position.y - rightShoulderBone.position.y;
+            // Calculate curve based on vertical position IN LOCAL SPACE (relative to dragon's orientation)
+            Vector3 localOffset = transform.InverseTransformPoint(rightWingTarget.position);
+            float verticalOffset = localOffset.y; // Now this is relative to the dragon's local up direction
             float targetCurve = CalculateCurveAmount(verticalOffset);
             currentRightCurve = Mathf.Lerp(currentRightCurve, targetCurve, Time.deltaTime * curveBlendSpeed);
         }
@@ -262,9 +264,9 @@ public class ToothlessWingController : MonoBehaviour
         // Negative offset = target below shoulder = downstroke = forward curve (positive)
         // Positive offset = target above shoulder = upstroke = backward curve (negative)
         
-        // Use a more aggressive multiplier to map vertical offset to curve amount
-        // Typical vertical offset might be 0.5-2.0 units, so multiply to reach the max curve values
-        float sensitivity = 10f; // How sensitive to vertical movement
+        // Local space offsets are typically smaller, so we need higher sensitivity
+        // Typical LOCAL vertical offset might be 0.1-0.5 units
+        float sensitivity = 30f; // Increased sensitivity for local space coordinates
         
         if (verticalOffset < 0)
         {

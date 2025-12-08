@@ -1,7 +1,8 @@
 using System;
 using UnityEngine;
+using Unity.Netcode;
 
-public class VRRig : MonoBehaviour
+public class VRRig : NetworkBehaviour
 {
     public Transform head;
     public Transform player;
@@ -41,9 +42,9 @@ public class VRRig : MonoBehaviour
     private Vector3 startLeftTrackerLocalPosition;
     private Vector3 startRightTrackerLocalPosition;
     
-    // Smoothed target positions to reduce choppiness
-    private Vector3 smoothedLeftTargetPos;
-    private Vector3 smoothedRightTargetPos;
+    // Smoothed target positions in LOCAL space to reduce choppiness
+    private Vector3 smoothedLeftTargetLocalPos;
+    private Vector3 smoothedRightTargetLocalPos;
     private bool isInitialized = false;
 
     void Start()
@@ -81,6 +82,17 @@ public class VRRig : MonoBehaviour
 
     void Update()
     {
+        // Only host controls the trackers and targets
+        // In network mode: only run on host
+        // In single-player: always run
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
+        {
+            if (!IsHost)
+            {
+                return; // Clients don't run this script
+            }
+        }
+        
         if (tracker1 && leftWingTarget && targetsParent)
         {
             Vector3 trackerLocalPos = transform.InverseTransformPoint(tracker1.position);
@@ -108,18 +120,17 @@ public class VRRig : MonoBehaviour
             
             targetLocalPos = new Vector3(clampedX, clampedY, clampedZ);
             
-            // Convert to world space
-            Vector3 desiredWorldPos = targetsParent.TransformPoint(targetLocalPos);
-            
             // Initialize smoothed position on first frame
             if (!isInitialized)
             {
-                smoothedLeftTargetPos = desiredWorldPos;
+                smoothedLeftTargetLocalPos = targetLocalPos;
             }
             
-            // Smoothly interpolate to reduce choppiness
-            smoothedLeftTargetPos = Vector3.Lerp(smoothedLeftTargetPos, desiredWorldPos, Time.deltaTime * followSpeed);
-            leftWingTarget.position = smoothedLeftTargetPos;
+            // Smoothly interpolate in LOCAL space to reduce choppiness
+            smoothedLeftTargetLocalPos = Vector3.Lerp(smoothedLeftTargetLocalPos, targetLocalPos, Time.deltaTime * followSpeed);
+            
+            // Set the target's local position relative to targetsParent
+            leftWingTarget.localPosition = smoothedLeftTargetLocalPos;
         }
 
         if (tracker2 && rightWingTarget && targetsParent)
@@ -149,24 +160,36 @@ public class VRRig : MonoBehaviour
             
             targetLocalPos = new Vector3(clampedX, clampedY, clampedZ);
             
-            // Convert to world space
-            Vector3 desiredWorldPos = targetsParent.TransformPoint(targetLocalPos);
-            
             // Initialize smoothed position on first frame
             if (!isInitialized)
             {
-                smoothedRightTargetPos = desiredWorldPos;
+                smoothedRightTargetLocalPos = targetLocalPos;
                 isInitialized = true;
             }
             
-            // Smoothly interpolate to reduce choppiness
-            smoothedRightTargetPos = Vector3.Lerp(smoothedRightTargetPos, desiredWorldPos, Time.deltaTime * followSpeed);
-            rightWingTarget.position = smoothedRightTargetPos;
+            // Smoothly interpolate in LOCAL space to reduce choppiness
+            smoothedRightTargetLocalPos = Vector3.Lerp(smoothedRightTargetLocalPos, targetLocalPos, Time.deltaTime * followSpeed);
+            
+            // Set the target's local position relative to targetsParent
+            rightWingTarget.localPosition = smoothedRightTargetLocalPos;
         }
     }
 
     private void FixedUpdate()
     {
+        // Only host controls the trackers and thrust
+        // In network mode: only run on host
+        // In single-player: always run
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
+        {
+            Debug.Log("[VRRig] Networked mode detected.");
+            if (!IsHost)
+            {
+                Debug.Log("[VRRig] Not host, skipping FixedUpdate.");
+                return; // Clients don't run this script
+            }
+        }
+        
         // calculate the velocity of the trackers relative to this VRRig object
         if (tracker1 && tracker2)
         {
