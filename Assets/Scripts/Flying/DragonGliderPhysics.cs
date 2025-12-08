@@ -24,6 +24,7 @@ public class DragonGliderPhysics : MonoBehaviour
     
     [Header("Debug")]
     public bool freezeDragon = false;
+    public float debugThrustBoost = 5000f;  // Extra thrust when pressing space
 
     [Header("VR Player Follow")]
     public Vector3 dragonHeadOffset = new Vector3(0, 2f, 1.5f);  // Offset for host (dragon's head/eyes position)
@@ -91,7 +92,15 @@ public class DragonGliderPhysics : MonoBehaviour
         rb.AddRelativeTorque(dampingTorque, ForceMode.Acceleration);
 
         // 4) Constant forward thrust
-        rb.AddForce(transform.forward * glideThrust, ForceMode.Force);
+        float currentThrust = glideThrust;
+        
+        // Debug: Add extra thrust when space is pressed
+        if (Input.GetKey(KeyCode.Space))
+        {
+            currentThrust += debugThrustBoost;
+        }
+        
+        rb.AddForce(transform.forward * currentThrust, ForceMode.Force);
 
         // 5) Lift & drag
         Vector3 velocity = rb.linearVelocity;
@@ -112,6 +121,11 @@ public class DragonGliderPhysics : MonoBehaviour
             rb.AddForce(drag, ForceMode.Force);
         }
 
+    }
+
+    void Update()
+    {
+        
         // 6) Update player position to follow dragon
         UpdateVRPlayerPosition();
     }
