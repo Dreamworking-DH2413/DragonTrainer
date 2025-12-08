@@ -1,8 +1,10 @@
+using TMPro;
 using UnityEngine;
 
 public class VFXRaycast : MonoBehaviour
 {
-    
+    private int sheepCount = 0;
+    public TextMeshProUGUI sheepCounterLabel;
     public float maxDistance = 1f;
     public LayerMask hitLayers;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -24,8 +26,11 @@ public class VFXRaycast : MonoBehaviour
             Sheep sheep = hit.collider.GetComponent<Sheep>();
             if (sheep != null)
             {
+                sheep.tag = "Untagged";
                 sheep.PlayHitSound();
-                sheep.BurnStep();
+                sheep.shouldBurn = true;
+                sheepCount++;
+                sheepCounterLabel.text = sheepCount.ToString();
             }
             
         }

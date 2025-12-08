@@ -1,8 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
+using TMPro;
 
 public class RingSystemManager : MonoBehaviour
 {
+    [Header("Ring UI")]
+    public TextMeshProUGUI ringCounter;
+    
     [Header("Ring Settings")]
     public GameObject ringPrefab;
     public int courseLength = 20; // Total rings in the course (excluding start ring)
@@ -83,7 +87,10 @@ public class RingSystemManager : MonoBehaviour
     
     public void OnStartRingPassed(Ring passedStartRing)
     {
-        // Debug.Log("[RingSystemManager] Start ring passed! Beginning course...");
+       
+        Debug.Log("[RingSystemManager] Start ring passed! Beginning course...");
+        ringCounter.text = GetRingsPassedThrough().ToString();
+        
         
         courseStarted = true;
         Vector3 soundPosition = player != null ? player.transform.position : passedStartRing.transform.position;
@@ -213,6 +220,7 @@ public class RingSystemManager : MonoBehaviour
     
     public void OnRingPassed(int ringIndex, bool isLastRing)
     {
+        ringCounter.text = ringsPassedThrough.ToString();
         if (!courseStarted || courseCompleted) return;
         
         // Only count if it's the current active ring
@@ -220,6 +228,8 @@ public class RingSystemManager : MonoBehaviour
         {
             ringsPassedThrough++;
             currentActiveRingIndex++;
+            ringCounter.text = GetRingsPassedThrough().ToString();
+            
             
            //// Debug.Log($"Ring {ringIndex + 1}/{courseLength} passed! Total hits: {ringsPassedThrough}");
             
