@@ -805,6 +805,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 715e76430525d4bf09e6349e57814829, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sheepCounterLabel: {fileID: 0}
   maxDistance: 10
   hitLayers:
     serializedVersion: 2

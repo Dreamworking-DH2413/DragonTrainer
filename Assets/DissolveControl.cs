@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class DissolveControl : MonoBehaviour
@@ -16,7 +17,7 @@ public class DissolveControl : MonoBehaviour
         for (int i = 0; i < materialCount; i++)
             mpb[i] = new MaterialPropertyBlock();
     }
-
+    
     public void SetDissolve(int materialIndex, float value)
     {
         if (materialIndex < 0 || materialIndex >= materialCount)
