@@ -75,6 +75,7 @@ public class DragonGliderPhysics : NetworkBehaviour
 
     [Header("VR Rider / Debug")]
     public bool freezeDragon = false;
+    public float debugThrustBoost = 5000f;  // Extra thrust when pressing space
     public Vector3 dragonHeadOffset = new Vector3(0, 2f, 1.5f);
     public Vector3 riderOffset = new Vector3(0, 1.5f, 0);
     public bool rotatePlayerWithDragon = true;
@@ -292,9 +293,17 @@ public class DragonGliderPhysics : NetworkBehaviour
         /* ---------------- THRUST ---------------- */
 
         // Base thrust (from glide / dive logic)
-        if (glideThrust != 0f)
+        float currentThrust = glideThrust;
+        
+        // Debug: Add extra thrust when space is pressed
+        if (Input.GetKey(KeyCode.Space))
         {
-            rb.AddForce(transform.forward * glideThrust, ForceMode.Force);
+            currentThrust += debugThrustBoost;
+        }
+        
+        if (currentThrust != 0f)
+        {
+            rb.AddForce(transform.forward * currentThrust, ForceMode.Force);
         }
 
         // Extra thrust when banked hard, so sharp turns don't bleed all your speed
