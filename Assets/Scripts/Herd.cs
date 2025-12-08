@@ -21,7 +21,7 @@ public class Herd : MonoBehaviour
             if (p != null) player = p.transform;
             else
             {
-                // Debug.Log("M E G A F A I L");
+                Debug.Log("M E G A F A I L");
 
             }
         }

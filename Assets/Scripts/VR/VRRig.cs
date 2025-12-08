@@ -12,6 +12,7 @@ public class VRRig : MonoBehaviour
     public Transform tracker2;
 
     public Transform dragon;
+    public Transform targetsParent;
     public Transform leftWingTarget;
     public Transform rightWingTarget;
 
@@ -23,10 +24,27 @@ public class VRRig : MonoBehaviour
     public float wingMovementMultiplier = 3.0f;
     public float followSpeed = 20f;
 
+    [Header("Target Position Constraints")]
+    public float minXOutward = -8f;  // How far out each wing can go (negative for left, positive for right)
+    public float maxXInward = -0.5f; // How close to centerline (prevents crossing body)
+    
+    [Header("Y Bounds (interpolated by X position)")]
+    public Vector2 yBoundsAtOutward = new Vector2(-2f, 3f);  // Y bounds when wing is fully extended (at minXOutward)
+    public Vector2 yBoundsAtInward = new Vector2(-1f, 2f);   // Y bounds when wing is close to body (at maxXInward)
+    
+    [Header("Z Bounds (interpolated by X position)")]
+    public Vector2 zBoundsAtOutward = new Vector2(-5f, 2f);  // Z bounds when wing is fully extended (at minXOutward)
+    public Vector2 zBoundsAtInward = new Vector2(-3f, 1f);   // Z bounds when wing is close to body (at maxXInward)
+
     private Vector3 startLeftOuterWingLocal;
     private Vector3 startRightOuterWingLocal;
     private Vector3 startLeftTrackerLocalPosition;
     private Vector3 startRightTrackerLocalPosition;
+    
+    // Smoothed target positions to reduce choppiness
+    private Vector3 smoothedLeftTargetPos;
+    private Vector3 smoothedRightTargetPos;
+    private bool isInitialized = false;
 
     void Start()
     {
@@ -63,36 +81,87 @@ public class VRRig : MonoBehaviour
 
     void Update()
     {
-        if (tracker1 && leftWingTarget && dragon)
+        if (tracker1 && leftWingTarget && targetsParent)
         {
-            // Convert tracker world position to dragon's local space
-            Vector3 trackerLocalPos = dragon.InverseTransformPoint(tracker1.position);
+            Vector3 trackerLocalPos = transform.InverseTransformPoint(tracker1.position);
             
-            // Apply offsets in local space with multiplied x-axis movement
+            // Calculate desired position in local space with multiplied x-axis movement
             Vector3 targetLocalPos = new Vector3(
                 (trackerLocalPos.x * wingMovementMultiplier) - wingSpanCompensation,
-                trackerLocalPos.y * 10,
+                trackerLocalPos.y * 10 + 0.25f,
                 trackerLocalPos.z - headToBodyCompensation
             );
             
-            // Convert back to world space and apply
-            leftWingTarget.position = dragon.TransformPoint(targetLocalPos);
+            // Clamp X first
+            float clampedX = Mathf.Clamp(targetLocalPos.x, minXOutward, maxXInward);
+            
+            // Interpolate Y and Z bounds based on X position (0 = outward, 1 = inward)
+            float xNormalized = Mathf.InverseLerp(minXOutward, maxXInward, clampedX);
+            
+            float yMin = Mathf.Lerp(yBoundsAtOutward.x, yBoundsAtInward.x, xNormalized);
+            float yMax = Mathf.Lerp(yBoundsAtOutward.y, yBoundsAtInward.y, xNormalized);
+            float clampedY = Mathf.Clamp(targetLocalPos.y, yMin, yMax);
+            
+            float zMin = Mathf.Lerp(zBoundsAtOutward.x, zBoundsAtInward.x, xNormalized);
+            float zMax = Mathf.Lerp(zBoundsAtOutward.y, zBoundsAtInward.y, xNormalized);
+            float clampedZ = Mathf.Clamp(targetLocalPos.z, zMin, zMax);
+            
+            targetLocalPos = new Vector3(clampedX, clampedY, clampedZ);
+            
+            // Convert to world space
+            Vector3 desiredWorldPos = targetsParent.TransformPoint(targetLocalPos);
+            
+            // Initialize smoothed position on first frame
+            if (!isInitialized)
+            {
+                smoothedLeftTargetPos = desiredWorldPos;
+            }
+            
+            // Smoothly interpolate to reduce choppiness
+            smoothedLeftTargetPos = Vector3.Lerp(smoothedLeftTargetPos, desiredWorldPos, Time.deltaTime * followSpeed);
+            leftWingTarget.position = smoothedLeftTargetPos;
         }
 
-        if (tracker2 && rightWingTarget && dragon)
+        if (tracker2 && rightWingTarget && targetsParent)
         {
-            // Convert tracker world position to dragon's local space
-            Vector3 trackerLocalPos = dragon.InverseTransformPoint(tracker2.position);
+            Vector3 trackerLocalPos = transform.InverseTransformPoint(tracker2.position);
             
-            // Apply offsets in local space with multiplied x-axis movement
+            // Calculate desired position in local space with multiplied x-axis movement
             Vector3 targetLocalPos = new Vector3(
                 (trackerLocalPos.x * wingMovementMultiplier) + wingSpanCompensation,
-                trackerLocalPos.y * 10,
+                trackerLocalPos.y * 10 + 0.25f,
                 trackerLocalPos.z - headToBodyCompensation
             );
             
-            // Convert back to world space and apply
-            rightWingTarget.position = dragon.TransformPoint(targetLocalPos);
+            // Clamp X first
+            float clampedX = Mathf.Clamp(targetLocalPos.x, -maxXInward, -minXOutward);
+            
+            // Interpolate Y and Z bounds based on X position (0 = outward, 1 = inward)
+            float xNormalized = Mathf.InverseLerp(-minXOutward, -maxXInward, clampedX);
+            
+            float yMin = Mathf.Lerp(yBoundsAtOutward.x, yBoundsAtInward.x, xNormalized);
+            float yMax = Mathf.Lerp(yBoundsAtOutward.y, yBoundsAtInward.y, xNormalized);
+            float clampedY = Mathf.Clamp(targetLocalPos.y, yMin, yMax);
+            
+            float zMin = Mathf.Lerp(zBoundsAtOutward.x, zBoundsAtInward.x, xNormalized);
+            float zMax = Mathf.Lerp(zBoundsAtOutward.y, zBoundsAtInward.y, xNormalized);
+            float clampedZ = Mathf.Clamp(targetLocalPos.z, zMin, zMax);
+            
+            targetLocalPos = new Vector3(clampedX, clampedY, clampedZ);
+            
+            // Convert to world space
+            Vector3 desiredWorldPos = targetsParent.TransformPoint(targetLocalPos);
+            
+            // Initialize smoothed position on first frame
+            if (!isInitialized)
+            {
+                smoothedRightTargetPos = desiredWorldPos;
+                isInitialized = true;
+            }
+            
+            // Smoothly interpolate to reduce choppiness
+            smoothedRightTargetPos = Vector3.Lerp(smoothedRightTargetPos, desiredWorldPos, Time.deltaTime * followSpeed);
+            rightWingTarget.position = smoothedRightTargetPos;
         }
     }
 
