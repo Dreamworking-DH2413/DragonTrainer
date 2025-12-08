@@ -160,7 +160,7 @@ MonoBehaviour:
   cohesionRadius: 17
   pastureRadius: 10
   sepRadius: 0.53
-  predatorRadius: 15
+  predatorRadius: 100
   senseRadius: 180
   matchingRadius: 4
   player: {fileID: 0}
@@ -173,3 +173,4 @@ MonoBehaviour:
   sepMax: 1.8
   predatorStr: 5
   matchingStr: 1.5
+  waterStr: 700
