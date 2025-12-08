@@ -10,7 +10,7 @@ public class VFXRaycast : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        sheepCounterLabel.text = "0";
     }
 
     // Update is called once per frame
@@ -26,11 +26,11 @@ public class VFXRaycast : MonoBehaviour
             Sheep sheep = hit.collider.GetComponent<Sheep>();
             if (sheep != null)
             {
+                sheepCount++;
+                sheepCounterLabel.text = sheepCount.ToString();
                 sheep.tag = "Untagged";
                 sheep.PlayHitSound();
                 sheep.shouldBurn = true;
-                sheepCount++;
-                sheepCounterLabel.text = sheepCount.ToString();
             }
             
         }
