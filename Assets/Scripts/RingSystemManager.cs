@@ -33,6 +33,9 @@ public class RingSystemManager : MonoBehaviour
     public bool courseStarted = false;
     private bool courseCompleted = false;
     private Ring startRing;
+    private float minHeight = 156f; // Minimum height above ground
+    private float maxHeight = 200f; // Maximum height to prevent going too high
+            
 
     void Start()
     {
@@ -58,7 +61,12 @@ public class RingSystemManager : MonoBehaviour
     
     void GenerateStartRing()
     {
+        if (nextRingPosition.y < 156)
+        {
+                nextRingPosition.y = minHeight + Random.Range(5f, maxHeight - minHeight);
+        }
         GameObject ringObj = Instantiate(ringPrefab, nextRingPosition, Quaternion.identity);
+
         startRing = ringObj.GetComponent<Ring>();
         
         if (startRing == null)
@@ -123,9 +131,29 @@ public class RingSystemManager : MonoBehaviour
         // Debug.Log("[RingSystemManager] GENERATING ENTIRE COURSE...");
         for (int i = 0; i < courseLength; i++)
         {
+            // Get current pitch angle to prevent extreme diving or climbing
+            Vector3 currentEuler = currentPathRotation.eulerAngles;
+            float currentPitch = currentEuler.x;
+            if (currentPitch > 180f) currentPitch -= 360f; // Normalize to -180 to 180
+            
+            // Limit pitch changes based on current pitch to prevent going too steep
+            float pitchChange;
+            if (currentPitch > 30f) // Too steep upward, bias downward
+            {
+                pitchChange = Random.Range(-30f, 10f);
+            }
+            else if (currentPitch < -30f) // Too steep downward, bias upward
+            {
+                pitchChange = Random.Range(-10f, 30f);
+            }
+            else // Normal range, allow full variation
+            {
+                pitchChange = Random.Range(-25f, 25f);
+            }
+            
             // Apply incremental rotation changes to create a winding path
             Vector3 rotationDelta = new Vector3(
-                Random.Range(-30f, 30f),  // Pitch variation (up/down)
+                pitchChange,              // Pitch variation (up/down) with constraints
                 Random.Range(-50f, 50f),  // Yaw variation (horizontal turns)
                 Random.Range(-25f, 25f)   // Roll variation
             );
@@ -144,11 +172,22 @@ public class RingSystemManager : MonoBehaviour
             
             nextRingPosition += rightDirection * Random.Range(-pathWidth * 0.4f, pathWidth * 0.4f);
             nextRingPosition += upDirection * Random.Range(-pathHeight * 0.5f, pathHeight * 0.5f);
-            
-            // Ensure rings stay above a minimum height (adjust this value as needed)
-            if (nextRingPosition.y < 20f)
+    
+            if (nextRingPosition.y < 156)
             {
-                nextRingPosition.y = 20f + Random.Range(0f, pathHeight);
+                nextRingPosition.y = minHeight + Random.Range(5f, maxHeight - minHeight);
+                // Adjust path rotation to tilt upward if we're too low
+                Vector3 correctedEuler = currentPathRotation.eulerAngles;
+                correctedEuler.x = Mathf.Clamp(correctedEuler.x > 180f ? correctedEuler.x - 360f : correctedEuler.x, -20f, 45f);
+                currentPathRotation = Quaternion.Euler(correctedEuler);
+            }
+            else if (nextRingPosition.y > maxHeight)
+            {
+                nextRingPosition.y = maxHeight - Random.Range(0f, pathHeight);
+                // Adjust path rotation to tilt downward if we're too high
+                Vector3 correctedEuler = currentPathRotation.eulerAngles;
+                correctedEuler.x = Mathf.Clamp(correctedEuler.x > 180f ? correctedEuler.x - 360f : correctedEuler.x, -45f, 20f);
+                currentPathRotation = Quaternion.Euler(correctedEuler);
             }
             
             // Apply additional random rotation to each ring for visual variety
@@ -187,6 +226,12 @@ public class RingSystemManager : MonoBehaviour
             Ring currentRing = allCourseRings[ringIndex];
             Vector3 soundPosition = player != null ? player.transform.position : currentRing.transform.position;
             
+            // Add time for passing through ring
+            if (timerManager != null)
+            {
+                timerManager.AddTimeForRing();
+            }
+            
             if (isLastRing)
             {
                 AudioSource.PlayClipAtPoint(finalRingPassSound, soundPosition);
@@ -204,7 +249,7 @@ public class RingSystemManager : MonoBehaviour
         }
     }
     
-    void CompleteCourse()
+    public void CompleteCourse()
     {
         courseCompleted = true;
         courseStarted = false;
