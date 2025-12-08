@@ -1,8 +1,9 @@
 using UnityEngine;
 using AztechGames;
+using Unity.Netcode;
 
 [RequireComponent(typeof(Rigidbody))]
-public class DragonGliderPhysics : MonoBehaviour
+public class DragonGliderPhysics : NetworkBehaviour
 {
     /* ----------------- ANGLE LIMITS (NO LOOPS / ROLLS) ----------------- */
 
@@ -81,6 +82,12 @@ public class DragonGliderPhysics : MonoBehaviour
     Rigidbody rb;
     GliderSurface_Controller surfaces;
     Transform playerTransform;
+    
+    // Network synchronization
+    private NetworkVariable<Vector3> netPosition = new NetworkVariable<Vector3>(Vector3.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private NetworkVariable<Quaternion> netRotation = new NetworkVariable<Quaternion>(Quaternion.identity, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private NetworkVariable<Vector3> netVelocity = new NetworkVariable<Vector3>(Vector3.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private NetworkVariable<Vector3> netAngularVelocity = new NetworkVariable<Vector3>(Vector3.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     void Awake()
     {
@@ -101,13 +108,49 @@ public class DragonGliderPhysics : MonoBehaviour
 
     void FixedUpdate()
     {
+        // Network synchronization
+        bool isNetworked = NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening;
+        
+        if (isNetworked)
+        {
+            if (IsServer)
+            {
+                // Host: Run physics simulation
+                RunPhysicsSimulation();
+                
+                // Sync to network
+                netPosition.Value = transform.position;
+                netRotation.Value = transform.rotation;
+                netVelocity.Value = rb.linearVelocity;
+                netAngularVelocity.Value = rb.angularVelocity;
+            }
+            else
+            {
+                // Clients: Apply received physics state
+                ApplyNetworkPhysics();
+            }
+        }
+        else
+        {
+            // Single player: Run normal physics
+            RunPhysicsSimulation();
+        }
+    }
+    
+    void RunPhysicsSimulation()
+    {
         /* ---------------- OPTIONAL FREEZE FOR DEBUG ---------------- */
         if (freezeDragon)
         {
+            rb.useGravity = false;
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
             UpdateVRPlayerPosition();
             return;
+        }
+        else
+        {
+            rb.useGravity = true;
         }
 
         /* ---------------- READ INPUT ---------------- */
@@ -278,6 +321,20 @@ public class DragonGliderPhysics : MonoBehaviour
 
         /* ---------------- VR RIDER FOLLOW ---------------- */
 
+        UpdateVRPlayerPosition();
+    }
+    
+    void ApplyNetworkPhysics()
+    {
+        // Smoothly interpolate to network position and rotation
+        transform.position = Vector3.Lerp(transform.position, netPosition.Value, Time.fixedDeltaTime * 10f);
+        transform.rotation = Quaternion.Slerp(transform.rotation, netRotation.Value, Time.fixedDeltaTime * 10f);
+        
+        // Apply network velocities
+        rb.linearVelocity = netVelocity.Value;
+        rb.angularVelocity = netAngularVelocity.Value;
+        
+        // Update player position for clients
         UpdateVRPlayerPosition();
     }
 
