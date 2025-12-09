@@ -6,7 +6,9 @@ public class Boids : MonoBehaviour
 {
     
     // MOVEMENT
-    public float maxSpeed=51.8f;
+    private float maxSpeed=51.8f;
+    public float restSpeed=15f;
+    public float huntSpeed=20f;
     public float huntedAcc = 100.0f;        // Units per second along the ground (XZ)
     public float restAcc = 6.5f;        // Units per second along the ground (XZ)
 
@@ -353,7 +355,12 @@ public class Boids : MonoBehaviour
 
         }
         
-        
+        if(status["hunted"]==true){
+            maxSpeed=huntSpeed;
+        }
+        else{
+            maxSpeed=restSpeed;
+        }
         //speed limit
         if (desiredVel.sqrMagnitude > maxSpeed*maxSpeed)
         {
