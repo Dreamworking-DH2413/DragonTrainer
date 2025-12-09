@@ -25,7 +25,7 @@ public class TerrainStartRingSpawner : MonoBehaviour
         }
 
         // Random chance to spawn a start ring on this chunk
-        if (Random.value < spawnChance && ringSystemManager.courseStarted == false)
+        if (Random.value < spawnChance && ringSystemManager.courseStarted.Value == false)
         {
             SpawnStartRing();
         }

@@ -1,15 +1,38 @@
 using UnityEngine;
+using Unity.Netcode;
 
 [RequireComponent(typeof(Collider))]
-public class Ring : MonoBehaviour
+public class Ring : NetworkBehaviour
 {
     private RingSystemManager manager;
     private int ringIndex;
     private Renderer ringRenderer;
     private MaterialPropertyBlock propBlock;
-    private bool isActive = false;
+    private NetworkVariable<bool> isActive = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private bool isStartRing = false;
     private bool isLastRing = false;
+    
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        
+        // Subscribe to active state changes
+        isActive.OnValueChanged += OnActiveStateChanged;
+        
+        // Initial update
+        UpdateVisuals();
+    }
+    
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        isActive.OnValueChanged -= OnActiveStateChanged;
+    }
+    
+    void OnActiveStateChanged(bool oldValue, bool newValue)
+    {
+        UpdateVisuals();
+    }
     
     void Awake()
     {
@@ -52,8 +75,9 @@ public class Ring : MonoBehaviour
     
     public void SetActive(bool active)
     {
-        isActive = active;
-        UpdateVisuals();
+        if (!IsServer) return;
+        
+        isActive.Value = active;
     }
     
     void UpdateVisuals()
@@ -68,7 +92,7 @@ public class Ring : MonoBehaviour
         }
         else
         {
-            targetColor = isActive ? manager.GetActiveColor() : manager.GetInactiveColor();
+            targetColor = isActive.Value ? manager.GetActiveColor() : manager.GetInactiveColor();
         }
         
         ringRenderer.GetPropertyBlock(propBlock);
@@ -76,7 +100,7 @@ public class Ring : MonoBehaviour
         propBlock.SetColor("_BaseColor", targetColor); // For URP
         
         // Add emission for glowing effect
-        if (isActive || isStartRing)
+        if (isActive.Value || isStartRing)
         {
             Color emissionColor = targetColor * manager.GetEmissionIntensity();
             propBlock.SetColor("_EmissionColor", emissionColor);
@@ -91,6 +115,8 @@ public class Ring : MonoBehaviour
     
     void OnTriggerEnter(Collider other)
     {
+        // Only server processes collisions
+        if (!IsServer) return;
         
         if (other.CompareTag("Player"))
         {        
@@ -99,7 +125,7 @@ public class Ring : MonoBehaviour
                 // Debug.Log("Start ring passed! Course beginning...");
                 manager.OnStartRingPassed(this);
             }
-            else if (isActive)
+            else if (isActive.Value)
             {
                 
                 // Debug.Log($"Active ring {ringIndex} passed through!");
@@ -109,13 +135,19 @@ public class Ring : MonoBehaviour
             {
                 // Debug.Log($"Inactive ring {ringIndex} hit - doesn't count as the active ring");
             }
-                Destroy(gameObject);
+            
+            // Network despawn
+            if (NetworkObject != null && NetworkObject.IsSpawned)
+            {
+                NetworkObject.Despawn(true);
+            }
+            Destroy(gameObject);
         }
     }
     
     void Update()
     {
-        if (isActive || isStartRing)
+        if (isActive.Value || isStartRing)
         {
             // Pulse effect
             float pulse = Mathf.PingPong(Time.time * 2f, 1f);
