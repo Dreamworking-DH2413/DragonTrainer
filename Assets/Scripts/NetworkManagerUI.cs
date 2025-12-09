@@ -127,9 +127,27 @@ public class NetworkManagerUI : MonoBehaviour
             // Client connects to specific host IP
             Debug.Log($"[NETWORK] 💻 CLIENT MODE");
             Debug.Log($"[NETWORK] 🎯 Target Host: {hostIP}:{port}");
+            
+            // Log client's local network info
+            Debug.Log("[NETWORK] === CLIENT LOCAL INFO ===");
+            var host = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                {
+                    Debug.Log($"[NETWORK] 🌐 Client IPv4: {ip}");
+                }
+            }
+            
+            // Verify transport configuration before connecting
+            Debug.Log($"[NETWORK] 🔧 Transport Address: {transport.ConnectionData.Address}");
+            Debug.Log($"[NETWORK] 🔧 Transport Port: {transport.ConnectionData.Port}");
             Debug.Log($"[NETWORK] 📡 Attempting connection...");
             
             transport.SetConnectionData(hostIP, port);
+            
+            // Log after SetConnectionData
+            Debug.Log($"[NETWORK] ✓ Connection data set to: {transport.ConnectionData.Address}:{transport.ConnectionData.Port}");
             
             // Start connection timeout timer
             connectionAttemptTime = Time.time;
@@ -139,6 +157,7 @@ public class NetworkManagerUI : MonoBehaviour
             {
                 NetworkManager.Singleton.StartClient();
                 Debug.Log($"[NETWORK] ✓ StartClient() called successfully");
+                Debug.Log($"[NETWORK] ⏱️ Timeout set to: {connectionTimeout} seconds");
             }
             catch (System.Exception e)
             {
@@ -157,8 +176,27 @@ public class NetworkManagerUI : MonoBehaviour
         Debug.Log("[NETWORK] === SERVER STARTED ===");
         Debug.Log("[NETWORK] ✅ Host is now listening for connections");
         Debug.Log($"[NETWORK] 📡 Port: {port}");
+        
+        // Log all network interfaces and IPs
+        Debug.Log("[NETWORK] === AVAILABLE NETWORK INTERFACES ===");
+        var host = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName());
+        foreach (var ip in host.AddressList)
+        {
+            if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+            {
+                Debug.Log($"[NETWORK] 🌐 IPv4: {ip}");
+            }
+        }
+        
+        var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+        if (transport != null)
+        {
+            Debug.Log($"[NETWORK] 🎯 Transport listening on: {transport.ConnectionData.Address}:{transport.ConnectionData.Port}");
+            Debug.Log($"[NETWORK] 🔧 Server listen address: {transport.ConnectionData.ServerListenAddress}");
+        }
+        
         Debug.Log("[NETWORK] ⏳ Waiting for client to connect...");
-        Debug.Log("[NETWORK] ======================");
+        Debug.Log("[NETWORK] ==========================================");
     }
 
     private void OnClientConnected(ulong clientId)
