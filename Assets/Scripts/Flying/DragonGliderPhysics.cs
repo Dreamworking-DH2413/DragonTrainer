@@ -63,6 +63,9 @@ public class DragonGliderPhysics : NetworkBehaviour
     [Tooltip("Neutral pitch angle of the controller (degrees). Controller tilted forward from this = pitch down")]
     public float controllerNeutralPitch = 0f;
 
+    [Tooltip("Rotation offset to apply to controller (in degrees, XYZ euler). Use this to calibrate for natural holding angle.")]
+    public Vector3 controllerRotationOffset = Vector3.zero;
+
     [Tooltip("How much controller tilt (degrees) maps to full pitch input (-1 to 1)")]
     public float controllerPitchSensitivity = 45f;
 
@@ -223,7 +226,13 @@ public class DragonGliderPhysics : NetworkBehaviour
             return 0f;
 
         // Get the controller's local rotation relative to its parent (VR rig)
-        Vector3 localEuler = vrControllerPose.transform.localEulerAngles;
+        Quaternion localRotation = vrControllerPose.transform.localRotation;
+        
+        // Apply rotation offset to account for natural holding angle
+        Quaternion offsetRotation = Quaternion.Euler(controllerRotationOffset);
+        Quaternion adjustedRotation = localRotation * Quaternion.Inverse(offsetRotation);
+        
+        Vector3 localEuler = adjustedRotation.eulerAngles;
         
         // Convert to -180 to 180 range
         float controllerPitch = Mathf.DeltaAngle(0f, localEuler.x);

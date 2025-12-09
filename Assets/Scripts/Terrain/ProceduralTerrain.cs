@@ -5,7 +5,8 @@ public class ProceduralTerrain : MonoBehaviour
 {
     [Header("oneInXChance spawns")]
     public GameObject Herd;
-    public int oneInXSheep = 60; //1 in X chance to spawn a herd
+    public int oneInXSheep = 60; // 1 in X chance to spawn a herd
+
     [Header("Terrain Settings")]
     public int heightmapResolution = 257;
     public float terrainSizeX = 256f;
@@ -29,7 +30,8 @@ public class ProceduralTerrain : MonoBehaviour
     [Header("Water")]
     public Material waterMaterial;
     public float waterHeight = 100f;
-    public float waterOverlapMargin = 0.001f;
+    public float waterOverlapMargin = 0.01f;
+    public float waterTextureTilingFactor = 1f; // how dense the water texture should repeat per chunk
 
     [Header("Tree Generation")]
     public GameObject[] treePrefabs;
@@ -50,7 +52,8 @@ public class ProceduralTerrain : MonoBehaviour
         // Clone the TerrainData so each tile has its own independent heightmap.
         _data = Instantiate(_terrain.terrainData);
         _terrain.terrainData = _data;
-        //make collider follow the data of the terrain
+
+        // Make collider follow the data of the terrain
         var terrainCollider = GetComponent<TerrainCollider>();
         if (terrainCollider != null)
             terrainCollider.terrainData = _data;
@@ -59,7 +62,6 @@ public class ProceduralTerrain : MonoBehaviour
     void Start()
     {
         Generate();
-        
     }
 
     public void Generate()
@@ -97,14 +99,15 @@ public class ProceduralTerrain : MonoBehaviour
         ApplyTextureSplatmap();
         CreateOrUpdateWaterPlane();
         GenerateTrees();
-        // Calculate center of terrain tile
-        Vector3 center = transform.position + new Vector3(terrainSizeX * 0.5f, 0f, terrainSizeZ * 0.5f); //corner + half size
-        float terrainY = _terrain.SampleHeight(center) + _terrain.transform.position.y; //local origin height + worldspace height
+
+        // Herd spawning
+        Vector3 center = transform.position + new Vector3(terrainSizeX * 0.5f, 0f, terrainSizeZ * 0.5f);
+        float terrainY = _terrain.SampleHeight(center) + _terrain.transform.position.y;
         int rng = Random.Range(0, oneInXSheep + 1);
         center.y = terrainY;
-        if (rng >= oneInXSheep - 1 && terrainY > waterHeight+3.0f) //spawn only on land with some margin
+
+        if (rng >= oneInXSheep - 1 && terrainY > waterHeight + 3.0f)
         {
-            //Debug.Log($"Spawning herd, rng={rng}, terrainY={terrainY}");
             Instantiate(Herd, center, Quaternion.identity, this.transform);
         }
     }
@@ -189,6 +192,7 @@ public class ProceduralTerrain : MonoBehaviour
 
     void CreateOrUpdateWaterPlane()
     {
+        // Try to find an existing plane named "Water" under this chunk
         Transform existing = transform.Find("Water");
 
         GameObject water;
@@ -203,24 +207,46 @@ public class ProceduralTerrain : MonoBehaviour
             water = existing.gameObject;
         }
 
+        // Cover the whole terrain with a small overlap
         float worldWidthX = terrainSizeX + waterOverlapMargin * 2f;
         float worldWidthZ = terrainSizeZ + waterOverlapMargin * 2f;
 
+        // Unity plane is 10x10 units
         float scaleX = worldWidthX / 10f;
         float scaleZ = worldWidthZ / 10f;
 
         water.transform.localScale = new Vector3(scaleX, 1f, scaleZ);
 
+        // Center it over the chunk, at the correct height
         Vector3 pos = water.transform.localPosition;
         pos.x = terrainSizeX * 0.5f;
         pos.z = terrainSizeZ * 0.5f;
         pos.y = waterHeight - transform.position.y;
         water.transform.localPosition = pos;
 
+        // Material & tiling
         if (waterMaterial != null)
         {
             var renderer = water.GetComponent<MeshRenderer>();
             renderer.sharedMaterial = waterMaterial;
+
+            // Bigger chunks => larger scaleX/scaleZ
+            // Multiply by tiling factor so texture stays sharp
+            //float tileX = scaleX * waterTextureTilingFactor;
+            //float tileZ = scaleZ * waterTextureTilingFactor;
+
+            // This affects the base map / main texture
+            //waterMaterial.mainTextureScale = new Vector2(tileX, tileZ);
+        }
+
+        // Optional: remove collider if not needed
+        var collider = water.GetComponent<MeshCollider>();
+        if (collider != null)
+        {
+            if (Application.isPlaying)
+                Destroy(collider);
+            else
+                DestroyImmediate(collider);
         }
     }
 
@@ -253,7 +279,7 @@ public class ProceduralTerrain : MonoBehaviour
         {
             for (int x = 0; x < samplesX; x++)
             {
-                // World position for this sample
+                // World position for this sample (local to terrain)
                 float worldX = x * treeSpacing;
                 float worldZ = z * treeSpacing;
 
@@ -293,8 +319,7 @@ public class ProceduralTerrain : MonoBehaviour
                     (worldZ + terrainPos.z) * 0.01f + noiseOffset.y + 5000f
                 );
                 int treeIndex = Mathf.Abs(Mathf.FloorToInt(noiseValue * treePrefabs.Length)) % treePrefabs.Length;
-                
-                // Additional safety check
+
                 if (treeIndex < 0 || treeIndex >= treePrefabs.Length)
                     continue;
 
