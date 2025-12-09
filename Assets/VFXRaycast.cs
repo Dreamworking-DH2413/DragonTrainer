@@ -7,6 +7,7 @@ public class VFXRaycast : MonoBehaviour
     public TextMeshProUGUI sheepCounterLabel;
     public float maxDistance = 1f;
     public LayerMask hitLayers;
+    public AudioClip[] sheepSounds;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     public GameObject playerCamera;
@@ -31,6 +32,12 @@ public class VFXRaycast : MonoBehaviour
                 sheepCount++;
                 sheepCounterLabel.text = sheepCount.ToString();
                 sheep.tag = "Untagged";
+                if (sheepSounds.Length > 0) {
+                    Debug.Log(sheepSounds);
+                    int randomIndex = Random.Range(0, sheepSounds.Length);
+                    sheep.audioSource.clip = sheepSounds[randomIndex];
+                    Debug.Log(sheepSounds[randomIndex]);
+                }
                 sheep.PlayHitSound();
                 sheep.shouldBurn = true;
             }
