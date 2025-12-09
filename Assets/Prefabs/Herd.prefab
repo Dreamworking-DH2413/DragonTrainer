@@ -78,6 +78,6 @@ MonoBehaviour:
   player: {fileID: 0}
   sheepalanche: 1
   oneInXSheepalanche: 7
-  sheepalancheAmount: 170
+  sheepalancheAmount: 20
   oneInXSheepBoss: 6
   sheepBossScale: 80
