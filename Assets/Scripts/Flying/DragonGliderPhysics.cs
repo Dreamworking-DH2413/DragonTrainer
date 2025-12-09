@@ -136,6 +136,16 @@ public class DragonGliderPhysics : NetworkBehaviour
     [Tooltip("Extra forward force at maximum bank (|roll| = maxRollAngle)")]
     public float maxBankThrustBoost = 5000f;
 
+    [Header("Wing Fold Speed Boost")]
+    [Tooltip("If true, increase thrust when wings are folded (tucked close to body)")]
+    public bool enableWingFoldSpeedBoost = true;
+
+    [Tooltip("Extra forward force when wings are fully folded")]
+    public float maxWingFoldThrustBoost = 8000f;
+
+    [Tooltip("Reference to wing controller (auto-find if not set)")]
+    public ToothlessWingController wingController;
+
     /* ----------------- NEUTRAL ORIENTATION ----------------- */
 
     [Header("Neutral Orientation")]
@@ -170,6 +180,10 @@ public class DragonGliderPhysics : NetworkBehaviour
         GameObject playerObject = GameObject.Find("Player");
         if (playerObject != null)
             playerTransform = playerObject.transform;
+
+        // Try to find wing controller if not assigned
+        if (wingController == null)
+            wingController = GetComponent<ToothlessWingController>();
 
         // Try to find VR controller if not assigned
         TryFindVRController();
@@ -627,6 +641,18 @@ public class DragonGliderPhysics : NetworkBehaviour
             if (extraThrust > 0f)
             {
                 rb.AddForce(transform.forward * extraThrust, ForceMode.Force);
+            }
+        }
+
+        // Extra thrust when wings are folded (streamlined for speed)
+        if (enableWingFoldSpeedBoost && wingController != null)
+        {
+            // Average fold amount from both wings (0 = extended, 1 = fully folded)
+            float avgFoldAmount = (wingController.leftWingFold + wingController.rightWingFold) * 0.5f;
+            float foldBoost = maxWingFoldThrustBoost * avgFoldAmount;
+            if (foldBoost > 0f)
+            {
+                rb.AddForce(transform.forward * foldBoost, ForceMode.Force);
             }
         }
 

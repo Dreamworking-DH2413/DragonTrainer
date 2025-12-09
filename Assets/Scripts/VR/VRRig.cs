@@ -20,6 +20,8 @@ public class VRRig : NetworkBehaviour
     public Transform leftOuterArm;
     public Transform rightOuterArm;
 
+    public GameObject vfxDragonBreath;
+
     public float wingSpanCompensation = 5.0f;
     public float headToBodyCompensation = 3.0f;
     public float wingMovementMultiplier = 3.0f;
@@ -46,6 +48,7 @@ public class VRRig : NetworkBehaviour
     private Vector3 smoothedLeftTargetLocalPos;
     private Vector3 smoothedRightTargetLocalPos;
     private bool isInitialized = false;
+    private bool vfxInitialized = false;
 
     void Start()
     {
@@ -82,6 +85,22 @@ public class VRRig : NetworkBehaviour
 
     void Update()
     {
+        // Disable VFX dragon breath for clients once network is ready
+        if (!vfxInitialized && vfxDragonBreath != null)
+        {
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
+            {
+                // In network mode: only host has VFX enabled
+                vfxDragonBreath.SetActive(IsHost);
+                vfxInitialized = true;
+            }
+            else
+            {
+                // In single-player mode: keep VFX enabled (default state)
+                vfxInitialized = true;
+            }
+        }
+
         // Only host controls the trackers and targets
         // In network mode: only run on host
         // In single-player: always run
