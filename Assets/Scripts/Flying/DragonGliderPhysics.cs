@@ -12,6 +12,16 @@ public class DragonGliderPhysics : NetworkBehaviour
     public float maxPitchAngleUp = 30f;     // Nose up limit (relative to neutral)
     public float maxPitchAngleDown = 20f;   // Nose down limit (relative to neutral)
 
+    [Header("Soft Limits (Anti-Jitter)")]
+    [Tooltip("Degrees near roll limit where control authority fades out")]
+    public float rollSoftZone = 5f;
+
+    [Tooltip("Degrees near nose-up limit where control authority fades out")]
+    public float pitchSoftZoneUp = 5f;
+
+    [Tooltip("Degrees near nose-down limit where control authority fades out")]
+    public float pitchSoftZoneDown = 5f;
+
     /* ----------------- CONTROL RESPONSE ----------------- */
 
     [Header("Control Response")]
@@ -104,25 +114,21 @@ public class DragonGliderPhysics : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        
-        // NetworkRigidbody + NetworkTransform will handle all syncing
+        // NetworkRigidbody + NetworkTransform handle all syncing
         // Server runs physics, NetworkRigidbody syncs to clients
-        // Clients: NetworkRigidbody automatically sets kinematic and applies synced physics
-        // No manual intervention needed - let NetworkRigidbody do its job
     }
 
     void FixedUpdate()
     {
         // Only run physics simulation on server or in single-player
-        // NetworkTransform handles syncing to clients automatically
         bool isNetworked = NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening;
-        
+
         if (!isNetworked || IsServer)
         {
             RunPhysicsSimulation();
         }
     }
-    
+
     void RunPhysicsSimulation()
     {
         /* ---------------- OPTIONAL FREEZE FOR DEBUG ---------------- */
@@ -171,7 +177,7 @@ public class DragonGliderPhysics : NetworkBehaviour
 
         // Map 0..360 -> -180..180 for small-angle control
         float currentPitchRel = Mathf.DeltaAngle(0f, relEuler.x); // + = nose down
-        float currentRollRel = Mathf.DeltaAngle(0f, relEuler.z); // + = right wing down
+        float currentRollRel = Mathf.DeltaAngle(0f, relEuler.z);  // + = right wing down
 
         /* ---------------- TARGET ATTITUDE (CLAMPED) ---------------- */
 
@@ -202,10 +208,58 @@ public class DragonGliderPhysics : NetworkBehaviour
         // Target roll directly from A/D input, clamped to prevent barrel rolls
         float targetRollRel = Mathf.Clamp(turnInput * maxRollAngle, -maxRollAngle, maxRollAngle);
 
-        /* ---------------- ERROR & CONTROL EFFECT ---------------- */
+        /* ---------------- ERROR & SOFT-LIMIT SCALING ---------------- */
 
-        float pitchError = Mathf.DeltaAngle(currentPitchRel, targetPitchRel);
-        float rollError = Mathf.DeltaAngle(currentRollRel, targetRollRel);
+        float rawPitchError = Mathf.DeltaAngle(currentPitchRel, targetPitchRel);
+        float rawRollError = Mathf.DeltaAngle(currentRollRel, targetRollRel);
+
+        float pitchLimitFactor = 1f;
+        float rollLimitFactor = 1f;
+
+        // --- Roll soft zone ---
+        if (maxRollAngle > 0.1f && rollSoftZone > 0f && Mathf.Abs(turnInput) > 0f)
+        {
+            float absRoll = Mathf.Abs(currentRollRel);
+            float rollToLimit = maxRollAngle - absRoll;
+
+            // >0 if input is trying to push further into the current bank direction
+            float rollPushDir = Mathf.Sign(turnInput) * Mathf.Sign(currentRollRel);
+
+            if (rollPushDir > 0f && rollToLimit <= rollSoftZone)
+            {
+                // 1 at edge of soft zone, 0 exactly at limit
+                float t = Mathf.Clamp01(rollToLimit / rollSoftZone);
+                rollLimitFactor = t;
+            }
+        }
+
+        // --- Pitch soft zones (separate up / down) ---
+        if (pitchSoftZoneUp > 0f || pitchSoftZoneDown > 0f)
+        {
+            // Nose up region
+            if (targetPitchRel < 0f && currentPitchRel < 0f && pitchInputRaw < 0f && pitchSoftZoneUp > 0f)
+            {
+                float distToUpLimit = Mathf.Abs(currentPitchRel + maxPitchAngleUp); // 0 at -maxPitchAngleUp
+                if (distToUpLimit <= pitchSoftZoneUp)
+                {
+                    float t = Mathf.Clamp01(distToUpLimit / pitchSoftZoneUp);
+                    pitchLimitFactor = t;
+                }
+            }
+            // Nose down region
+            else if (targetPitchRel > 0f && currentPitchRel > 0f && pitchInputRaw > 0f && pitchSoftZoneDown > 0f)
+            {
+                float distToDownLimit = Mathf.Abs(currentPitchRel - maxPitchAngleDown); // 0 at +maxPitchAngleDown
+                if (distToDownLimit <= pitchSoftZoneDown)
+                {
+                    float t = Mathf.Clamp01(distToDownLimit / pitchSoftZoneDown);
+                    pitchLimitFactor = t;
+                }
+            }
+        }
+
+        float pitchError = rawPitchError * pitchLimitFactor;
+        float rollError = rawRollError * rollLimitFactor;
 
         float controlEffect = Mathf.Clamp01(speed / controlFullEffectSpeed);
 
@@ -223,8 +277,8 @@ public class DragonGliderPhysics : NetworkBehaviour
         Vector3 torque = Vector3.zero;
 
         torque.x = pitchError * pitchTorque * controlEffect; // pitch toward target
-        torque.z = rollError * rollTorque * controlEffect; // roll toward target
-        torque.y = yawInput * yawTorque * controlEffect; // yaw for turn
+        torque.z = rollError * rollTorque * controlEffect;   // roll toward target
+        torque.y = yawInput * yawTorque * controlEffect;     // yaw for turn
 
         rb.AddRelativeTorque(torque, ForceMode.Acceleration);
 
@@ -279,13 +333,13 @@ public class DragonGliderPhysics : NetworkBehaviour
 
         // Base thrust (from glide / dive logic)
         float currentThrust = glideThrust;
-        
+
         // Debug: Add extra thrust when space is pressed
         if (Input.GetKey(KeyCode.Space))
         {
             currentThrust += debugThrustBoost;
         }
-        
+
         if (currentThrust != 0f)
         {
             rb.AddForce(transform.forward * currentThrust, ForceMode.Force);
@@ -313,7 +367,7 @@ public class DragonGliderPhysics : NetworkBehaviour
             rb.AddForce(-velocity.normalized * dragCoefficient * speed * speed * aoaDrag, ForceMode.Force);
         }
     }
-    
+
     void Update()
     {
         // Update player position for clients
