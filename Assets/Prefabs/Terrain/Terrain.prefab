@@ -109,12 +109,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Herd: {fileID: 5024721421659279829, guid: 08ac16102e2a71249834934928877e11, type: 3}
   oneInXSheep: 30
-  heightmapResolution: 129
-  terrainSizeX: 128
-  terrainSizeZ: 128
+  heightmapResolution: 33
+  terrainSizeX: 512
+  terrainSizeZ: 512
   maxHeight: 256
-  noiseScale: 0.125
-  octaves: 4
+  noiseScale: 1
+  octaves: 2
   persistence: 0.5
   lacunarity: 2
   noiseOffset: {x: 0, y: 0}
@@ -154,4 +154,3 @@ MonoBehaviour:
   spawnChance: 0.15
   heightAboveTerrain: 20
   randomOffsetRange: 10
-  ringSystemManager: {fileID: 0}
