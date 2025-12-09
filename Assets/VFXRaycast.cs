@@ -8,6 +8,8 @@ public class VFXRaycast : MonoBehaviour
     public float maxDistance = 1f;
     public LayerMask hitLayers;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    public GameObject playerCamera;
     void Start()
     {
         sheepCounterLabel.text = "0";
@@ -17,7 +19,7 @@ public class VFXRaycast : MonoBehaviour
     void Update()
     {
         
-        Ray ray = new Ray(transform.position, transform.forward);
+        Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, maxDistance, hitLayers))
@@ -39,6 +41,6 @@ public class VFXRaycast : MonoBehaviour
             // No hit
         }
 
-        Debug.DrawRay(transform.position, transform.forward * maxDistance, Color.red);
+        Debug.DrawRay(playerCamera.transform.position, playerCamera.transform.forward * maxDistance, Color.red);
     }
 }
