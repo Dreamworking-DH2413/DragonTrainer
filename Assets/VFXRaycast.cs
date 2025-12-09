@@ -38,8 +38,8 @@ public class VFXRaycast : MonoBehaviour
                     sheep.audioSource.clip = sheepSounds[randomIndex];
                     Debug.Log(sheepSounds[randomIndex]);
                 }
-                sheep.PlayHitSound();
-                sheep.shouldBurn = true;
+                sheep.PlayHitSoundClientRpc();
+                sheep.StartBurningServerRpc();
             }
             
         }

@@ -2,12 +2,13 @@ using System;
 using NUnit.Framework.Constraints;
 using Unity.VisualScripting;
 using UnityEngine;
+using Unity.Netcode;
 
-public class Sheep : MonoBehaviour
+public class Sheep : NetworkBehaviour
 {
-    public bool shouldBurn = false;
+    private NetworkVariable<bool> shouldBurn = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private DissolveControl burnControl;
-    private float dissolveAmount = 0f;
+    private NetworkVariable<float> dissolveAmount = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public AudioSource audioSource;
     void Start()
     {
@@ -17,20 +18,41 @@ public class Sheep : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (shouldBurn)
+        // Server updates burning logic
+        if (IsServer && shouldBurn.Value)
         {
-            dissolveAmount += Time.deltaTime * 0.5f;
-            Debug.Log(dissolveAmount);
-            burnControl.SetDissolveBoth(dissolveAmount);
+            dissolveAmount.Value += Time.deltaTime * 0.5f;
+            Debug.Log(dissolveAmount.Value);
 
-            if (dissolveAmount >= 0.75f)
+            if (dissolveAmount.Value >= 0.75f)
                 Die();
+        }
+        
+        // All clients apply visual effects based on synced value
+        if (burnControl != null)
+        {
+            burnControl.SetDissolveBoth(dissolveAmount.Value);
         }
     }
     
     public void Die()
     {
-        Destroy(gameObject);
+        if (IsServer)
+        {
+            // Server despawns the object which syncs to all clients
+            if (NetworkObject != null && NetworkObject.IsSpawned)
+            {
+                NetworkObject.Despawn(true);
+            }
+            Destroy(gameObject);
+        }
+    }
+    
+    // Method to start burning (should be called from server or via RPC)
+    [Rpc(SendTo.Server)]
+    public void StartBurningServerRpc()
+    {
+        shouldBurn.Value = true;
     }
     
     public void PlayHitSound()
@@ -39,5 +61,12 @@ public class Sheep : MonoBehaviour
         {
             audioSource.Play();
         }
+    }
+    
+    // RPC to play hit sound on all clients
+    [ClientRpc]
+    public void PlayHitSoundClientRpc()
+    {
+        PlayHitSound();
     }
 }

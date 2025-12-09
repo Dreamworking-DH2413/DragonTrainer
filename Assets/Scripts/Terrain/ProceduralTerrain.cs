@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity.Netcode;
 
 [RequireComponent(typeof(Terrain))]
 public class ProceduralTerrain : MonoBehaviour
@@ -100,15 +101,34 @@ public class ProceduralTerrain : MonoBehaviour
         CreateOrUpdateWaterPlane();
         GenerateTrees();
 
-        // Herd spawning
-        Vector3 center = transform.position + new Vector3(terrainSizeX * 0.5f, 0f, terrainSizeZ * 0.5f);
-        float terrainY = _terrain.SampleHeight(center) + _terrain.transform.position.y;
-        int rng = Random.Range(0, oneInXSheep + 1);
-        center.y = terrainY;
-
-        if (rng >= oneInXSheep - 1 && terrainY > waterHeight + 3.0f)
+        // Herd spawning - only on server
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
         {
-            Instantiate(Herd, center, Quaternion.identity, this.transform);
+            Vector3 center = transform.position + new Vector3(terrainSizeX * 0.5f, 0f, terrainSizeZ * 0.5f);
+            float terrainY = _terrain.SampleHeight(center) + _terrain.transform.position.y;
+            int rng = Random.Range(0, oneInXSheep + 1);
+            center.y = terrainY;
+            Debug.Log($"[SERVER] Terrain center at {center}, terrainY: {terrainY}, waterHeight: {waterHeight}");
+
+            if (rng >= oneInXSheep - 1 && terrainY > waterHeight + 3.0f)
+            {
+                Debug.Log($"[SERVER] Spawning herd at {center} (terrain Y: {terrainY}, rng: {rng}/{oneInXSheep})");
+                var herdGo = Instantiate(Herd, center, Quaternion.identity, this.transform);
+                var networkObject = herdGo.GetComponent<NetworkObject>();
+                if (networkObject != null)
+                {
+                    networkObject.Spawn(true); // Spawn with server ownership
+                    Debug.Log($"[SERVER] Herd NetworkObject spawned successfully");
+                }
+                else
+                {
+                    Debug.LogWarning($"[SERVER] Herd prefab is missing NetworkObject component!");
+                }
+            }
+            else
+            {
+                Debug.Log($"[SERVER] Herd spawn skipped (rng: {rng}/{oneInXSheep}, terrainY: {terrainY}, waterHeight: {waterHeight})");
+            }
         }
     }
 

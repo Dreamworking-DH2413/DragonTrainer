@@ -182,10 +182,10 @@ public class VRRig : NetworkBehaviour
         // In single-player: always run
         if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
         {
-            Debug.Log("[VRRig] Networked mode detected.");
+            // Debug.Log("[VRRig] Networked mode detected.");
             if (!IsHost)
             {
-                Debug.Log("[VRRig] Not host, skipping FixedUpdate.");
+                // Debug.Log("[VRRig] Not host, skipping FixedUpdate.");
                 return; // Clients don't run this script
             }
         }

@@ -1,8 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.Netcode;
 
 
-public class Boids : MonoBehaviour
+public class Boids : NetworkBehaviour
 {
     
     // MOVEMENT
@@ -331,6 +332,8 @@ public class Boids : MonoBehaviour
     //==============================================
     void FixedUpdate()
     {
+        // Only the server controls the movement
+        if (!IsServer) return;
         
         // --- Sense and reCalc forces (throttled) ---
         //if (Time.fixedTime >= nextSenseTime)

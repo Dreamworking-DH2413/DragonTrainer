@@ -1,6 +1,7 @@
 using UnityEngine;
+using Unity.Netcode;
 
-public class Herd : MonoBehaviour
+public class Herd : NetworkBehaviour
 {
     public GameObject sheepPrefab;   // assign prefab that has Boids on root
     public int maxSheepAmount = 40;
@@ -22,6 +23,9 @@ public class Herd : MonoBehaviour
     
     void Start()
     {
+        // Only the server spawns the herd
+        if (!IsServer) return;
+        
         //For predator position (player/dragon) calcs. Player reference passed to sheep obj to avoid sheep individually lookups (find)
         // Auto-find player if not assigned in Inspector
         if (player == null)
@@ -64,6 +68,14 @@ public class Herd : MonoBehaviour
                 pos += new Vector3(0f, 50.0f, 0f); //boss always spawns at center
             }
             var go = Instantiate(sheepPrefab, this.transform.position + pos, Quaternion.identity, this.transform);
+            
+            // Spawn the sheep on the network
+            var networkObject = go.GetComponent<NetworkObject>();
+            if (networkObject != null)
+            {
+                networkObject.Spawn(true); // Spawn with ownership to server
+            }
+            
             Boids boid = go.GetComponent<Boids>();
             boid.player = player;   //pass player reference to sheep
             if (sheepBoss){
