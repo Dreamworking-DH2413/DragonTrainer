@@ -1,6 +1,7 @@
 using UnityEngine;
 using AztechGames;
 using Unity.Netcode;
+using Valve.VR;
 
 [RequireComponent(typeof(Rigidbody))]
 public class DragonGliderPhysics : NetworkBehaviour
@@ -44,6 +45,41 @@ public class DragonGliderPhysics : NetworkBehaviour
 
     [Header("Input")]
     public float inputDeadzone = 0.05f;
+
+    /* ----------------- VR CONTROLLER INPUT ----------------- */
+
+    [Header("VR Controller Input")]
+    [Tooltip("Reference to the Vive controller used for pitch control (usually right hand)")]
+    public SteamVR_Behaviour_Pose vrControllerPose;
+
+    [Tooltip("If true, automatically find a VR controller if vrControllerPose is not set")]
+    public bool autoFindController = true;
+
+    [Tooltip("Which hand to use for pitch control if auto-finding")]
+    public SteamVR_Input_Sources preferredControllerHand = SteamVR_Input_Sources.RightHand;
+
+    [Tooltip("Neutral pitch angle of the controller (degrees). Controller tilted forward from this = pitch down")]
+    public float controllerNeutralPitch = 0f;
+
+    [Tooltip("How much controller tilt (degrees) maps to full pitch input (-1 to 1)")]
+    public float controllerPitchSensitivity = 45f;
+
+    [Tooltip("Deadzone for controller pitch input (in normalized -1 to 1 range)")]
+    public float controllerPitchDeadzone = 0.1f;
+
+    [Tooltip("If true, VR controller also controls roll based on controller roll angle")]
+    public bool enableControllerRoll = false;
+
+    [Tooltip("Neutral roll angle of the controller (degrees)")]
+    public float controllerNeutralRoll = 0f;
+
+    [Tooltip("How much controller roll (degrees) maps to full roll input (-1 to 1)")]
+    public float controllerRollSensitivity = 45f;
+
+    [Tooltip("Deadzone for controller roll input (in normalized -1 to 1 range)")]
+    public float controllerRollDeadzone = 0.1f;
+
+    private bool vrControllerInitialized = false;
 
     /* ----------------- AZTECH SURFACES ----------------- */
 
@@ -109,6 +145,112 @@ public class DragonGliderPhysics : NetworkBehaviour
         GameObject playerObject = GameObject.Find("Player");
         if (playerObject != null)
             playerTransform = playerObject.transform;
+
+        // Try to find VR controller if not assigned
+        TryFindVRController();
+    }
+
+    /// <summary>
+    /// Attempts to find a VR controller if one is not already assigned
+    /// </summary>
+    void TryFindVRController()
+    {
+        if (vrControllerPose != null)
+        {
+            vrControllerInitialized = true;
+            return;
+        }
+
+        if (!autoFindController)
+            return;
+
+        // Find all SteamVR controller poses in the scene
+        var controllerPoses = FindObjectsByType<SteamVR_Behaviour_Pose>(FindObjectsSortMode.None);
+        
+        // First, try to find the preferred hand
+        foreach (var pose in controllerPoses)
+        {
+            if (pose.inputSource == preferredControllerHand)
+            {
+                vrControllerPose = pose;
+                vrControllerInitialized = true;
+                Debug.Log($"DragonGliderPhysics: Auto-found VR controller ({preferredControllerHand})");
+                return;
+            }
+        }
+
+        // If preferred hand not found, take any available controller
+        if (controllerPoses.Length > 0)
+        {
+            vrControllerPose = controllerPoses[0];
+            vrControllerInitialized = true;
+            Debug.Log($"DragonGliderPhysics: Auto-found VR controller ({vrControllerPose.inputSource})");
+        }
+    }
+
+    /// <summary>
+    /// Gets pitch input from VR controller based on its rotation relative to neutral.
+    /// Returns value in range -1 (full pitch up) to 1 (full pitch down).
+    /// </summary>
+    float GetVRControllerPitchInput()
+    {
+        if (vrControllerPose == null || !vrControllerPose.isValid)
+            return 0f;
+
+        // Get the controller's local rotation (pitch is rotation around X axis)
+        // We use local euler angles relative to the player/world
+        Vector3 controllerEuler = vrControllerPose.transform.eulerAngles;
+        
+        // Convert to -180 to 180 range
+        float controllerPitch = Mathf.DeltaAngle(0f, controllerEuler.x);
+        
+        // Calculate pitch relative to neutral position
+        float relativePitch = controllerPitch - controllerNeutralPitch;
+        
+        // Normalize to -1 to 1 range based on sensitivity
+        float normalizedPitch = Mathf.Clamp(relativePitch / controllerPitchSensitivity, -1f, 1f);
+        
+        // Apply deadzone
+        if (Mathf.Abs(normalizedPitch) < controllerPitchDeadzone)
+            return 0f;
+        
+        // Remap after deadzone to maintain full range
+        float sign = Mathf.Sign(normalizedPitch);
+        float magnitude = (Mathf.Abs(normalizedPitch) - controllerPitchDeadzone) / (1f - controllerPitchDeadzone);
+        
+        return sign * magnitude;
+    }
+
+    /// <summary>
+    /// Gets roll/turn input from VR controller based on its rotation.
+    /// Returns value in range -1 (full left) to 1 (full right).
+    /// </summary>
+    float GetVRControllerRollInput()
+    {
+        if (!enableControllerRoll || vrControllerPose == null || !vrControllerPose.isValid)
+            return 0f;
+
+        // Get the controller's local rotation (roll is rotation around Z axis)
+        Vector3 controllerEuler = vrControllerPose.transform.eulerAngles;
+        
+        // Convert to -180 to 180 range
+        float controllerRoll = Mathf.DeltaAngle(0f, controllerEuler.z);
+        
+        // Calculate roll relative to neutral position
+        float relativeRoll = controllerRoll - controllerNeutralRoll;
+        
+        // Normalize to -1 to 1 range based on sensitivity
+        float normalizedRoll = Mathf.Clamp(relativeRoll / controllerRollSensitivity, -1f, 1f);
+        
+        // Apply deadzone
+        if (Mathf.Abs(normalizedRoll) < controllerRollDeadzone)
+            return 0f;
+        
+        // Remap after deadzone to maintain full range
+        float sign = Mathf.Sign(normalizedRoll);
+        float magnitude = (Mathf.Abs(normalizedRoll) - controllerRollDeadzone) / (1f - controllerRollDeadzone);
+        
+        return sign * magnitude;
     }
 
     public override void OnNetworkSpawn()
@@ -147,12 +289,41 @@ public class DragonGliderPhysics : NetworkBehaviour
 
         /* ---------------- READ INPUT ---------------- */
 
-        // Invert horizontal axis so A = left, D = right in our convention
-        float turnInput = -Input.GetAxisRaw("Horizontal");   // A/D or stick left-right
-        float pitchInputRaw = Input.GetAxisRaw("Vertical");  // W/S or stick up-down
+        // Read keyboard input first
+        float keyboardTurnInput = -Input.GetAxisRaw("Horizontal");   // A/D or stick left-right
+        float keyboardPitchInput = Input.GetAxisRaw("Vertical");     // W/S or stick up-down
 
-        if (Mathf.Abs(turnInput) < inputDeadzone) turnInput = 0f;
-        if (Mathf.Abs(pitchInputRaw) < inputDeadzone) pitchInputRaw = 0f;
+        // Apply keyboard deadzone
+        if (Mathf.Abs(keyboardTurnInput) < inputDeadzone) keyboardTurnInput = 0f;
+        if (Mathf.Abs(keyboardPitchInput) < inputDeadzone) keyboardPitchInput = 0f;
+
+        // Read VR controller input
+        float vrPitchInput = GetVRControllerPitchInput();
+        float vrTurnInput = GetVRControllerRollInput();  // Only used if enableControllerRoll is true
+
+        // Combine inputs: Keyboard takes priority (if keyboard has input, use it; otherwise use VR)
+        float turnInput;
+        float pitchInputRaw;
+
+        // For pitch: keyboard takes priority
+        if (Mathf.Abs(keyboardPitchInput) > 0f)
+        {
+            pitchInputRaw = keyboardPitchInput;
+        }
+        else
+        {
+            pitchInputRaw = vrPitchInput;
+        }
+
+        // For turn/roll: keyboard takes priority
+        if (Mathf.Abs(keyboardTurnInput) > 0f)
+        {
+            turnInput = keyboardTurnInput;
+        }
+        else
+        {
+            turnInput = vrTurnInput;
+        }
 
         /* ---------------- VELOCITY & AOA ---------------- */
 
