@@ -100,7 +100,7 @@ public class VRRig : NetworkBehaviour
             // Calculate desired position in local space with multiplied x-axis movement
             Vector3 targetLocalPos = new Vector3(
                 (trackerLocalPos.x * wingMovementMultiplier) - wingSpanCompensation,
-                trackerLocalPos.y * 10 + 0.25f,
+                trackerLocalPos.y * 20 - 0.25f,
                 trackerLocalPos.z - headToBodyCompensation
             );
             
@@ -140,7 +140,7 @@ public class VRRig : NetworkBehaviour
             // Calculate desired position in local space with multiplied x-axis movement
             Vector3 targetLocalPos = new Vector3(
                 (trackerLocalPos.x * wingMovementMultiplier) + wingSpanCompensation,
-                trackerLocalPos.y * 10 + 0.25f,
+                trackerLocalPos.y * 20 - 0.25f,
                 trackerLocalPos.z - headToBodyCompensation
             );
             

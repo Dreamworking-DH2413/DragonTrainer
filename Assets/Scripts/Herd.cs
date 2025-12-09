@@ -19,6 +19,10 @@ public class Herd : NetworkBehaviour
     public float sheepBossScale = 80f;
     private bool sheepBoss=false;
 
+    [System.NonSerialized]
+    public ProceduralTerrain ownerTerrain; // Reference to the terrain that spawned this herd
+    private System.Collections.Generic.List<GameObject> spawnedSheep = new System.Collections.Generic.List<GameObject>();
+
     
     
     void Start()
@@ -67,7 +71,7 @@ public class Herd : NetworkBehaviour
             if (sheepBoss){
                 pos += new Vector3(0f, 50.0f, 0f); //boss always spawns at center
             }
-            var go = Instantiate(sheepPrefab, this.transform.position + pos, Quaternion.identity, this.transform);
+            var go = Instantiate(sheepPrefab, this.transform.position + pos, Quaternion.identity);
             
             // Spawn the sheep on the network
             var networkObject = go.GetComponent<NetworkObject>();
@@ -76,8 +80,17 @@ public class Herd : NetworkBehaviour
                 networkObject.Spawn(true); // Spawn with ownership to server
             }
             
+            // Set terrain reference on sheep
+            var sheep = go.GetComponent<Sheep>();
+            if (sheep != null)
+            {
+                sheep.ownerTerrain = ownerTerrain;
+            }
+            
             Boids boid = go.GetComponent<Boids>();
             boid.player = player;   //pass player reference to sheep
+            
+            spawnedSheep.Add(go);
             if (sheepBoss){
                 boid.transform.localScale *= 70f;            
             }
@@ -86,6 +99,29 @@ public class Herd : NetworkBehaviour
         //// Debug.Log("spawned Sheep Herd of size: " + sheepAmount);
 
         
+    }
+
+    public override void OnDestroy()
+    {
+        base.OnDestroy();
+        
+        // Clean up all spawned sheep when herd is destroyed
+        if (IsServer)
+        {
+            foreach (var sheep in spawnedSheep)
+            {
+                if (sheep != null)
+                {
+                    var netObj = sheep.GetComponent<NetworkObject>();
+                    if (netObj != null && netObj.IsSpawned)
+                    {
+                        netObj.Despawn(true);
+                    }
+                    Destroy(sheep);
+                }
+            }
+            spawnedSheep.Clear();
+        }
     }
 
     // Update is called once per frame

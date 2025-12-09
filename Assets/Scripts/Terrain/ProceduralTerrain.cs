@@ -45,6 +45,7 @@ public class ProceduralTerrain : MonoBehaviour
 
     Terrain _terrain;
     TerrainData _data;
+    private System.Collections.Generic.List<GameObject> spawnedHerds = new System.Collections.Generic.List<GameObject>();
 
     void Awake()
     {
@@ -63,6 +64,27 @@ public class ProceduralTerrain : MonoBehaviour
     void Start()
     {
         Generate();
+    }
+
+    void OnDestroy()
+    {
+        // Clean up all spawned herds when terrain chunk is destroyed
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+        {
+            foreach (var herd in spawnedHerds)
+            {
+                if (herd != null)
+                {
+                    var netObj = herd.GetComponent<NetworkObject>();
+                    if (netObj != null && netObj.IsSpawned)
+                    {
+                        netObj.Despawn(true);
+                    }
+                    Destroy(herd);
+                }
+            }
+            spawnedHerds.Clear();
+        }
     }
 
     public void Generate()
@@ -113,11 +135,20 @@ public class ProceduralTerrain : MonoBehaviour
             if (rng >= oneInXSheep - 1 && terrainY > waterHeight + 3.0f)
             {
                 Debug.Log($"[SERVER] Spawning herd at {center} (terrain Y: {terrainY}, rng: {rng}/{oneInXSheep})");
-                var herdGo = Instantiate(Herd, center, Quaternion.identity, this.transform);
+                var herdGo = Instantiate(Herd, center, Quaternion.identity);
+                
+                // Set terrain reference on herd before spawning
+                var herdComponent = herdGo.GetComponent<Herd>();
+                if (herdComponent != null)
+                {
+                    herdComponent.ownerTerrain = this;
+                }
+                
                 var networkObject = herdGo.GetComponent<NetworkObject>();
                 if (networkObject != null)
                 {
                     networkObject.Spawn(true); // Spawn with server ownership
+                    spawnedHerds.Add(herdGo); // Track for cleanup
                     Debug.Log($"[SERVER] Herd NetworkObject spawned successfully");
                 }
                 else

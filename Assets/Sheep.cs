@@ -10,6 +10,9 @@ public class Sheep : NetworkBehaviour
     private DissolveControl burnControl;
     private NetworkVariable<float> dissolveAmount = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public AudioSource audioSource;
+    
+    [System.NonSerialized]
+    public ProceduralTerrain ownerTerrain; // Reference to the terrain chunk that owns this sheep
     void Start()
     {
         burnControl = GetComponent<DissolveControl>();
@@ -18,6 +21,13 @@ public class Sheep : NetworkBehaviour
 
     void FixedUpdate()
     {
+        // Server checks if sheep fell below y=0 and kills it
+        if (IsServer && transform.position.y < 0f)
+        {
+            Die();
+            return;
+        }
+        
         // Server updates burning logic
         if (IsServer && shouldBurn.Value)
         {
