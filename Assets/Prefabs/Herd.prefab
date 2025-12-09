@@ -49,3 +49,8 @@ MonoBehaviour:
   minSheepAmount: 12
   spawningRadius: 5
   player: {fileID: 0}
+  sheepalanche: 1
+  oneInXSheepalanche: 17
+  sheepalancheAmount: 90
+  oneInXSheepBoss: 15
+  sheepBossScale: 70

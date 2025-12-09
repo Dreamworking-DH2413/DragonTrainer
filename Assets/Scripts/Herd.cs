@@ -10,6 +10,15 @@ public class Herd : MonoBehaviour
     //public float detectionRadius = 20f;
     //public bool playerDetected = false;
     public Transform player;             // set in Awake or inspector
+    public bool sheepalanche=true;
+    public int oneInXSheepalanche = 20;
+    public int sheepalancheAmount = 90;
+
+    public int oneInXSheepBoss = 15;
+    public float sheepBossScale = 70f;
+    private bool sheepBoss=false;
+
+    
     
     void Start()
     {
@@ -24,17 +33,42 @@ public class Herd : MonoBehaviour
                 Debug.Log("M E G A F A I L");
 
             }
+        
         }
         
-        sheepAmount = Mathf.FloorToInt(Random.value*maxSheepAmount)+minSheepAmount;      
+            int rng = Random.Range(0, oneInXSheepalanche + 1); //! pick the biggest onInX var as rng
+            if (rng >= oneInXSheepalanche - 1){
+
+                sheepAmount = sheepalancheAmount;
+                spawningRadius = 30f;
+
+            } else if (rng >= oneInXSheepBoss - 1){
+                sheepAmount = 1;
+                spawningRadius = 50f;
+                sheepBoss = true;
+            }
+            else
+            {
+                sheepAmount = Mathf.FloorToInt(Random.value*maxSheepAmount)+minSheepAmount;      
+                spawningRadius = 5f;
+            }
+           
+            
+        
     //spawn sheep in random positions within spawningRadius
         for (int i = 0; i < sheepAmount; i++)
         { //y should be a bit above ground level dropping the sheep down to avoid spawning inside the terrain
             Vector3 pos = new Vector3(Random.Range(-spawningRadius, spawningRadius), 10.0f, Random.Range(-spawningRadius, spawningRadius));
             //sheep will be child of this herd object/thus be destroyed with the herd when tile is destroyed
+            if (sheepBoss){
+                pos += new Vector3(0f, 50.0f, 0f); //boss always spawns at center
+            }
             var go = Instantiate(sheepPrefab, this.transform.position + pos, Quaternion.identity, this.transform);
             Boids boid = go.GetComponent<Boids>();
             boid.player = player;   //pass player reference to sheep
+            if (sheepBoss){
+                boid.transform.localScale *= 70f;            
+            }
         }
         
         //// Debug.Log("spawned Sheep Herd of size: " + sheepAmount);
