@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity.Netcode;
 
 public class TerrainStartRingSpawner : MonoBehaviour
 {
@@ -16,6 +17,10 @@ public class TerrainStartRingSpawner : MonoBehaviour
     
     void Start()
     {
+        // Only server spawns rings
+        if (NetworkManager.Singleton != null && !NetworkManager.Singleton.IsServer)
+            return;
+            
         ringSystemManager = FindFirstObjectByType<RingSystemManager>();
 
         if (ringSystemManager == null)
@@ -54,6 +59,14 @@ public class TerrainStartRingSpawner : MonoBehaviour
         
         // Spawn the ring
         GameObject ringObj = Instantiate(ringPrefab, spawnPos, Quaternion.identity);
+        
+        // Spawn on network
+        NetworkObject netObj = ringObj.GetComponent<NetworkObject>();
+        if (netObj != null)
+        {
+            netObj.Spawn(true);
+        }
+        
         spawnedRing = ringObj.GetComponent<Ring>();
         
         // Initialize as start ring
@@ -68,10 +81,20 @@ public class TerrainStartRingSpawner : MonoBehaviour
     
     void OnDestroy()
     {
+        // Only server handles cleanup
+        if (NetworkManager.Singleton != null && !NetworkManager.Singleton.IsServer)
+            return;
+            
         // Unregister and clean up the ring when this terrain chunk is destroyed
         if (spawnedRing != null && ringSystemManager != null)
         {
             ringSystemManager.UnregisterStartRing(spawnedRing);
+            
+            NetworkObject netObj = spawnedRing.GetComponent<NetworkObject>();
+            if (netObj != null && netObj.IsSpawned)
+            {
+                netObj.Despawn(true);
+            }
             Destroy(spawnedRing.gameObject);
         }
     }
