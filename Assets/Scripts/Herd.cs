@@ -3,19 +3,19 @@ using UnityEngine;
 public class Herd : MonoBehaviour
 {
     public GameObject sheepPrefab;   // assign prefab that has Boids on root
-    public int maxSheepAmount = 20;
-    public int minSheepAmount = 12; //must match pasture size in Boids.cs
+    public int maxSheepAmount = 40;
+    public int minSheepAmount = 20; //must match pasture size in Boids.cs
     private int sheepAmount;
-    public float spawningRadius = 5f;
+    public float spawningRadius = 10f;
     //public float detectionRadius = 20f;
     //public bool playerDetected = false;
     public Transform player;             // set in Awake or inspector
     public bool sheepalanche=true;
-    public int oneInXSheepalanche = 20;
-    public int sheepalancheAmount = 90;
+    public int oneInXSheepalanche = 7;
+    public int sheepalancheAmount = 170;
 
-    public int oneInXSheepBoss = 15;
-    public float sheepBossScale = 70f;
+    public int oneInXSheepBoss = 6;
+    public float sheepBossScale = 80f;
     private bool sheepBoss=false;
 
     
@@ -40,7 +40,7 @@ public class Herd : MonoBehaviour
             if (rng >= oneInXSheepalanche - 1){
 
                 sheepAmount = sheepalancheAmount;
-                spawningRadius = 30f;
+                spawningRadius = 40f;
 
             } else if (rng >= oneInXSheepBoss - 1){
                 sheepAmount = 1;
@@ -50,7 +50,7 @@ public class Herd : MonoBehaviour
             else
             {
                 sheepAmount = Mathf.FloorToInt(Random.value*maxSheepAmount)+minSheepAmount;      
-                spawningRadius = 5f;
+                spawningRadius = 20f;
             }
            
             

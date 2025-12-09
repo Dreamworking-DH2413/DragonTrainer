@@ -4,6 +4,5 @@
   <Project Path="SteamVR.csproj" />
   <Project Path="SteamVR_Editor.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />
-  <Project Path="SteamVR_Actions.csproj" />
   <Project Path="SteamVR_Windows_EditorHelper.csproj" />
 </Solution>

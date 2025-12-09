@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 4e4fa6d533c588046bddc0304e874823, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.1
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4e4fa6d533c588046bddc0304e874823, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.1
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4e4fa6d533c588046bddc0304e874823, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.1
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4e4fa6d533c588046bddc0304e874823, type: 3}
       propertyPath: m_LocalPosition.x
@@ -168,7 +168,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18b4408e1f107ff4388d3ad0c3f60385, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 15
+  restSpeed: 15
+  huntSpeed: 20
   huntedAcc: 40
   restAcc: 6.5
   turnSpeed: 10

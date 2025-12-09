@@ -45,12 +45,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sheepPrefab: {fileID: 5835491702330930414, guid: 645bb63fdb249fc49b80a81a02503361, type: 3}
-  maxSheepAmount: 10
-  minSheepAmount: 12
-  spawningRadius: 5
+  maxSheepAmount: 40
+  minSheepAmount: 20
+  spawningRadius: 10
   player: {fileID: 0}
   sheepalanche: 1
-  oneInXSheepalanche: 17
-  sheepalancheAmount: 90
-  oneInXSheepBoss: 15
-  sheepBossScale: 70
+  oneInXSheepalanche: 7
+  sheepalancheAmount: 170
+  oneInXSheepBoss: 6
+  sheepBossScale: 80
