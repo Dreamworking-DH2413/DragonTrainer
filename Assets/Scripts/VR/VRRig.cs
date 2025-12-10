@@ -4,28 +4,32 @@ using Unity.Netcode;
 
 public class VRRig : NetworkBehaviour
 {
+    [Header("VR Transforms")]
     public Transform head;
     public Transform player;
     public Transform leftHand;
     public Transform rightHand;
 
+    [Header("Tracker Transforms")]
     public Transform tracker1;
     public Transform tracker2;
 
+    [Header("Dragon Transforms")]
     public Transform dragon;
     public Transform targetsParent;
     public Transform leftWingTarget;
     public Transform rightWingTarget;
 
-    public Transform leftOuterArm;
-    public Transform rightOuterArm;
-
+    [Header("VFX")]
     public GameObject vfxDragonBreath;
 
+    [Header("Movement Multipliers")]
     public float wingSpanCompensation = 5.0f;
     public float headToBodyCompensation = 3.0f;
     public float wingMovementMultiplier = 3.0f;
     public float followSpeed = 20f;
+    public float trackerYMultiplier = 25f;
+    public float trackerYOffset = -1.5f;
 
     [Header("Target Position Constraints")]
     public float minXOutward = -8f;  // How far out each wing can go (negative for left, positive for right)
@@ -39,12 +43,13 @@ public class VRRig : NetworkBehaviour
     public Vector2 zBoundsAtOutward = new Vector2(-5f, 2f);  // Z bounds when wing is fully extended (at minXOutward)
     public Vector2 zBoundsAtInward = new Vector2(-3f, 1f);   // Z bounds when wing is close to body (at maxXInward)
 
+    [Header("Internal State")]
     private Vector3 startLeftOuterWingLocal;
     private Vector3 startRightOuterWingLocal;
     private Vector3 startLeftTrackerLocalPosition;
     private Vector3 startRightTrackerLocalPosition;
     
-    // Smoothed target positions in LOCAL space to reduce choppiness
+    [Header("Smoothing")]
     private Vector3 smoothedLeftTargetLocalPos;
     private Vector3 smoothedRightTargetLocalPos;
     private bool isInitialized = false;
@@ -119,7 +124,7 @@ public class VRRig : NetworkBehaviour
             // Calculate desired position in local space with multiplied x-axis movement
             Vector3 targetLocalPos = new Vector3(
                 (trackerLocalPos.x * wingMovementMultiplier) - wingSpanCompensation,
-                trackerLocalPos.y * 20 - 0.25f,
+                trackerLocalPos.y * trackerYMultiplier + trackerYOffset,
                 trackerLocalPos.z - headToBodyCompensation
             );
             
@@ -159,7 +164,7 @@ public class VRRig : NetworkBehaviour
             // Calculate desired position in local space with multiplied x-axis movement
             Vector3 targetLocalPos = new Vector3(
                 (trackerLocalPos.x * wingMovementMultiplier) + wingSpanCompensation,
-                trackerLocalPos.y * 20 - 0.25f,
+                trackerLocalPos.y * trackerYMultiplier + trackerYOffset,
                 trackerLocalPos.z - headToBodyCompensation
             );
             
