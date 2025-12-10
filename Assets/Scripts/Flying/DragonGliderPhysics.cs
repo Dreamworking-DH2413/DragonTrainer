@@ -670,6 +670,13 @@ public class DragonGliderPhysics : NetworkBehaviour
 
     void Update()
     {
+        // Toggle freeze dragon with F key
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            freezeDragon = !freezeDragon;
+            Debug.Log($"Dragon freeze: {(freezeDragon ? "ENABLED" : "DISABLED")}");
+        }
+
         // Update player position for clients
         UpdateVRPlayerPosition();
     }
