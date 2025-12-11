@@ -6,9 +6,9 @@ public class TerrainStartRingSpawner : MonoBehaviour
     [Header("Start Ring Settings")]
     public GameObject ringPrefab;
     [Range(0f, 1f)]
-    public float spawnChance = 0.3f; // 30% chance per chunk
+    public float spawnChance = 0.9f; // 30% chance per chunk
     public float heightAboveTerrain = 20f;
-    public float randomOffsetRange = 10f;
+    public float randomOffsetRange = 100f;
     
     [Header("Manager Reference")]
     private RingSystemManager ringSystemManager;
@@ -29,8 +29,7 @@ public class TerrainStartRingSpawner : MonoBehaviour
             return;
         }
 
-        // Random chance to spawn a start ring on this chunk
-        if (Random.value < spawnChance && ringSystemManager.courseStarted.Value == false)
+        if (Random.value < spawnChance && ringSystemManager.courseStarted == false)
         {
             SpawnStartRing();
         }
@@ -53,7 +52,8 @@ public class TerrainStartRingSpawner : MonoBehaviour
             spawnPos.y += heightAboveTerrain;
         }
         
-        // Add random offset within the chunk
+    //    for(int i = 0; i < 2; i++){
+            // Add random offset within the chunk
         spawnPos.x += Random.Range(-randomOffsetRange, randomOffsetRange);
         spawnPos.z += Random.Range(randomOffsetRange/2, randomOffsetRange);
         
@@ -75,7 +75,7 @@ public class TerrainStartRingSpawner : MonoBehaviour
         
         // Register with the manager
         ringSystemManager.RegisterStartRing(spawnedRing);
-        
+      //  }
        // Debug.Log($"Start ring spawned at {spawnPos}");
     }
     

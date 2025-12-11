@@ -152,6 +152,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ringPrefab: {fileID: 4085767035716779606, guid: 0498659152178fd46b9d31dd7439f750, type: 3}
-  spawnChance: 0.15
+  spawnChance: 1
   heightAboveTerrain: 20
-  randomOffsetRange: 10
+  randomOffsetRange: 250
