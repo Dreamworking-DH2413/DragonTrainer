@@ -1,9 +1,12 @@
+using TMPro;
 using UnityEngine;
 
 public class WindSounds : MonoBehaviour
 {
     public Rigidbody rb;
     public AudioClip wind;
+
+    public TextMeshProUGUI speedText;
 
     private AudioSource windAudioSource;
 
@@ -35,7 +38,8 @@ public class WindSounds : MonoBehaviour
         Vector3 vel = rb.linearVelocity;
         float speed = vel.magnitude;
 
-       
+        // speed in km
+        speedText.text = (speed * 3.6f).ToString("F1") + " km/h";
 
         float speedRatio = Mathf.Clamp01((speed - minSpeed) / (maxSpeed - minSpeed));
 
