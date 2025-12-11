@@ -33,43 +33,16 @@ public class RingSystemManager : NetworkBehaviour
     private List<Ring> allStartRings = new List<Ring>(); // Track all start rings
     private Vector3 nextRingPosition;
     private Quaternion currentPathRotation = Quaternion.identity;
+    private Quaternion currentLookDirection = Quaternion.identity;
     private int currentActiveRingIndex = 0;
-    private NetworkVariable<int> ringsPassedThrough = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    public NetworkVariable<bool> courseStarted = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private int ringsPassedThrough = 0;
+    public bool courseStarted = false;
     private bool courseCompleted = false;
     private Ring startRing;
-    private float minHeight = 156f; // Minimum height above ground
-    private float maxHeight = 200f; // Maximum height to prevent going too high
+    private float minHeight = 200f; // Minimum height above ground
+    private float maxHeight = 250f; // Maximum height to prevent going too high
             
 
-    public override void OnNetworkSpawn()
-    {
-        base.OnNetworkSpawn();
-        
-        // Subscribe to NetworkVariable changes for UI updates
-        ringsPassedThrough.OnValueChanged += OnRingsPassedThroughChanged;
-        
-        // Initial UI update
-        if (ringCounter != null)
-        {
-            ringCounter.text = ringsPassedThrough.Value.ToString();
-        }
-    }
-    
-    public override void OnNetworkDespawn()
-    {
-        base.OnNetworkDespawn();
-        ringsPassedThrough.OnValueChanged -= OnRingsPassedThroughChanged;
-    }
-    
-    void OnRingsPassedThroughChanged(int oldValue, int newValue)
-    {
-        if (ringCounter != null)
-        {
-            ringCounter.text = newValue.ToString();
-        }
-    }
-    
     void Start()
     {
         AudioClip ringPassSound = Resources.Load<AudioClip>("Sound/SFX/FlyThroughRing");
@@ -80,9 +53,6 @@ public class RingSystemManager : NetworkBehaviour
             // Debug.LogWarning("Player not found! Make sure player GameObject is tagged as 'Player'");
         }
         nextRingPosition = transform.position;
-        
-        // Only server generates rings
-        if (!IsServer) return;
         
         // Only generate start ring if not using terrain spawner
         if (spawnStartRingOnInit)
@@ -97,26 +67,26 @@ public class RingSystemManager : NetworkBehaviour
     
     void GenerateStartRing()
     {
-        if (!IsServer) return;
+        if (!IsServer) return; // Only server spawns rings
         
-        if (nextRingPosition.y < 156)
+        if (nextRingPosition.y < 200)
         {
                 nextRingPosition.y = minHeight + Random.Range(5f, maxHeight - minHeight);
         }
         GameObject ringObj = Instantiate(ringPrefab, nextRingPosition, Quaternion.identity);
-        
-        // Spawn on network
-        NetworkObject netObj = ringObj.GetComponent<NetworkObject>();
-        if (netObj != null)
-        {
-            netObj.Spawn(true);
-        }
 
         startRing = ringObj.GetComponent<Ring>();
         
         if (startRing == null)
         {
             startRing = ringObj.AddComponent<Ring>();
+        }
+        
+        // Spawn as NetworkObject
+        NetworkObject netObj = ringObj.GetComponent<NetworkObject>();
+        if (netObj != null)
+        {
+            netObj.Spawn();
         }
         
         startRing.Initialize(this, -1, true); // -1 index indicates start ring
@@ -128,11 +98,12 @@ public class RingSystemManager : NetworkBehaviour
     
     public void OnStartRingPassed(Ring passedStartRing)
     {
-        if (!IsServer) return;
+        if (!IsServer) return; // Only server handles ring logic
        
         Debug.Log("[RingSystemManager] Start ring passed! Beginning course...");
+        ringCounter.text = GetRingsPassedThrough().ToString();
         
-        courseStarted.Value = true;
+        courseStarted = true;
         Vector3 soundPosition = player != null ? player.transform.position : passedStartRing.transform.position;
         AudioSource.PlayClipAtPoint(ringPassSound, soundPosition);
 
@@ -142,8 +113,7 @@ public class RingSystemManager : NetworkBehaviour
             if (sr != null && sr != startRing)
                 Destroy(sr.gameObject);
         }
-        nextRingPosition = passedStartRing.transform.position;
-
+    
         allStartRings.Clear();
         
         // Start timer
@@ -160,27 +130,34 @@ public class RingSystemManager : NetworkBehaviour
         // Destroy start ring
         if (startRing != null)
         {
-            NetworkObject netObj = startRing.GetComponent<NetworkObject>();
-            if (netObj != null && netObj.IsSpawned)
-            {
-                netObj.Despawn(true);
-            }
             Destroy(startRing.gameObject);
         }
         
-        // Generate ALL course rings instantly
-        GenerateEntireCourse();
+        nextRingPosition = passedStartRing.transform.position;
+        
+        // Set course direction based on player's forward direction
+        Vector3 playerForward = player.transform.forward;
+        currentLookDirection = Quaternion.LookRotation(playerForward);
+        
+        Debug.Log($"Course generating in player's forward direction: {playerForward}");
+
+        // Generate all course rings
+        GenerateEntireCourse(currentLookDirection);
         
         // Activate first ring
         if (allCourseRings.Count > 0)
         {
+            Debug.Log("[RingSystemManager] Activating first ring of the course.");
             allCourseRings[0].SetActive(true);
         }
     }
 
-    void GenerateEntireCourse()
+    void GenerateEntireCourse(Quaternion currentLookDirection)
     {
-        if (!IsServer) return;
+        if (!IsServer) return; // Only server generates course
+        
+        // Initialize path rotation with the player's direction
+        currentPathRotation = currentLookDirection;
         
         // Debug.Log("[RingSystemManager] GENERATING ENTIRE COURSE...");
         for (int i = 0; i < courseLength; i++)
@@ -211,9 +188,7 @@ public class RingSystemManager : NetworkBehaviour
                 Random.Range(-50f, 50f),  // Yaw variation (horizontal turns)
                 Random.Range(-25f, 25f)   // Roll variation
             );
-            
-            currentPathRotation *= Quaternion.Euler(rotationDelta);
-            
+                        
             // Calculate forward direction based on current path rotation
             Vector3 forwardDirection = currentPathRotation * Vector3.forward;
             
@@ -227,7 +202,7 @@ public class RingSystemManager : NetworkBehaviour
             nextRingPosition += rightDirection * Random.Range(-pathWidth * 0.4f, pathWidth * 0.4f);
             nextRingPosition += upDirection * Random.Range(-pathHeight * 0.5f, pathHeight * 0.5f);
     
-            if (nextRingPosition.y < 156)
+            if (nextRingPosition.y < 200)
             {
                 nextRingPosition.y = minHeight + Random.Range(5f, maxHeight - minHeight);
                 // Adjust path rotation to tilt upward if we're too low
@@ -252,19 +227,18 @@ public class RingSystemManager : NetworkBehaviour
             );
             
             GameObject ringObj = Instantiate(ringPrefab, nextRingPosition, ringRotation);
-            
-            // Spawn on network
-            NetworkObject netObj = ringObj.GetComponent<NetworkObject>();
-            if (netObj != null)
-            {
-                netObj.Spawn(true);
-            }
-            
             Ring ring = ringObj.GetComponent<Ring>();
             
             if (ring == null)
             {
                 ring = ringObj.AddComponent<Ring>();
+            }
+            
+            // Spawn as NetworkObject
+            NetworkObject netObj = ringObj.GetComponent<NetworkObject>();
+            if (netObj != null)
+            {
+                netObj.Spawn();
             }
             
             bool isLastRing = (i == courseLength - 1);
@@ -275,14 +249,17 @@ public class RingSystemManager : NetworkBehaviour
     
     public void OnRingPassed(int ringIndex, bool isLastRing)
     {
-        if (!IsServer) return;
-        if (!courseStarted.Value || courseCompleted) return;
+        if (!IsServer) return; // Only server handles ring logic
+        
+        ringCounter.text = ringsPassedThrough.ToString();
+        if (!courseStarted || courseCompleted) return;
         
         // Only count if it's the current active ring
         if (ringIndex == currentActiveRingIndex)
         {
-            ringsPassedThrough.Value++;
+            ringsPassedThrough++;
             currentActiveRingIndex++;
+            ringCounter.text = GetRingsPassedThrough().ToString();
             
             
            //// Debug.Log($"Ring {ringIndex + 1}/{courseLength} passed! Total hits: {ringsPassedThrough}");
@@ -315,10 +292,10 @@ public class RingSystemManager : NetworkBehaviour
     
     public void CompleteCourse()
     {
-        if (!IsServer) return;
+        if (!IsServer) return; // Only server handles course completion
         
         courseCompleted = true;
-        courseStarted.Value = false;
+        courseStarted = false;
         // Stop timer
         if (timerManager != null)
         {
@@ -330,11 +307,6 @@ public class RingSystemManager : NetworkBehaviour
         {
             if (ring != null)
             {
-                NetworkObject netObj = ring.GetComponent<NetworkObject>();
-                if (netObj != null && netObj.IsSpawned)
-                {
-                    netObj.Despawn(true);
-                }
                 Destroy(ring.gameObject);
             }
         }
@@ -384,7 +356,7 @@ public class RingSystemManager : NetworkBehaviour
     
     public int GetRingsPassedThrough()
     {
-        return ringsPassedThrough.Value;
+        return ringsPassedThrough;
     }
     
     public int GetTotalRings()

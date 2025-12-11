@@ -5,10 +5,10 @@ using Unity.Netcode;
 public class Ring : NetworkBehaviour
 {
     private RingSystemManager manager;
-    private int ringIndex;
+    public int ringIndex;
     private Renderer ringRenderer;
     private MaterialPropertyBlock propBlock;
-    private NetworkVariable<bool> isActive = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<bool> isActive = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private bool isStartRing = false;
     private bool isLastRing = false;
     
@@ -118,11 +118,11 @@ public class Ring : NetworkBehaviour
         // Only server processes collisions
         if (!IsServer) return;
         
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Toothless"))
         {        
             if (isStartRing)
             {
-                // Debug.Log("Start ring passed! Course beginning...");
+                Debug.Log("Start ring passed! Course beginning...");
                 manager.OnStartRingPassed(this);
             }
             else if (isActive.Value)
