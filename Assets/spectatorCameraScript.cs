@@ -4,6 +4,8 @@ public class ThirdPersonSpectatorCamera : MonoBehaviour
 {
     [Header("Target")]
     public Transform target;
+   // public Transform tongueTarget;
+    public Transform tongueBone;  // The actual animated bone (Root Bone)
     public Transform player;
 
     [Header("Positioning")]
@@ -18,12 +20,12 @@ public class ThirdPersonSpectatorCamera : MonoBehaviour
     private float currentZoom = 1f;
 
     [Header("Preset Camera Angles")]
-    public Vector3 presetBehindClose = new Vector3(30f, 0f, 3f);
+    public Vector3 presetBehindClose = new Vector3(23f, 0f, 3f);
     public Vector3 presetBehindFar = new Vector3(15f, 0f, 6f);
     public Vector3 presetAboveClose = new Vector3(85f, 0f, 5f);
     public Vector3 presetAboveFar = new Vector3(90f, 0f, 10f);
-    public Vector3 presetFrontClose = new Vector3(0f, 180f, 0.9f);
-    public Vector3 presetFrontSide = new Vector3(0f, 160f, 2f);
+    public Vector3 presetFrontClose = new Vector3(0f, 180f, 10.3f);
+    public Vector3 presetFrontSide = new Vector3(-30f, 175f, 2f);
 
     [Header("Orbit")]
     public bool autoOrbit = false;
@@ -46,6 +48,9 @@ public class ThirdPersonSpectatorCamera : MonoBehaviour
 
     private float currentAngleY = 0f;
     private float currentAngleX = 0f;
+    private Vector2 currentPreset = Vector2.zero;
+    private bool isInPresetMode = false;
+    private bool isFrontPreset = false;
 
     void Start()
     {
@@ -81,17 +86,31 @@ public class ThirdPersonSpectatorCamera : MonoBehaviour
     private void HandleDragonFocusCamera()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
-            SetCameraPosition(presetBehindClose);
+            SetCameraPosition(presetBehindClose, false);
         else if (Input.GetKeyDown(KeyCode.Alpha2))
-            SetCameraPosition(presetBehindFar);
+            SetCameraPosition(presetBehindFar, false);
         else if (Input.GetKeyDown(KeyCode.Alpha3))
-            SetCameraPosition(presetAboveClose);
+            SetCameraPosition(presetAboveClose, false);
         else if (Input.GetKeyDown(KeyCode.Alpha4))
-            SetCameraPosition(presetAboveFar);
+            SetCameraPosition(presetAboveFar, false);
         else if (Input.GetKeyDown(KeyCode.Alpha5))
-            SetCameraPosition(presetFrontClose);
+            SetCameraPosition(presetFrontClose, true);
         else if (Input.GetKeyDown(KeyCode.Alpha6))
-            SetCameraPosition(presetFrontSide);
+            SetCameraPosition(presetFrontSide, true);
+
+        // Sync preset angles to dragon's rotation each frame
+        if (isInPresetMode)
+        {
+            float targetHeading = target != null ? target.eulerAngles.y : 0f;
+            float targetPitch = target != null ? target.eulerAngles.x : 0f;
+            
+            // Convert pitch to signed range (-180 to 180) to handle up/down properly
+            if (targetPitch > 180f)
+                targetPitch -= 360f;
+            
+            currentAngleY = currentPreset.x + targetHeading + angleOffset;
+            currentAngleX = -currentPreset.y - targetPitch;
+        }
 
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         if (scroll != 0f)
@@ -104,6 +123,7 @@ public class ThirdPersonSpectatorCamera : MonoBehaviour
         {
             currentAngleY += horizontalOrbitSpeed * Time.deltaTime;
             currentAngleX += verticalAngleSpeed * Time.deltaTime;
+            isInPresetMode = false;
         }
         else if (Input.GetMouseButton(1))
         {
@@ -112,15 +132,26 @@ public class ThirdPersonSpectatorCamera : MonoBehaviour
             float mouseY = Input.GetAxis("Mouse Y");
             currentAngleY += (inputX + mouseX) * manualOrbitSpeed * Time.deltaTime;
             currentAngleX += mouseY * manualOrbitSpeed * Time.deltaTime;
+            isInPresetMode = false;
         }
 
         currentAngleX = Mathf.Clamp(currentAngleX, -89f, 89f);
 
+        // Smoothly transition between dragon body and tongue target
+        Transform currTarget = target;
+        if (isFrontPreset && tongueBone != null)
+        {
+            currTarget = tongueBone;  // Use the animated bone instead
+        }
+        
+
         Quaternion rot = Quaternion.Euler(-currentAngleX, currentAngleY, 0f);
-        Vector3 desiredPos = target.position + rot * (offset * currentZoom);
+        Vector3 desiredPos = currTarget.position + rot * (offset * currentZoom);
         transform.position = desiredPos;
 
-        Vector3 lookPoint = target.position + Vector3.up * heightOffset;
+        
+
+        Vector3 lookPoint = currTarget.position + Vector3.up * heightOffset;
         Quaternion desiredRot = Quaternion.LookRotation(lookPoint - transform.position, Vector3.up);
         transform.rotation = Quaternion.Slerp(transform.rotation, desiredRot, 1f - Mathf.Exp(-lookSmooth * Time.deltaTime));
         
@@ -220,11 +251,11 @@ public class ThirdPersonSpectatorCamera : MonoBehaviour
         return sheepInHerd[randomIndex].transform;
     }
 
-    private void SetCameraPosition(Vector3 presetVec)
+    private void SetCameraPosition(Vector3 presetVec, bool isFront = false)
     {
-        float targetHeading = target != null ? target.eulerAngles.y : 0f;
-        currentAngleY = presetVec.x + targetHeading + angleOffset;
-        currentAngleX = -presetVec.y;
+        currentPreset = new Vector2(presetVec.x, presetVec.y);
         currentZoom = presetVec.z;
+        isFrontPreset = isFront;
+        isInPresetMode = true;
     }
 }
