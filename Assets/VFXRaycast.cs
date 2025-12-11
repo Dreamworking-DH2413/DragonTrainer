@@ -20,7 +20,7 @@ public class VFXRaycast : MonoBehaviour
     void Update()
     {
         
-        Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+        Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.up);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, maxDistance, hitLayers))
@@ -48,6 +48,7 @@ public class VFXRaycast : MonoBehaviour
             // No hit
         }
 
-        Debug.DrawRay(playerCamera.transform.position, playerCamera.transform.forward * maxDistance, Color.red);
+        Debug.Log($"Camera pos: {playerCamera.transform.position}, Up: {playerCamera.transform.up}, Distance: {maxDistance}");
+        Debug.DrawLine(playerCamera.transform.position, playerCamera.transform.position + playerCamera.transform.up * maxDistance, Color.red);
     }
 }

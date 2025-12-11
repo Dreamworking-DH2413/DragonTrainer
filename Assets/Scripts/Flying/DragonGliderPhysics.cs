@@ -555,7 +555,8 @@ public class DragonGliderPhysics : NetworkBehaviour
 
         float yawFromInput = turnInput * yawFromInputFactor;
 
-        float bankRatio = (maxRollAngle > 0.1f) ? (currentRollRel / maxRollAngle) : 0f;
+        // Use target roll instead of current roll so yaw applies immediately with input
+        float bankRatio = (maxRollAngle > 0.1f) ? (targetRollRel / maxRollAngle) : 0f;
         float yawFromBank = bankRatio * -autoYawFromBankFactor;
 
         float yawInput = yawFromInput + yawFromBank;
