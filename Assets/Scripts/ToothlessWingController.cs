@@ -79,6 +79,10 @@ public class ToothlessWingController : MonoBehaviour
     [Range(0f, 90f)]
     [Tooltip("Manual downward curve override for testing (only works when automaticControl is OFF)")]
     public float manualCurveTest = 15f;
+    
+    [Range(-30f, 30f)]
+    [Tooltip("Manual finger tip rotation override for testing (only works when automaticControl is OFF)")]
+    public float manualFingerTipTest = 0f;
 
     [Header("Setup")]
     public Transform armatureRoot;
@@ -134,8 +138,8 @@ public class ToothlessWingController : MonoBehaviour
     private float currentRightCurve = 0f;
     
     // Velocity tracking for targets
-    private Vector3 lastLeftTargetPosition;
-    private Vector3 lastRightTargetPosition;
+    private Vector3 lastLeftTargetLocalPosition;
+    private Vector3 lastRightTargetLocalPosition;
     private float leftTargetVerticalVelocity = 0f;
     private float rightTargetVerticalVelocity = 0f;
     
@@ -232,11 +236,19 @@ public class ToothlessWingController : MonoBehaviour
             }
         }
         
-        // Initialize target positions for velocity tracking
+        // Initialize target positions for velocity tracking in local space
         if (leftWingTarget != null)
-            lastLeftTargetPosition = leftWingTarget.position;
+        {
+            lastLeftTargetLocalPosition = leftWingTarget.parent != null
+                ? leftWingTarget.parent.InverseTransformPoint(leftWingTarget.position)
+                : transform.InverseTransformPoint(leftWingTarget.position);
+        }
         if (rightWingTarget != null)
-            lastRightTargetPosition = rightWingTarget.position;
+        {
+            lastRightTargetLocalPosition = rightWingTarget.parent != null
+                ? rightWingTarget.parent.InverseTransformPoint(rightWingTarget.position)
+                : transform.InverseTransformPoint(rightWingTarget.position);
+        }
     }
 
     void UpdateAutomaticControl()
@@ -249,13 +261,10 @@ public class ToothlessWingController : MonoBehaviour
             Vector3 currentLocalPos = leftWingTarget.parent != null 
                 ? leftWingTarget.parent.InverseTransformPoint(leftWingTarget.position)
                 : transform.InverseTransformPoint(leftWingTarget.position);
-            Vector3 lastLocalPos = leftWingTarget.parent != null
-                ? leftWingTarget.parent.InverseTransformPoint(lastLeftTargetPosition)
-                : transform.InverseTransformPoint(lastLeftTargetPosition);
             
-            float verticalDelta = currentLocalPos.y - lastLocalPos.y;
+            float verticalDelta = currentLocalPos.y - lastLeftTargetLocalPosition.y;
             leftTargetVerticalVelocity = verticalDelta / Time.deltaTime;
-            lastLeftTargetPosition = leftWingTarget.position;
+            lastLeftTargetLocalPosition = currentLocalPos;
             
             float distance = Vector3.Distance(leftWingTarget.position, leftShoulderBone.position);
             float targetFold = CalculateFoldAmount(distance);
@@ -284,13 +293,10 @@ public class ToothlessWingController : MonoBehaviour
             Vector3 currentLocalPos = rightWingTarget.parent != null 
                 ? rightWingTarget.parent.InverseTransformPoint(rightWingTarget.position)
                 : transform.InverseTransformPoint(rightWingTarget.position);
-            Vector3 lastLocalPos = rightWingTarget.parent != null
-                ? rightWingTarget.parent.InverseTransformPoint(lastRightTargetPosition)
-                : transform.InverseTransformPoint(lastRightTargetPosition);
             
-            float verticalDelta = currentLocalPos.y - lastLocalPos.y;
+            float verticalDelta = currentLocalPos.y - lastRightTargetLocalPosition.y;
             rightTargetVerticalVelocity = verticalDelta / Time.deltaTime;
-            lastRightTargetPosition = rightWingTarget.position;
+            lastRightTargetLocalPosition = currentLocalPos;
             
             float distance = Vector3.Distance(rightWingTarget.position, rightShoulderBone.position);
             float targetFold = CalculateFoldAmount(distance);
@@ -543,10 +549,13 @@ public class ToothlessWingController : MonoBehaviour
     private float cachedLeftVelocity = 0f;
     private float cachedRightVelocity = 0f;
 
-    void ApplyCurveToChildBones(Transform parentBone, float baseCurveDegrees, float wingVelocity)
+    void ApplyCurveToChildBones(Transform parentBone, float baseCurveDegrees, float wingVelocity, float manualOverride = 0f)
     {
         // Apply progressive curve to child bones (finger segments)
         // Each segment gets increasingly more curve for realistic aerodynamic bending
+        // 
+        // wingVelocity reference: calculated in the target's parent local space
+        // (relative to dragon's orientation, not world space)
         int childIndex = 0;
         int totalChildren = 0;
         
@@ -582,28 +591,29 @@ public class ToothlessWingController : MonoBehaviour
             
             float segmentCurve = baseCurveDegrees * segmentMultiplier;
             
-            // For the last segment, add aerodynamic finger tip rotation
-            // Only applies during downstroke (negative velocity)
-            float fingerTipAdjustment = 0f;
-            if (childIndex == totalChildren && totalChildren > 0 && wingVelocity < 0)
-            {
-                // During downstroke, finger tips curve upward (negative rotation)
-                // This simulates air pressure pushing the wing tip up
-                float downstrokeStrength = Mathf.Abs(wingVelocity) * 5f; // Sensitivity factor
-                fingerTipAdjustment = -Mathf.Min(downstrokeStrength, maxFingerTipRotation);
-            }
-            
-            Quaternion curveRot = Quaternion.Euler(segmentCurve + fingerTipAdjustment, 0, 0);
+            // No finger tip adjustment here - only apply to the last grandchild
+            Quaternion curveRot = Quaternion.Euler(segmentCurve, 0, 0);
             
             // Apply curve to the BASE rotation, not the current rotation
             child.localRotation = childBoneBaseRotations[child] * curveRot;
             
-            // Recursively apply to any additional child bones with increasing curve
+            // Recursively process grandchildren
             if (child.childCount > 0)
             {
+                int grandchildIndex = 0;
+                int totalGrandchildren = 0;
+                
+                // Count total grandchildren first
+                foreach (Transform gc in child)
+                {
+                    if (gc.name.StartsWith("Bone.")) totalGrandchildren++;
+                }
+                
                 foreach (Transform grandchild in child)
                 {
                     if (!grandchild.name.StartsWith("Bone.")) continue;
+                    
+                    grandchildIndex++;
                     
                     // Store base rotation
                     if (!childBoneBaseRotations.ContainsKey(grandchild))
@@ -611,15 +621,25 @@ public class ToothlessWingController : MonoBehaviour
                         childBoneBaseRotations[grandchild] = grandchild.localRotation;
                     }
                     
-                    // Apply even more curve to the next level (50% of base)
+                    // Apply curve to this level (50% of base)
                     float grandchildCurve = baseCurveDegrees * 0.50f;
                     
-                    // Last grandchild also gets aerodynamic tip effect (only during downstroke)
+                    // Apply finger tip aerodynamic effect ONLY to the last grandchild bone
+                    // Structure: Wrist -> WingBone -> Bone.001 -> Bone.002 (last one is tip)
                     float grandchildTipAdjustment = 0f;
-                    if (wingVelocity < 0)
+                    if (grandchildIndex == totalGrandchildren && totalGrandchildren > 0)
                     {
-                        float downstrokeStrength = Mathf.Abs(wingVelocity) * 6f; // Slightly stronger for tip
-                        grandchildTipAdjustment = -Mathf.Min(downstrokeStrength, maxFingerTipRotation * 1.2f);
+                        if (manualOverride != 0f)
+                        {
+                            // Use manual override for testing
+                            grandchildTipAdjustment = manualOverride;
+                        }
+                        else if (wingVelocity < 0)
+                        {
+                            // During downstroke, finger tips curve upward (negative rotation)
+                            float downstrokeStrength = Mathf.Abs(wingVelocity) * 6f;
+                            grandchildTipAdjustment = -Mathf.Min(downstrokeStrength, maxFingerTipRotation);
+                        }
                     }
                     
                     Quaternion grandchildCurveRot = Quaternion.Euler(grandchildCurve + grandchildTipAdjustment, 0, 0);
@@ -707,8 +727,9 @@ public class ToothlessWingController : MonoBehaviour
                 
                 // Apply progressive curve to child bones for smooth bend
                 // Pass the current wing's velocity to the function
-                float wingVelocity = isLeftWing ? cachedLeftVelocity : cachedRightVelocity;
-                ApplyCurveToChildBones(boneData.bone, baseCurveDegrees, wingVelocity);
+                float wingVelocity = automaticControl ? (isLeftWing ? cachedLeftVelocity : cachedRightVelocity) : 0f;
+                float fingerTipOverride = automaticControl ? 0f : manualFingerTipTest;
+                ApplyCurveToChildBones(boneData.bone, baseCurveDegrees, wingVelocity, fingerTipOverride);
             }
 
             boneData.bone.localRotation = foldRotation;
