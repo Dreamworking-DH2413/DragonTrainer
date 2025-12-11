@@ -76,8 +76,8 @@ public class ToothlessWingController : MonoBehaviour
     public bool enableWindShake = true;
     
     [Tooltip("Intensity of the wind shake effect (degrees)")]
-    [Range(0f, 10f)]
-    public float windShakeIntensity = 2f;
+    [Range(0f, 20f)]
+    public float windShakeIntensity = 5f;
     
     [Tooltip("Speed of the wind shake oscillation")]
     [Range(0.1f, 20f)]
@@ -707,7 +707,7 @@ public class ToothlessWingController : MonoBehaviour
         if (scaleShakeWithSpeed)
         {
             float speedFactor = Mathf.Clamp01(Mathf.Abs(wingVelocity) / 5f);
-            shake *= Mathf.Lerp(0.3f, 1.5f, speedFactor);
+            shake *= Mathf.Lerp(0.5f, 3.0f, speedFactor);
         }
         
         return shake;
