@@ -42,23 +42,39 @@ public class ToothlessWingController : MonoBehaviour
     public float foldSmoothSpeed = 5f;
     
     [Header("Automatic Control - Natural Curve")]
-    [Tooltip("Degrees of forward cup during downstroke (target below shoulder)")]
-    public float downstrokeCurve = 15f;
+    [Tooltip("Base downward curve of wing fingers (simulates aerodynamic forces)")]
+    public float baseDownwardCurve = 15f;
     
-    [Tooltip("Degrees of backward bend during upstroke (target above shoulder)")]
-    public float upstrokeCurve = 10f;
+    [Tooltip("Maximum additional curve during downward flapping (downstroke)")]
+    public float maxDownstrokeCurveBoost = 10f;
+    
+    [Tooltip("Maximum additional curve during upward flapping (upstroke)")]
+    public float maxUpstrokeCurveBoost = 8f;
+    
+    [Tooltip("Speed threshold for maximum curve boost (units per second)")]
+    public float maxCurveSpeed = 5f;
     
     [Tooltip("How smoothly curve changes blend")]
     public float curveBlendSpeed = 3f;
+    
+    [Header("Automatic Control - Shoulder Rotation")]
+    [Tooltip("Maximum shoulder rotation when target is above body (degrees)")]
+    public float maxShoulderRotation = 20f;
+    
+    [Tooltip("Height above body where maximum shoulder rotation occurs")]
+    public float maxShoulderRotationHeight = 1f;
+    
+    [Tooltip("How smoothly shoulder rotation changes")]
+    public float shoulderRotationSpeed = 5f;
     
     [Header("Debug")]
     [Tooltip("Show debug info in console")]
     public bool showDebugInfo = false;
     
     [Header("Manual Curve Test")]
-    [Range(-90f, 90f)]
-    [Tooltip("Manual curve override for testing (only works when automaticControl is OFF)")]
-    public float manualCurveTest = 0f;
+    [Range(0f, 90f)]
+    [Tooltip("Manual downward curve override for testing (only works when automaticControl is OFF)")]
+    public float manualCurveTest = 15f;
 
     [Header("Setup")]
     public Transform armatureRoot;
@@ -112,6 +128,19 @@ public class ToothlessWingController : MonoBehaviour
     private float currentRightFold = 0f;
     private float currentLeftCurve = 0f;
     private float currentRightCurve = 0f;
+    
+    // Velocity tracking for targets
+    private Vector3 lastLeftTargetPosition;
+    private Vector3 lastRightTargetPosition;
+    private float leftTargetVerticalVelocity = 0f;
+    private float rightTargetVerticalVelocity = 0f;
+    
+    // Shoulder rotation state
+    private float currentLeftShoulderRotation = 0f;
+    private float currentRightShoulderRotation = 0f;
+    private Quaternion leftShoulderBaseRotation;
+    private Quaternion rightShoulderBaseRotation;
+    private bool shoulderRotationsInitialized = false;
     
     // Cached bone references for curve application
     private Transform leftWristBone;
@@ -198,6 +227,12 @@ public class ToothlessWingController : MonoBehaviour
                 Debug.Log("Auto-found RightWingTarget");
             }
         }
+        
+        // Initialize target positions for velocity tracking
+        if (leftWingTarget != null)
+            lastLeftTargetPosition = leftWingTarget.position;
+        if (rightWingTarget != null)
+            lastRightTargetPosition = rightWingTarget.position;
     }
 
     void UpdateAutomaticControl()
@@ -205,36 +240,68 @@ public class ToothlessWingController : MonoBehaviour
         // Update left wing
         if (leftWingTarget != null && leftShoulderBone != null)
         {
+            // Calculate velocity in local space relative to the target's parent (the dragon)
+            // This ensures we're measuring the actual wing flapping motion, not dragon body movement
+            Vector3 currentLocalPos = leftWingTarget.parent != null 
+                ? leftWingTarget.parent.InverseTransformPoint(leftWingTarget.position)
+                : transform.InverseTransformPoint(leftWingTarget.position);
+            Vector3 lastLocalPos = leftWingTarget.parent != null
+                ? leftWingTarget.parent.InverseTransformPoint(lastLeftTargetPosition)
+                : transform.InverseTransformPoint(lastLeftTargetPosition);
+            
+            float verticalDelta = currentLocalPos.y - lastLocalPos.y;
+            leftTargetVerticalVelocity = verticalDelta / Time.deltaTime;
+            lastLeftTargetPosition = leftWingTarget.position;
+            
             float distance = Vector3.Distance(leftWingTarget.position, leftShoulderBone.position);
             float targetFold = CalculateFoldAmount(distance);
             currentLeftFold = Mathf.Lerp(currentLeftFold, targetFold, Time.deltaTime * foldSmoothSpeed);
             leftWingFold = currentLeftFold;
 
-            // Calculate curve based on vertical position IN LOCAL SPACE (relative to dragon's orientation)
-            Vector3 localOffset = transform.InverseTransformPoint(leftWingTarget.position);
-            float verticalOffset = localOffset.y; // Now this is relative to the dragon's local up direction
-            float targetCurve = CalculateCurveAmount(verticalOffset);
+            // Calculate curve based on vertical velocity (downward movement)
+            float targetCurve = CalculateCurveAmount(leftTargetVerticalVelocity);
             currentLeftCurve = Mathf.Lerp(currentLeftCurve, targetCurve, Time.deltaTime * curveBlendSpeed);
+            
+            // Calculate shoulder rotation based on target height
+            float targetHeight = currentLocalPos.y; // Height in local space
+            float targetShoulderRotation = CalculateShoulderRotation(targetHeight);
+            currentLeftShoulderRotation = Mathf.Lerp(currentLeftShoulderRotation, targetShoulderRotation, Time.deltaTime * shoulderRotationSpeed);
 
             if (showDebugInfo && Time.frameCount % 30 == 0) // Log every 30 frames
             {
-                Debug.Log($"Left Wing - Distance: {distance:F2}, Fold: {currentLeftFold:F2}, LocalVertOffset: {verticalOffset:F2}, Curve: {currentLeftCurve:F2}");
+                Debug.Log($"Left Wing - Distance: {distance:F2}, Fold: {currentLeftFold:F2}, VertVelocity: {leftTargetVerticalVelocity:F2}, Curve: {currentLeftCurve:F2}, ShoulderRot: {currentLeftShoulderRotation:F2}");
             }
         }
 
         // Update right wing
         if (rightWingTarget != null && rightShoulderBone != null)
         {
+            // Calculate velocity in local space relative to the target's parent (the dragon)
+            // This ensures we're measuring the actual wing flapping motion, not dragon body movement
+            Vector3 currentLocalPos = rightWingTarget.parent != null 
+                ? rightWingTarget.parent.InverseTransformPoint(rightWingTarget.position)
+                : transform.InverseTransformPoint(rightWingTarget.position);
+            Vector3 lastLocalPos = rightWingTarget.parent != null
+                ? rightWingTarget.parent.InverseTransformPoint(lastRightTargetPosition)
+                : transform.InverseTransformPoint(lastRightTargetPosition);
+            
+            float verticalDelta = currentLocalPos.y - lastLocalPos.y;
+            rightTargetVerticalVelocity = verticalDelta / Time.deltaTime;
+            lastRightTargetPosition = rightWingTarget.position;
+            
             float distance = Vector3.Distance(rightWingTarget.position, rightShoulderBone.position);
             float targetFold = CalculateFoldAmount(distance);
             currentRightFold = Mathf.Lerp(currentRightFold, targetFold, Time.deltaTime * foldSmoothSpeed);
             rightWingFold = currentRightFold;
 
-            // Calculate curve based on vertical position IN LOCAL SPACE (relative to dragon's orientation)
-            Vector3 localOffset = transform.InverseTransformPoint(rightWingTarget.position);
-            float verticalOffset = localOffset.y; // Now this is relative to the dragon's local up direction
-            float targetCurve = CalculateCurveAmount(verticalOffset);
+            // Calculate curve based on vertical velocity (downward movement)
+            float targetCurve = CalculateCurveAmount(rightTargetVerticalVelocity);
             currentRightCurve = Mathf.Lerp(currentRightCurve, targetCurve, Time.deltaTime * curveBlendSpeed);
+            
+            // Calculate shoulder rotation based on target height
+            float targetHeight = currentLocalPos.y; // Height in local space
+            float targetShoulderRotation = CalculateShoulderRotation(targetHeight);
+            currentRightShoulderRotation = Mathf.Lerp(currentRightShoulderRotation, targetShoulderRotation, Time.deltaTime * shoulderRotationSpeed);
         }
     }
 
@@ -258,27 +325,48 @@ public class ToothlessWingController : MonoBehaviour
         return Mathf.Clamp01(foldAmount);
     }
 
-    float CalculateCurveAmount(float verticalOffset)
+    float CalculateCurveAmount(float verticalVelocity)
     {
-        // Negative offset = target below shoulder = downstroke = forward curve (positive)
-        // Positive offset = target above shoulder = upstroke = backward curve (negative)
+        // Wings always curve downward due to aerodynamic forces
+        // Add extra curve during active flapping - faster = more curve
         
-        // Local space offsets are typically smaller, so we need higher sensitivity
-        // Typical LOCAL vertical offset might be 0.1-0.5 units
-        float sensitivity = 30f; // Increased sensitivity for local space coordinates
+        float curveBoost = 0f;
+        float speed = Mathf.Abs(verticalVelocity);
         
-        if (verticalOffset < 0)
+        // Calculate speed factor (0 to 1) based on how fast the wing is moving
+        float speedFactor = Mathf.Clamp01(speed / maxCurveSpeed);
+        
+        if (verticalVelocity < 0)
         {
-            // Downstroke - forward cup (positive degrees)
-            float curveAmount = Mathf.Abs(verticalOffset) * sensitivity;
-            return Mathf.Clamp(curveAmount, 0f, downstrokeCurve);
+            // Wing moving downward (downstroke) - curve based on speed
+            curveBoost = maxDownstrokeCurveBoost * speedFactor;
         }
-        else
+        else if (verticalVelocity > 0)
         {
-            // Upstroke - backward bend (negative degrees)
-            float curveAmount = verticalOffset * sensitivity;
-            return Mathf.Clamp(-curveAmount, -upstrokeCurve, 0f);
+            // Wing moving upward (upstroke) - curve based on speed
+            curveBoost = maxUpstrokeCurveBoost * speedFactor;
         }
+        
+        // Always apply base curve + speed-based flapping boost
+        // Result is always positive (downward curve)
+        return baseDownwardCurve + curveBoost;
+    }
+    
+    float CalculateShoulderRotation(float targetHeight)
+    {
+        // When target is above body (positive height), rotate shoulder on -X axis
+        // When target is at or below body, no rotation
+        
+        if (targetHeight <= 0)
+        {
+            return 0f; // No rotation when target is at or below body
+        }
+        
+        // Calculate rotation factor based on height
+        float heightFactor = Mathf.Clamp01(targetHeight / maxShoulderRotationHeight);
+        
+        // Return negative rotation (rotate backwards on X axis)
+        return -maxShoulderRotation * heightFactor;
     }
 
     public void Initialize()
@@ -389,11 +477,36 @@ public class ToothlessWingController : MonoBehaviour
             leftShoulderBone = boneCache["WingShoulder.L"];
         if (boneCache.ContainsKey("WingShoulder.R"))
             rightShoulderBone = boneCache["WingShoulder.R"];
+            
+        // Store base rotations for shoulders
+        if (leftShoulderBone != null)
+            leftShoulderBaseRotation = leftShoulderBone.localRotation;
+        if (rightShoulderBone != null)
+            rightShoulderBaseRotation = rightShoulderBone.localRotation;
+        shoulderRotationsInitialized = true;
     }
 
     void LateUpdate()
     {
         if (!isInitialized) return;
+        
+        // Apply shoulder rotations if automatic control is enabled
+        if (automaticControl && shoulderRotationsInitialized)
+        {
+            if (leftShoulderBone != null)
+            {
+                // Apply rotation around the bone's own local Y axis (inverted for left wing)
+                Quaternion additiveRotation = Quaternion.Euler(0, -currentLeftShoulderRotation, 0);
+                leftShoulderBone.localRotation = leftShoulderBaseRotation * additiveRotation;
+            }
+            
+            if (rightShoulderBone != null)
+            {
+                // Apply rotation around the bone's own local Y axis
+                Quaternion additiveRotation = Quaternion.Euler(0, currentRightShoulderRotation, 0);
+                rightShoulderBone.localRotation = rightShoulderBaseRotation * additiveRotation;
+            }
+        }
 
         // Animate wings - curve is now integrated into the finger animation
         AnimateWing(leftWingBones, leftWingFold);
@@ -430,7 +543,7 @@ public class ToothlessWingController : MonoBehaviour
     void ApplyCurveToChildBones(Transform parentBone, float baseCurveDegrees)
     {
         // Apply progressive curve to child bones (finger segments)
-        // Each segment gets a portion of the total curve for smooth bending
+        // Each segment gets increasingly more curve for realistic aerodynamic bending
         int childIndex = 0;
         foreach (Transform child in parentBone)
         {
@@ -445,20 +558,42 @@ public class ToothlessWingController : MonoBehaviour
             
             childIndex++;
             
-            // Distribute curve across segments: 30% -> 40% -> 30%
+            // Progressive curve increase: each segment curves more than the previous
+            // Segment 1: 25%, Segment 2: 35%, Segment 3: 40%
+            // This creates a natural increasing bend toward the wing tip
             float segmentMultiplier;
             if (childIndex == 1)
-                segmentMultiplier = 0.3f; // First segment
+                segmentMultiplier = 0.25f; // First segment - least curve
             else if (childIndex == 2)
-                segmentMultiplier = 0.4f; // Middle segment (most curve)
+                segmentMultiplier = 0.35f; // Middle segment - more curve
             else
-                segmentMultiplier = 0.3f; // Final segment
+                segmentMultiplier = 0.40f; // Final segment - most curve
             
             float segmentCurve = baseCurveDegrees * segmentMultiplier;
             Quaternion curveRot = Quaternion.Euler(segmentCurve, 0, 0);
             
             // Apply curve to the BASE rotation, not the current rotation
             child.localRotation = childBoneBaseRotations[child] * curveRot;
+            
+            // Recursively apply to any additional child bones with increasing curve
+            if (child.childCount > 0)
+            {
+                foreach (Transform grandchild in child)
+                {
+                    if (!grandchild.name.StartsWith("Bone.")) continue;
+                    
+                    // Store base rotation
+                    if (!childBoneBaseRotations.ContainsKey(grandchild))
+                    {
+                        childBoneBaseRotations[grandchild] = grandchild.localRotation;
+                    }
+                    
+                    // Apply even more curve to the next level (50% of base)
+                    float grandchildCurve = baseCurveDegrees * 0.50f;
+                    Quaternion grandchildCurveRot = Quaternion.Euler(grandchildCurve, 0, 0);
+                    grandchild.localRotation = childBoneBaseRotations[grandchild] * grandchildCurveRot;
+                }
+            }
         }
     }
 
@@ -476,6 +611,10 @@ public class ToothlessWingController : MonoBehaviour
         {
             curveAmount = isLeftWing ? currentLeftCurve : currentRightCurve;
         }
+        
+        // Reduce curve as wing folds - no curve when fully folded
+        // This prevents the curve from interfering with the folded wing pose
+        curveAmount *= (1f - foldAmount);
 
         foreach (var boneData in bones)
         {
