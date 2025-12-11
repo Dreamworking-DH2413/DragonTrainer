@@ -71,6 +71,25 @@ public class ToothlessWingController : MonoBehaviour
     [Tooltip("Maximum finger tip rotation based on flapping (degrees)")]
     public float maxFingerTipRotation = 15f;
     
+    [Header("Wind Shake Effect")]
+    [Tooltip("Enable wind shake effect on wing tips")]
+    public bool enableWindShake = true;
+    
+    [Tooltip("Intensity of the wind shake effect (degrees)")]
+    [Range(0f, 10f)]
+    public float windShakeIntensity = 2f;
+    
+    [Tooltip("Speed of the wind shake oscillation")]
+    [Range(0.1f, 20f)]
+    public float windShakeSpeed = 8f;
+    
+    [Tooltip("Randomness variation in shake timing")]
+    [Range(0f, 1f)]
+    public float windShakeRandomness = 0.3f;
+    
+    [Tooltip("Increase shake intensity with flight speed")]
+    public bool scaleShakeWithSpeed = true;
+    
     [Header("Debug")]
     [Tooltip("Show debug info in console")]
     public bool showDebugInfo = false;
@@ -189,6 +208,9 @@ public class ToothlessWingController : MonoBehaviour
                 Debug.Log("Auto-found RigBuilder component");
             }
         }
+        
+        // Initialize wind shake with random offset
+        windShakeTimeOffset = Random.Range(0f, 100f);
     }
 
     void Update()
@@ -548,6 +570,10 @@ public class ToothlessWingController : MonoBehaviour
     // Cache for storing velocity per wing for finger tip calculations
     private float cachedLeftVelocity = 0f;
     private float cachedRightVelocity = 0f;
+    
+    // Wind shake state
+    private float windShakeTimeOffset = 0f;
+    private Dictionary<Transform, float> boneShakeOffsets = new Dictionary<Transform, float>();
 
     void ApplyCurveToChildBones(Transform parentBone, float baseCurveDegrees, float wingVelocity, float manualOverride = 0f)
     {
@@ -640,6 +666,12 @@ public class ToothlessWingController : MonoBehaviour
                             float downstrokeStrength = Mathf.Abs(wingVelocity) * 6f;
                             grandchildTipAdjustment = -Mathf.Min(downstrokeStrength, maxFingerTipRotation);
                         }
+                        
+                        // Add wind shake effect to the tip
+                        if (enableWindShake)
+                        {
+                            grandchildTipAdjustment += CalculateWindShake(grandchild, wingVelocity);
+                        }
                     }
                     
                     Quaternion grandchildCurveRot = Quaternion.Euler(grandchildCurve + grandchildTipAdjustment, 0, 0);
@@ -649,6 +681,38 @@ public class ToothlessWingController : MonoBehaviour
         }
     }
 
+    float CalculateWindShake(Transform bone, float wingVelocity)
+    {
+        // Initialize unique offset for this bone if not exists
+        if (!boneShakeOffsets.ContainsKey(bone))
+        {
+            boneShakeOffsets[bone] = Random.Range(0f, 100f);
+        }
+        
+        float boneOffset = boneShakeOffsets[bone];
+        float time = Time.time * windShakeSpeed + windShakeTimeOffset + boneOffset;
+        
+        // Multi-frequency shake for realistic turbulence
+        float shake = Mathf.Sin(time) * 0.5f;
+        shake += Mathf.Sin(time * 1.7f + boneOffset) * 0.3f;
+        shake += Mathf.Sin(time * 2.3f - boneOffset) * 0.2f;
+        
+        // Add some noise
+        shake += (Mathf.PerlinNoise(time * 0.5f, boneOffset) - 0.5f) * windShakeRandomness;
+        
+        // Scale by intensity
+        shake *= windShakeIntensity;
+        
+        // Scale with flight speed if enabled
+        if (scaleShakeWithSpeed)
+        {
+            float speedFactor = Mathf.Clamp01(Mathf.Abs(wingVelocity) / 5f);
+            shake *= Mathf.Lerp(0.3f, 1.5f, speedFactor);
+        }
+        
+        return shake;
+    }
+    
     void AnimateWingProcedural(List<WingBoneData> bones, float foldAmount)
     {
         bool isLeftWing = bones.Count > 0 && bones[0].boneName.Contains(".L");
