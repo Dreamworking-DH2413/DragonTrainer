@@ -58,7 +58,7 @@ public class ToothlessWingController : MonoBehaviour
     public float curveBlendSpeed = 3f;
     
     [Header("Automatic Control - Shoulder Rotation")]
-    [Tooltip("Maximum shoulder rotation when target is above body (degrees)")]
+    [Tooltip("Maximum shoulder rotation based on flapping velocity (degrees)")]
     public float maxShoulderRotation = 20f;
     
     [Tooltip("Height above body where maximum shoulder rotation occurs")]
@@ -66,6 +66,10 @@ public class ToothlessWingController : MonoBehaviour
     
     [Tooltip("How smoothly shoulder rotation changes")]
     public float shoulderRotationSpeed = 5f;
+    
+    [Header("Automatic Control - Finger Tip Aerodynamics")]
+    [Tooltip("Maximum finger tip rotation based on flapping (degrees)")]
+    public float maxFingerTipRotation = 15f;
     
     [Header("Debug")]
     [Tooltip("Show debug info in console")]
@@ -262,9 +266,8 @@ public class ToothlessWingController : MonoBehaviour
             float targetCurve = CalculateCurveAmount(leftTargetVerticalVelocity);
             currentLeftCurve = Mathf.Lerp(currentLeftCurve, targetCurve, Time.deltaTime * curveBlendSpeed);
             
-            // Calculate shoulder rotation based on target height
-            float targetHeight = currentLocalPos.y; // Height in local space
-            float targetShoulderRotation = CalculateShoulderRotation(targetHeight);
+            // Calculate shoulder rotation based on flapping direction (velocity)
+            float targetShoulderRotation = CalculateShoulderRotationFromVelocity(leftTargetVerticalVelocity);
             currentLeftShoulderRotation = Mathf.Lerp(currentLeftShoulderRotation, targetShoulderRotation, Time.deltaTime * shoulderRotationSpeed);
 
             if (showDebugInfo && Time.frameCount % 30 == 0) // Log every 30 frames
@@ -298,9 +301,8 @@ public class ToothlessWingController : MonoBehaviour
             float targetCurve = CalculateCurveAmount(rightTargetVerticalVelocity);
             currentRightCurve = Mathf.Lerp(currentRightCurve, targetCurve, Time.deltaTime * curveBlendSpeed);
             
-            // Calculate shoulder rotation based on target height
-            float targetHeight = currentLocalPos.y; // Height in local space
-            float targetShoulderRotation = CalculateShoulderRotation(targetHeight);
+            // Calculate shoulder rotation based on flapping direction (velocity)
+            float targetShoulderRotation = CalculateShoulderRotationFromVelocity(rightTargetVerticalVelocity);
             currentRightShoulderRotation = Mathf.Lerp(currentRightShoulderRotation, targetShoulderRotation, Time.deltaTime * shoulderRotationSpeed);
         }
     }
@@ -352,21 +354,18 @@ public class ToothlessWingController : MonoBehaviour
         return baseDownwardCurve + curveBoost;
     }
     
-    float CalculateShoulderRotation(float targetHeight)
+    float CalculateShoulderRotationFromVelocity(float verticalVelocity)
     {
-        // When target is above body (positive height), rotate shoulder on -X axis
-        // When target is at or below body, no rotation
+        // Shoulder rotates based on flapping direction to simulate aerodynamic forces
+        // Downward flapping (negative velocity) = shoulder rotates forward (positive)
+        // Upward flapping (positive velocity) = shoulder rotates backward (negative)
         
-        if (targetHeight <= 0)
-        {
-            return 0f; // No rotation when target is at or below body
-        }
+        float velocitySensitivity = 4f; // How much velocity affects shoulder rotation
         
-        // Calculate rotation factor based on height
-        float heightFactor = Mathf.Clamp01(targetHeight / maxShoulderRotationHeight);
-        
-        // Return negative rotation (rotate backwards on X axis)
-        return -maxShoulderRotation * heightFactor;
+        // Calculate rotation based on velocity (inverted)
+        // Clamp to max shoulder rotation value
+        float rotation = -verticalVelocity * velocitySensitivity;
+        return Mathf.Clamp(rotation, -maxShoulderRotation, maxShoulderRotation);
     }
 
     public void Initialize()
@@ -539,12 +538,24 @@ public class ToothlessWingController : MonoBehaviour
 
     // Cache for child bone base rotations to avoid spinning
     private Dictionary<Transform, Quaternion> childBoneBaseRotations = new Dictionary<Transform, Quaternion>();
+    
+    // Cache for storing velocity per wing for finger tip calculations
+    private float cachedLeftVelocity = 0f;
+    private float cachedRightVelocity = 0f;
 
-    void ApplyCurveToChildBones(Transform parentBone, float baseCurveDegrees)
+    void ApplyCurveToChildBones(Transform parentBone, float baseCurveDegrees, float wingVelocity)
     {
         // Apply progressive curve to child bones (finger segments)
         // Each segment gets increasingly more curve for realistic aerodynamic bending
         int childIndex = 0;
+        int totalChildren = 0;
+        
+        // Count total children first
+        foreach (Transform child in parentBone)
+        {
+            if (child.name.StartsWith("Bone.")) totalChildren++;
+        }
+        
         foreach (Transform child in parentBone)
         {
             // Skip non-bone children
@@ -570,7 +581,19 @@ public class ToothlessWingController : MonoBehaviour
                 segmentMultiplier = 0.40f; // Final segment - most curve
             
             float segmentCurve = baseCurveDegrees * segmentMultiplier;
-            Quaternion curveRot = Quaternion.Euler(segmentCurve, 0, 0);
+            
+            // For the last segment, add aerodynamic finger tip rotation
+            // Only applies during downstroke (negative velocity)
+            float fingerTipAdjustment = 0f;
+            if (childIndex == totalChildren && totalChildren > 0 && wingVelocity < 0)
+            {
+                // During downstroke, finger tips curve upward (negative rotation)
+                // This simulates air pressure pushing the wing tip up
+                float downstrokeStrength = Mathf.Abs(wingVelocity) * 5f; // Sensitivity factor
+                fingerTipAdjustment = -Mathf.Min(downstrokeStrength, maxFingerTipRotation);
+            }
+            
+            Quaternion curveRot = Quaternion.Euler(segmentCurve + fingerTipAdjustment, 0, 0);
             
             // Apply curve to the BASE rotation, not the current rotation
             child.localRotation = childBoneBaseRotations[child] * curveRot;
@@ -590,7 +613,16 @@ public class ToothlessWingController : MonoBehaviour
                     
                     // Apply even more curve to the next level (50% of base)
                     float grandchildCurve = baseCurveDegrees * 0.50f;
-                    Quaternion grandchildCurveRot = Quaternion.Euler(grandchildCurve, 0, 0);
+                    
+                    // Last grandchild also gets aerodynamic tip effect (only during downstroke)
+                    float grandchildTipAdjustment = 0f;
+                    if (wingVelocity < 0)
+                    {
+                        float downstrokeStrength = Mathf.Abs(wingVelocity) * 6f; // Slightly stronger for tip
+                        grandchildTipAdjustment = -Mathf.Min(downstrokeStrength, maxFingerTipRotation * 1.2f);
+                    }
+                    
+                    Quaternion grandchildCurveRot = Quaternion.Euler(grandchildCurve + grandchildTipAdjustment, 0, 0);
                     grandchild.localRotation = childBoneBaseRotations[grandchild] * grandchildCurveRot;
                 }
             }
@@ -600,6 +632,12 @@ public class ToothlessWingController : MonoBehaviour
     void AnimateWingProcedural(List<WingBoneData> bones, float foldAmount)
     {
         bool isLeftWing = bones.Count > 0 && bones[0].boneName.Contains(".L");
+        
+        // Cache velocity for this wing so finger tips can use it
+        if (isLeftWing)
+            cachedLeftVelocity = leftTargetVerticalVelocity;
+        else
+            cachedRightVelocity = rightTargetVerticalVelocity;
         
         // Use manual curve test when automatic control is off
         float curveAmount;
@@ -668,7 +706,9 @@ public class ToothlessWingController : MonoBehaviour
                 foldRotation = baseRotation * curveRotation * Quaternion.Euler(0, 0, fingerFold);
                 
                 // Apply progressive curve to child bones for smooth bend
-                ApplyCurveToChildBones(boneData.bone, baseCurveDegrees);
+                // Pass the current wing's velocity to the function
+                float wingVelocity = isLeftWing ? cachedLeftVelocity : cachedRightVelocity;
+                ApplyCurveToChildBones(boneData.bone, baseCurveDegrees, wingVelocity);
             }
 
             boneData.bone.localRotation = foldRotation;
