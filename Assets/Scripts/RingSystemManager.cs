@@ -16,6 +16,11 @@ public class RingSystemManager : NetworkBehaviour
     public float pathWidth = 20f;
     public float pathHeight = 15f;
     
+    // Network synchronized variables
+    private NetworkVariable<int> networkRingsPassedThrough = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private NetworkVariable<bool> networkCourseStarted = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private NetworkVariable<bool> networkCourseCompleted = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    
     [Header("Visual Feedback")]
     public Color activeRingColor = Color.green;
     public Color inactiveRingColor = Color.white;
@@ -41,7 +46,58 @@ public class RingSystemManager : NetworkBehaviour
     private Ring startRing;
     private float minHeight = 200f; // Minimum height above ground
     private float maxHeight = 250f; // Maximum height to prevent going too high
+    
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        
+        // Subscribe to network variable changes on clients
+        if (!IsServer)
+        {
+            networkRingsPassedThrough.OnValueChanged += OnRingsPassedChanged;
+            networkCourseStarted.OnValueChanged += OnCourseStartedChanged;
+            networkCourseCompleted.OnValueChanged += OnCourseCompletedChanged;
             
+            // Apply initial values
+            UpdateRingCounterUI(networkRingsPassedThrough.Value);
+        }
+    }
+    
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        
+        if (!IsServer)
+        {
+            networkRingsPassedThrough.OnValueChanged -= OnRingsPassedChanged;
+            networkCourseStarted.OnValueChanged -= OnCourseStartedChanged;
+            networkCourseCompleted.OnValueChanged -= OnCourseCompletedChanged;
+        }
+    }
+    
+    private void OnRingsPassedChanged(int oldValue, int newValue)
+    {
+        ringsPassedThrough = newValue;
+        UpdateRingCounterUI(newValue);
+    }
+    
+    private void OnCourseStartedChanged(bool oldValue, bool newValue)
+    {
+        courseStarted = newValue;
+    }
+    
+    private void OnCourseCompletedChanged(bool oldValue, bool newValue)
+    {
+        courseCompleted = newValue;
+    }
+    
+    private void UpdateRingCounterUI(int count)
+    {
+        if (ringCounter != null)
+        {
+            ringCounter.text = count.ToString();
+        }
+    }
 
     void Start()
     {
@@ -101,9 +157,12 @@ public class RingSystemManager : NetworkBehaviour
         if (!IsServer) return; // Only server handles ring logic
        
         Debug.Log("[RingSystemManager] Start ring passed! Beginning course...");
-        ringCounter.text = GetRingsPassedThrough().ToString();
         
+        // Update network variable
+        networkCourseStarted.Value = true;
         courseStarted = true;
+        
+        UpdateRingCounterUI(0);
         Vector3 soundPosition = player != null ? player.transform.position : passedStartRing.transform.position;
         AudioSource.PlayClipAtPoint(ringPassSound, soundPosition);
 
@@ -251,7 +310,6 @@ public class RingSystemManager : NetworkBehaviour
     {
         if (!IsServer) return; // Only server handles ring logic
         
-        ringCounter.text = ringsPassedThrough.ToString();
         if (!courseStarted || courseCompleted) return;
         
         // Only count if it's the current active ring
@@ -259,7 +317,10 @@ public class RingSystemManager : NetworkBehaviour
         {
             ringsPassedThrough++;
             currentActiveRingIndex++;
-            ringCounter.text = GetRingsPassedThrough().ToString();
+            
+            // Update network variable
+            networkRingsPassedThrough.Value = ringsPassedThrough;
+            UpdateRingCounterUI(ringsPassedThrough);
             
             
            //// Debug.Log($"Ring {ringIndex + 1}/{courseLength} passed! Total hits: {ringsPassedThrough}");
@@ -296,6 +357,10 @@ public class RingSystemManager : NetworkBehaviour
         
         courseCompleted = true;
         courseStarted = false;
+        
+        // Update network variables
+        networkCourseCompleted.Value = true;
+        networkCourseStarted.Value = false;
         // Stop timer
         if (timerManager != null)
         {

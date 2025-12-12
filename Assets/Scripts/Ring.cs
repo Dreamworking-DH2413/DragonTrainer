@@ -9,15 +9,23 @@ public class Ring : NetworkBehaviour
     private Renderer ringRenderer;
     private MaterialPropertyBlock propBlock;
     public NetworkVariable<bool> isActive = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    private bool isStartRing = false;
-    private bool isLastRing = false;
+    public NetworkVariable<bool> isStartRing = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<bool> isLastRing = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
         
+        // Find manager if not set (for clients)
+        if (manager == null)
+        {
+            manager = FindFirstObjectByType<RingSystemManager>();
+        }
+        
         // Subscribe to active state changes
         isActive.OnValueChanged += OnActiveStateChanged;
+        isStartRing.OnValueChanged += OnRingTypeChanged;
+        isLastRing.OnValueChanged += OnRingTypeChanged;
         
         // Initial update
         UpdateVisuals();
@@ -27,9 +35,16 @@ public class Ring : NetworkBehaviour
     {
         base.OnNetworkDespawn();
         isActive.OnValueChanged -= OnActiveStateChanged;
+        isStartRing.OnValueChanged -= OnRingTypeChanged;
+        isLastRing.OnValueChanged -= OnRingTypeChanged;
     }
     
     void OnActiveStateChanged(bool oldValue, bool newValue)
+    {
+        UpdateVisuals();
+    }
+    
+    void OnRingTypeChanged(bool oldValue, bool newValue)
     {
         UpdateVisuals();
     }
@@ -63,13 +78,18 @@ public class Ring : NetworkBehaviour
     {
         manager = mgr;
         ringIndex = index;
-        isStartRing = startRing;
-        isLastRing = lastRing;
         
-        // Set initial inactive state (unless it's the start ring)
-        if (!isStartRing)
+        // Only server sets these network variables
+        if (IsServer)
         {
-            SetActive(false);
+            isStartRing.Value = startRing;
+            isLastRing.Value = lastRing;
+            
+            // Set initial inactive state (unless it's the start ring)
+            if (!startRing)
+            {
+                SetActive(false);
+            }
         }
     }
     
@@ -86,7 +106,7 @@ public class Ring : NetworkBehaviour
         
         Color targetColor;
         
-        if (isStartRing)
+        if (isStartRing.Value)
         {
             targetColor = manager.GetStartRingColor();
         }
@@ -100,7 +120,7 @@ public class Ring : NetworkBehaviour
         propBlock.SetColor("_BaseColor", targetColor); // For URP
         
         // Add emission for glowing effect
-        if (isActive.Value || isStartRing)
+        if (isActive.Value || isStartRing.Value)
         {
             Color emissionColor = targetColor * manager.GetEmissionIntensity();
             propBlock.SetColor("_EmissionColor", emissionColor);
@@ -120,7 +140,7 @@ public class Ring : NetworkBehaviour
         
         if (other.CompareTag("Toothless"))
         {        
-            if (isStartRing)
+            if (isStartRing.Value)
             {
                 Debug.Log("Start ring passed! Course beginning...");
                 manager.OnStartRingPassed(this);
@@ -129,7 +149,7 @@ public class Ring : NetworkBehaviour
             {
                 
                 // Debug.Log($"Active ring {ringIndex} passed through!");
-                manager.OnRingPassed(ringIndex, isLastRing);
+                manager.OnRingPassed(ringIndex, isLastRing.Value);
             }
             else
             {
@@ -147,7 +167,7 @@ public class Ring : NetworkBehaviour
     
     void Update()
     {
-        if (isActive.Value || isStartRing)
+        if (isActive.Value || isStartRing.Value)
         {
             // Pulse effect
             float pulse = Mathf.PingPong(Time.time * 2f, 1f);
