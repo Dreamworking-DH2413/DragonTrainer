@@ -26,12 +26,21 @@ public class DragonGliderPhysics : NetworkBehaviour
     /* ----------------- CONTROL RESPONSE ----------------- */
 
     [Header("Control Response")]
-    public float pitchTorque = 5f;
-    public float rollTorque = 5f;
+    public float pitchTorque = 3f;
+    public float rollTorque = 3f;
     public float yawTorque = 2f;
 
     [Tooltip("Speed at which controls reach full authority")]
     public float controlFullEffectSpeed = 25f;
+
+    [Tooltip("Derivative gain for smoother control response (reduces overshoot)")]
+    public float controlDerivativeGain = 1.0f;
+
+    [Tooltip("Minimum input magnitude to be considered 'active control' (prevents auto-level fighting)")]
+    public float activeControlThreshold = 0.1f;
+
+    [Tooltip("Multiplier for auto-level torque strength (higher = faster return to neutral when idle)")]
+    public float autoLevelStrength = 10f;
 
     [Header("Turn Behaviour (A/D)")]
     [Tooltip("Extra nose-up when turning with A/D")]
@@ -115,7 +124,11 @@ public class DragonGliderPhysics : NetworkBehaviour
     /* ----------------- STABILITY & AERODYNAMICS ----------------- */
 
     [Header("Stability & Aerodynamics")]
-    public float angularDamping = 2f;
+    [Tooltip("Angular damping when actively controlling (lower = more responsive)")]
+    public float angularDampingActive = 0.5f;
+    
+    [Tooltip("Angular damping when idle (higher = more stable, helps auto-level)")]
+    public float angularDampingIdle = 2f;
 
     public float liftCoefficient = 0.5f;
     public float dragCoefficient = 0.02f;
@@ -198,7 +211,7 @@ public class DragonGliderPhysics : NetworkBehaviour
 
         rb.useGravity = true;
         rb.linearDamping = 0.1f;
-        rb.angularDamping = angularDamping;
+        rb.angularDamping = angularDampingActive; // Start with active (responsive) damping
 
         // Whatever rotation we start in is considered "level / neutral"
         neutralRotation = useInitialRotationAsNeutral ? transform.rotation : Quaternion.identity;
@@ -573,8 +586,26 @@ public class DragonGliderPhysics : NetworkBehaviour
             }
         }
 
+        // Detect if player is actively controlling
+        bool hasActiveInput = Mathf.Abs(turnInput) > activeControlThreshold || Mathf.Abs(pitchInputRaw) > activeControlThreshold;
+        
+        // When actively controlling, use higher gains and lower damping for responsiveness
+        // When idle, use lower gains and higher damping for stability and auto-level
         float pitchError = rawPitchError * pitchLimitFactor;
         float rollError = rawRollError * rollLimitFactor;
+        
+        // If no active input, apply aggressive auto-level
+        if (!hasActiveInput)
+        {
+            // Aggressive auto-level: wider activation range and stronger correction
+            float autoLevelDeadzone = 1f; // degrees - tighter deadzone
+            if (Mathf.Abs(currentPitchRel) < autoLevelDeadzone) pitchError = 0f;
+            if (Mathf.Abs(currentRollRel) < autoLevelDeadzone) rollError = 0f;
+            
+            // Boost auto-level strength for faster return to neutral
+            pitchError *= autoLevelStrength;
+            rollError *= autoLevelStrength;
+        }
 
         float controlEffect = Mathf.Clamp01(speed / controlFullEffectSpeed);
 
@@ -597,18 +628,27 @@ public class DragonGliderPhysics : NetworkBehaviour
 
         /* ---------------- APPLY TORQUE (CORE BEHAVIOUR) ---------------- */
 
+        // Get current angular velocity for derivative control
+        Vector3 angLocal = transform.InverseTransformDirection(rb.angularVelocity);
+        
+        // PD control: Proportional (error) + Derivative (angular velocity)
+        // Derivative term opposes current rotation rate, reducing overshoot
         Vector3 torque = Vector3.zero;
 
-        torque.x = pitchError * pitchTorque * controlEffect; // pitch toward target
-        torque.z = rollError * rollTorque * controlEffect;   // roll toward target
-        torque.y = yawInput * yawTorque * controlEffect;     // yaw for turn
+        torque.x = (pitchError * pitchTorque - angLocal.x * controlDerivativeGain) * controlEffect;
+        torque.z = (rollError * rollTorque - angLocal.z * controlDerivativeGain) * controlEffect;
+        torque.y = yawInput * yawTorque * controlEffect;
 
         rb.AddRelativeTorque(torque, ForceMode.Acceleration);
 
-        /* ---------------- EXTRA ANGULAR DAMPING ---------------- */
+        /* ---------------- ADAPTIVE ANGULAR DAMPING ---------------- */
 
-        Vector3 angLocal = transform.InverseTransformDirection(rb.angularVelocity);
-        rb.AddRelativeTorque(-angLocal * angularDamping, ForceMode.Acceleration);
+        // Use different damping based on whether player is actively controlling
+        float currentDamping = hasActiveInput ? angularDampingActive : angularDampingIdle;
+        rb.angularDamping = currentDamping; // Update Rigidbody's built-in damping
+        
+        // Additional damping torque for fine control
+        rb.AddRelativeTorque(-angLocal * currentDamping * 0.5f, ForceMode.Acceleration);
 
         /* ---------------- AZTECH SURFACES: FOLLOW TARGET + RESET ---------------- */
 
@@ -640,16 +680,20 @@ public class DragonGliderPhysics : NetworkBehaviour
                 elevatorTarget = Mathf.Clamp(norm, -1f, 1f);
             }
 
-            // If no input at all, both targets go toward 0 (auto-level surfaces / trim reset)
-            bool anyInput = Mathf.Abs(turnInput) > 0f || Mathf.Abs(pitchInputRaw) > 0f;
-            if (!anyInput)
+            // Only auto-center surfaces when truly idle (not just small input)
+            if (!hasActiveInput)
             {
                 aileronTarget = 0f;
                 elevatorTarget = 0f;
             }
 
-            surfaces.AileronAmount = Mathf.MoveTowards(surfaces.AileronAmount, aileronTarget, maxDelta);
-            surfaces.ElevatorAmount = Mathf.MoveTowards(surfaces.ElevatorAmount, elevatorTarget, maxDelta);
+            // When actively controlling, move surfaces faster for immediate response
+            // When auto-leveling, move slower for smooth return
+            float surfaceSpeed = hasActiveInput ? (surfaceCenterSpeed * 2f) : surfaceCenterSpeed;
+            float surfaceMaxDelta = surfaceSpeed * dt;
+            
+            surfaces.AileronAmount = Mathf.MoveTowards(surfaces.AileronAmount, aileronTarget, surfaceMaxDelta);
+            surfaces.ElevatorAmount = Mathf.MoveTowards(surfaces.ElevatorAmount, elevatorTarget, surfaceMaxDelta);
         }
 
         /* ---------------- THRUST ---------------- */
