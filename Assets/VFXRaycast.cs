@@ -12,6 +12,7 @@ public class VFXRaycast : NetworkBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     public GameObject playerCamera;
+    public MouthDetectionReceiver mouthDetector;
     
     void Start()
     {
@@ -48,6 +49,12 @@ public class VFXRaycast : NetworkBehaviour
         {
             // Clients just draw debug line for visualization
             Debug.DrawLine(playerCamera.transform.position, playerCamera.transform.position + playerCamera.transform.up * maxDistance, Color.red);
+            return;
+        }
+        
+        // Don't cast ray if mouth is closed
+        if (mouthDetector == null || !mouthDetector.IsMouthOpen)
+        {
             return;
         }
         
