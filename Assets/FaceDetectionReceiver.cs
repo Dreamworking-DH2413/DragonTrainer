@@ -4,19 +4,25 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using Unity.Netcode;
 
 /// <summary>
 /// Receives mouth open/closed data from Python script via UDP
 /// Attach this script to any GameObject in your Unity scene
+/// Only runs on HOST - syncs mouth state to all clients via NetworkVariable
 /// </summary>
-public class MouthDetectionReceiver : MonoBehaviour
+public class MouthDetectionReceiver : NetworkBehaviour
 {
     [Header("UDP Settings")]
     [SerializeField] private int port = 5065;
     
     [Header("Mouth State")]
-    [SerializeField] private bool mouthOpen = false;
+    private NetworkVariable<bool> mouthOpen = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     [SerializeField] private float marValue = 0f;
+    
+    [Header("Manual Testing (Host Only)")]
+    [SerializeField] private bool manualControl = false;
+    [SerializeField] private bool manualMouthState = false;
     
     [Header("Events")]
     public UnityEngine.Events.UnityEvent OnMouthOpened;
@@ -31,12 +37,61 @@ public class MouthDetectionReceiver : MonoBehaviour
     private bool previousMouthState = false;
     
     // Properties to access mouth state
-    public bool IsMouthOpen => mouthOpen;
+    public bool IsMouthOpen => mouthOpen.Value;
     public float MARValue => marValue;
     
     void Start()
     {
-        StartUDPListener();
+        // Only the host receives UDP data from Python
+        if (IsServer)
+        {
+            StartUDPListener();
+        }
+    }
+    
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        
+        // Subscribe to mouth state changes on all clients
+        mouthOpen.OnValueChanged += OnMouthStateChanged;
+    }
+    
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        mouthOpen.OnValueChanged -= OnMouthStateChanged;
+    }
+    
+    private void OnMouthStateChanged(bool previousValue, bool newValue)
+    {
+        // This fires on all clients when the value changes
+        if (newValue)
+        {
+            Debug.Log("MOUTH OPEN EVENT (Network Synced)");
+            OnMouthOpened?.Invoke();
+        }
+        else
+        {
+            Debug.Log("MOUTH CLOSE EVENT (Network Synced)");
+            OnMouthClosed?.Invoke();
+        }
+    }
+    
+    void Update()
+    {
+        // Manual control for testing (host only)
+        if (IsServer && manualControl)
+        {
+            if (mouthOpen.Value != manualMouthState)
+            {
+                mouthOpen.Value = manualMouthState;
+                if (showDebugLogs)
+                {
+                    Debug.Log($"[MANUAL] Mouth state set to: {manualMouthState}");
+                }
+            }
+        }
     }
     
     void StartUDPListener()
@@ -91,29 +146,16 @@ public class MouthDetectionReceiver : MonoBehaviour
             // Simple JSON parsing (you can use JsonUtility for more complex data)
             MouthData data = JsonUtility.FromJson<MouthData>(json);
             
-            // Update mouth state on main thread
-            mouthOpen = data.mouth_open;
-            marValue = data.mar_value;
-            
-            // if (showDebugLogs && mouthOpen != previousMouthState)
-            // {
-            //     Debug.Log($"Mouth state changed: {(mouthOpen ? "OPEN" : "CLOSED")} (MAR: {marValue:F4})");
-            // }
-            
-            // Trigger events on state change
-            if (mouthOpen != previousMouthState)
+            // Update mouth state (only server can write to NetworkVariable)
+            if (IsServer)
             {
-                if (mouthOpen)
+                mouthOpen.Value = data.mouth_open;
+                marValue = data.mar_value;
+                
+                if (showDebugLogs)
                 {
-                    Debug.Log("MOUTH OPEN EVENT");
-                    OnMouthOpened?.Invoke();
+                    Debug.Log($"[HOST] Mouth state: {(mouthOpen.Value ? "OPEN" : "CLOSED")} (MAR: {marValue:F4})");
                 }
-                else
-                {
-                    Debug.Log("MOUTH CLOSE EVENT");
-                    OnMouthClosed?.Invoke();
-                }
-                previousMouthState = mouthOpen;
             }
         }
         catch (Exception e)
@@ -122,8 +164,9 @@ public class MouthDetectionReceiver : MonoBehaviour
         }
     }
     
-    void OnDestroy()
+    public override void OnDestroy()
     {
+        base.OnDestroy();
         StopUDPListener();
     }
     
