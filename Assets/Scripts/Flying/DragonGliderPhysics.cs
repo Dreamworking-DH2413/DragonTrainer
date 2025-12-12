@@ -124,10 +124,36 @@ public class DragonGliderPhysics : NetworkBehaviour
     /* ----------------- THRUST ----------------- */
 
     [Header("Thrust")]
-    [SerializeField] private float glideThrust = 0.0f;
+    [SerializeField] private float flapThrust = 0.0f;
+    
+    [Tooltip("Constant base thrust always applied to keep the dragon airborne")]
+    public float baseThrust = 2000f;
+    
     public float maxThrust = 10000f;
     public float minThrust = 100f;
     public float thrustMultiplier = 500f;
+    
+    [Tooltip("How quickly flap thrust decays back to zero (per second)")]
+    public float flapThrustDecayRate = 2000f;
+    
+    [Header("Startup Thrust")]
+    [Tooltip("Extra thrust applied for the first second after unfreezing")]
+    public float startupThrustBoost = 8000f;
+    
+    [Tooltip("Duration of startup thrust boost in seconds")]
+    public float startupThrustDuration = 1f;
+    
+    private float startupThrustTimer = 0f;
+    private bool wasFreezingLastFrame = false;
+    
+    [Header("Debug - Real-time Thrust Visualization")]
+    [SerializeField] private float totalThrustApplied = 0f;
+    [SerializeField] private float currentBaseThrust = 0f;
+    [SerializeField] private float currentFlapThrust = 0f;
+    [SerializeField] private float currentStartupThrust = 0f;
+    [SerializeField] private float currentDebugThrust = 0f;
+    [SerializeField] private float currentBankBoost = 0f;
+    [SerializeField] private float currentWingFoldBoost = 0f;
 
     [Header("Turn Thrust Boost")]
     [Tooltip("If true, add extra forward thrust when banked to avoid losing too much speed in tight turns")]
@@ -378,11 +404,19 @@ public class DragonGliderPhysics : NetworkBehaviour
             }
             
             UpdateVRPlayerPosition();
+            wasFreezingLastFrame = true;
             return;
         }
         else
         {
             rb.useGravity = true;
+            
+            // Just unfroze - start startup thrust timer
+            if (wasFreezingLastFrame)
+            {
+                startupThrustTimer = startupThrustDuration;
+                wasFreezingLastFrame = false;
+            }
         }
 
         /* ---------------- READ INPUT ---------------- */
@@ -620,14 +654,39 @@ public class DragonGliderPhysics : NetworkBehaviour
 
         /* ---------------- THRUST ---------------- */
 
-        // Base thrust (from glide / dive logic)
-        float currentThrust = glideThrust;
+        // Decay flap thrust back to zero over time (only applies when no new flaps occur)
+        if (flapThrust > 0f)
+        {
+            flapThrust = Mathf.Max(0f, flapThrust - flapThrustDecayRate * Time.fixedDeltaTime);
+        }
+
+        // Start with constant base thrust to keep dragon airborne
+        currentBaseThrust = baseThrust;
+        float currentThrust = currentBaseThrust;
+        
+        // Add flap thrust (from VR wing flapping)
+        currentFlapThrust = flapThrust;
+        currentThrust += currentFlapThrust;
+        
+        // Add startup thrust boost if recently unfrozen
+        currentStartupThrust = 0f;
+        if (startupThrustTimer > 0f)
+        {
+            currentStartupThrust = startupThrustBoost;
+            currentThrust += currentStartupThrust;
+            startupThrustTimer -= Time.fixedDeltaTime;
+        }
 
         // Debug: Add extra thrust when space is pressed
+        currentDebugThrust = 0f;
         if (Input.GetKey(KeyCode.Space))
         {
-            currentThrust += debugThrustBoost;
+            currentDebugThrust = debugThrustBoost;
+            currentThrust += currentDebugThrust;
         }
+        
+        // Update total thrust visualization
+        totalThrustApplied = currentThrust;
 
         if (currentThrust != 0f)
         {
@@ -635,25 +694,27 @@ public class DragonGliderPhysics : NetworkBehaviour
         }
 
         // Extra thrust when banked hard, so sharp turns don't bleed all your speed
+        currentBankBoost = 0f;
         if (enableTurnThrustBoost && maxRollAngle > 0.1f)
         {
             float bankAmount = Mathf.Clamp01(Mathf.Abs(currentRollRel) / maxRollAngle); // 0 (level) .. 1 (max bank)
-            float extraThrust = maxBankThrustBoost * bankAmount;
-            if (extraThrust > 0f)
+            currentBankBoost = maxBankThrustBoost * bankAmount;
+            if (currentBankBoost > 0f)
             {
-                rb.AddForce(transform.forward * extraThrust, ForceMode.Force);
+                rb.AddForce(transform.forward * currentBankBoost, ForceMode.Force);
             }
         }
 
         // Extra thrust when wings are folded (streamlined for speed)
+        currentWingFoldBoost = 0f;
         if (enableWingFoldSpeedBoost && wingController != null)
         {
             // Average fold amount from both wings (0 = extended, 1 = fully folded)
             float avgFoldAmount = (wingController.leftWingFold + wingController.rightWingFold) * 0.5f;
-            float foldBoost = maxWingFoldThrustBoost * avgFoldAmount;
-            if (foldBoost > 0f)
+            currentWingFoldBoost = maxWingFoldThrustBoost * avgFoldAmount;
+            if (currentWingFoldBoost > 0f)
             {
-                rb.AddForce(transform.forward * foldBoost, ForceMode.Force);
+                rb.AddForce(transform.forward * currentWingFoldBoost, ForceMode.Force);
             }
         }
 
@@ -695,9 +756,9 @@ public class DragonGliderPhysics : NetworkBehaviour
             playerTransform.rotation = transform.rotation;
     }
 
-    // External hook to drive thrust based on vertical speed
+    // External hook to drive flap thrust based on wing flapping speed
     public void SetThrustByVelocity(float avgVelocityY)
     {
-        glideThrust = Mathf.Clamp(-avgVelocityY * thrustMultiplier, minThrust, maxThrust);
+        flapThrust = Mathf.Clamp(-avgVelocityY * thrustMultiplier, minThrust, maxThrust);
     }
 }

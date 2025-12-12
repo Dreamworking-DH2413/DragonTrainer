@@ -66,7 +66,21 @@ namespace AztechGames
         /// <returns>Lift force in Newtons.</returns>
         public float CalculateLift()
         {
-            float angleOfAttack = Vector3.Angle(Vector3.forward, transform.forward);
+            // Calculate angle of attack relative to velocity direction, not world forward!
+            // This ensures lift works correctly regardless of which compass direction we're flying
+            Vector3 velocity = _rb.linearVelocity;
+            float speed = velocity.magnitude;
+            
+            if (speed < 0.1f)
+                return 0f;
+            
+            // Project velocity onto the plane perpendicular to the right wing to get pitch-relative AOA
+            Vector3 velocityDir = velocity.normalized;
+            float angleOfAttack = Vector3.Angle(velocityDir, transform.forward);
+            
+            // Clamp AOA to reasonable range (beyond 90° means we're going backwards)
+            angleOfAttack = Mathf.Min(angleOfAttack, 90f);
+            
             float radianOfAngleDegree = Mathf.Deg2Rad * angleOfAttack;
             var lift = 0.5f * airDensity * TrueAirSpeed() * wingArea * liftCoefficient * Mathf.Cos(radianOfAngleDegree);
             return lift;
@@ -78,7 +92,19 @@ namespace AztechGames
         /// <returns>Drag force in Newtons.</returns>
         public float CalculateDrag()
         {
-            float angleOfAttack = Vector3.Angle(Vector3.forward, transform.forward);
+            // Calculate angle of attack relative to velocity direction, not world forward!
+            Vector3 velocity = _rb.linearVelocity;
+            float speed = velocity.magnitude;
+            
+            if (speed < 0.1f)
+                return 0f;
+                
+            Vector3 velocityDir = velocity.normalized;
+            float angleOfAttack = Vector3.Angle(velocityDir, transform.forward);
+            
+            // Clamp AOA to reasonable range
+            angleOfAttack = Mathf.Min(angleOfAttack, 90f);
+            
             float radianOfAngleDegree = Mathf.Deg2Rad * angleOfAttack;
             var drag = 0.5f * airDensity * AirSpeed() * wingArea * dragCoefficient * Mathf.Pow(Mathf.Cos(radianOfAngleDegree), 2);
             return drag;

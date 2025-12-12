@@ -30,6 +30,13 @@ public class VRRig : NetworkBehaviour
     public float followSpeed = 20f;
     public float trackerYMultiplier = 25f;
     public float trackerYOffset = -1.5f;
+    
+    [Header("Flap Detection")]
+    [Tooltip("Minimum downward velocity (in local space) to trigger a flap")]
+    public float flapVelocityThreshold = 1.5f;
+    
+    [Tooltip("Enable debug logging for flap detection")]
+    public bool debugFlapDetection = false;
 
     [Header("Target Position Constraints")]
     public float minXOutward = -8f;  // How far out each wing can go (negative for left, positive for right)
@@ -54,6 +61,7 @@ public class VRRig : NetworkBehaviour
     private Vector3 smoothedRightTargetLocalPos;
     private bool isInitialized = false;
     private bool vfxInitialized = false;
+    private bool velocityInitialized = false;
 
     void Start()
     {
@@ -219,22 +227,41 @@ public class VRRig : NetworkBehaviour
         {
             // Convert current positions to VRRig's local space
             Vector3 leftTrackerLocalPos = transform.InverseTransformPoint(tracker1.position);
+            Vector3 rightTrackerLocalPos = transform.InverseTransformPoint(tracker2.position);
+            
+            // On first frame, just initialize positions without calculating velocity
+            if (!velocityInitialized)
+            {
+                startLeftTrackerLocalPosition = leftTrackerLocalPos;
+                startRightTrackerLocalPosition = rightTrackerLocalPos;
+                velocityInitialized = true;
+                return; // Skip velocity calculation on first frame
+            }
+            
             Vector3 leftTrackerVelocity = (leftTrackerLocalPos - startLeftTrackerLocalPosition) / Time.fixedDeltaTime;
             startLeftTrackerLocalPosition = leftTrackerLocalPos;
             
-            Vector3 rightTrackerLocalPos = transform.InverseTransformPoint(tracker2.position);
             Vector3 rightTrackerVelocity = (rightTrackerLocalPos - startRightTrackerLocalPosition) / Time.fixedDeltaTime;
             startRightTrackerLocalPosition = rightTrackerLocalPos;
             
-            // if the Y velocity is greater than a threshold, we call a function to trigger the wing flap and move the dragon up
-            if (leftTrackerVelocity.y < -0.0f || rightTrackerVelocity.y < -0.0f)
+            // Debug logging if enabled
+            if (debugFlapDetection)
             {
-                // Debug.Log("[VRRig] Left tracker velocity: " + leftTrackerVelocity.ToString("F3"));
-                // Debug.Log("[VRRig] Tracker flap detected.");
+                Debug.Log($"[VRRig] Tracker Velocities | Left Y: {leftTrackerVelocity.y:F3} | Right Y: {rightTrackerVelocity.y:F3} | Threshold: -{flapVelocityThreshold:F3}");
+            }
+            
+            // Check if downward velocity exceeds threshold (negative Y = downward in local space)
+            if (leftTrackerVelocity.y < -flapVelocityThreshold || rightTrackerVelocity.y < -flapVelocityThreshold)
+            {
                 // avg velocity of both trackers
                 float avgVelocityY = (leftTrackerVelocity.y + rightTrackerVelocity.y) / 2.0f;
+                
+                if (debugFlapDetection)
+                {
+                    Debug.Log($"[VRRig] FLAP DETECTED! Avg Velocity Y: {avgVelocityY:F3}");
+                }
             
-                // Call function to trigger left wing flap
+                // Call function to trigger wing flap thrust
                 dragon.GetComponent<DragonGliderPhysics>().SetThrustByVelocity(avgVelocityY);
             }
         }
