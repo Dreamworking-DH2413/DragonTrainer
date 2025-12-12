@@ -1,5 +1,4 @@
 using UnityEngine;
-using AztechGames;
 using Unity.Netcode;
 using Valve.VR;
 
@@ -39,8 +38,17 @@ public class DragonGliderPhysics : NetworkBehaviour
     [Tooltip("Minimum input magnitude to be considered 'active control' (prevents auto-level fighting)")]
     public float activeControlThreshold = 0.1f;
 
-    [Tooltip("Multiplier for auto-level torque strength (higher = faster return to neutral when idle)")]
-    public float autoLevelStrength = 10f;
+    [Tooltip("Enable auto-leveling when idle (returns to neutral orientation)")]
+    public bool enableAutoLevel = true;
+
+    [Tooltip("Auto-level strength for pitch (higher = faster return to neutral when idle)")]
+    public float autoLevelPitchStrength = 1f;
+    
+    [Tooltip("Auto-level strength for roll (higher = faster return to neutral when idle)")]
+    public float autoLevelRollStrength = 2f;
+
+    [Tooltip("Smoothing factor for auto-level to reduce network choppiness (0-1, lower = smoother)")]
+    public float autoLevelSmoothness = 0.3f;
 
     [Header("Turn Behaviour (A/D)")]
     [Tooltip("Extra nose-up when turning with A/D")]
@@ -115,12 +123,6 @@ public class DragonGliderPhysics : NetworkBehaviour
 
     private bool vrControllerInitialized = false;
 
-    /* ----------------- AZTECH SURFACES ----------------- */
-
-    [Header("Aztech Surfaces")]
-    [Tooltip("How fast aileron/elevator amounts move toward target / neutral")]
-    public float surfaceCenterSpeed = 3f;   // units per second in [-1,1] range
-
     /* ----------------- STABILITY & AERODYNAMICS ----------------- */
 
     [Header("Stability & Aerodynamics")]
@@ -130,9 +132,26 @@ public class DragonGliderPhysics : NetworkBehaviour
     [Tooltip("Angular damping when idle (higher = more stable, helps auto-level)")]
     public float angularDampingIdle = 2f;
 
-    public float liftCoefficient = 0.5f;
-    public float dragCoefficient = 0.02f;
-    public float aoaDragMultiplier = 3f;
+    [Tooltip("Base lift coefficient (adjust to balance with gravity)")]
+    public float liftCoefficient = 50f;
+    
+    [Tooltip("Minimum speed required for lift to start working")]
+    public float minLiftSpeed = 5f;
+    
+    [Tooltip("Optimal angle of attack for maximum lift (degrees)")]
+    public float optimalAoA = 5f;
+    
+    [Tooltip("How quickly lift falls off past optimal AoA")]
+    public float aoaLiftFalloff = 0.1f;
+
+    [Tooltip("Base drag coefficient")]
+    public float dragCoefficient = 2f;
+    
+    [Tooltip("Extra drag from high angle of attack (stall drag)")]
+    public float aoaDragMultiplier = 5f;
+    
+    [Tooltip("Induced drag from generating lift")]
+    public float inducedDragCoefficient = 0.5f;
 
     /* ----------------- THRUST ----------------- */
 
@@ -201,13 +220,15 @@ public class DragonGliderPhysics : NetworkBehaviour
     public bool rotatePlayerWithDragon = true;
 
     Rigidbody rb;
-    GliderSurface_Controller surfaces;
     Transform playerTransform;
+    
+    // Auto-level smoothing
+    private float smoothedPitchError = 0f;
+    private float smoothedRollError = 0f;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        surfaces = GliderSurface_Controller.Instance;
 
         rb.useGravity = true;
         rb.linearDamping = 0.1f;
@@ -589,22 +610,43 @@ public class DragonGliderPhysics : NetworkBehaviour
         // Detect if player is actively controlling
         bool hasActiveInput = Mathf.Abs(turnInput) > activeControlThreshold || Mathf.Abs(pitchInputRaw) > activeControlThreshold;
         
-        // When actively controlling, use higher gains and lower damping for responsiveness
-        // When idle, use lower gains and higher damping for stability and auto-level
-        float pitchError = rawPitchError * pitchLimitFactor;
-        float rollError = rawRollError * rollLimitFactor;
+        float pitchError = 0f;
+        float rollError = 0f;
         
-        // If no active input, apply aggressive auto-level
-        if (!hasActiveInput)
+        // Only apply control errors when there's input or auto-level is enabled
+        if (hasActiveInput)
         {
-            // Aggressive auto-level: wider activation range and stronger correction
-            float autoLevelDeadzone = 1f; // degrees - tighter deadzone
-            if (Mathf.Abs(currentPitchRel) < autoLevelDeadzone) pitchError = 0f;
-            if (Mathf.Abs(currentRollRel) < autoLevelDeadzone) rollError = 0f;
+            // Active control: apply errors based on input targets
+            pitchError = rawPitchError * pitchLimitFactor;
+            rollError = rawRollError * rollLimitFactor;
             
-            // Boost auto-level strength for faster return to neutral
-            pitchError *= autoLevelStrength;
-            rollError *= autoLevelStrength;
+            // Reset smoothed values when actively controlling
+            smoothedPitchError = 0f;
+            smoothedRollError = 0f;
+        }
+        else if (enableAutoLevel)
+        {
+            // Auto-level: smooth return to neutral when idle
+            float autoLevelDeadzone = 1f; // degrees - small deadzone to prevent jitter
+            
+            float targetPitchError = (Mathf.Abs(currentPitchRel) < autoLevelDeadzone) ? 0f : -currentPitchRel;
+            float targetRollError = (Mathf.Abs(currentRollRel) < autoLevelDeadzone) ? 0f : -currentRollRel;
+            
+            // Smooth the error values to reduce network choppiness
+            smoothedPitchError = Mathf.Lerp(smoothedPitchError, targetPitchError, autoLevelSmoothness);
+            smoothedRollError = Mathf.Lerp(smoothedRollError, targetRollError, autoLevelSmoothness);
+            
+            // Apply smoothed auto-level correction with separate strength for pitch and roll
+            pitchError = smoothedPitchError * autoLevelPitchStrength;
+            rollError = smoothedRollError * autoLevelRollStrength;
+        }
+        else
+        {
+            // No input and auto-level disabled: zero errors, dragon holds current angle
+            pitchError = 0f;
+            rollError = 0f;
+            smoothedPitchError = 0f;
+            smoothedRollError = 0f;
         }
 
         float controlEffect = Mathf.Clamp01(speed / controlFullEffectSpeed);
@@ -644,56 +686,14 @@ public class DragonGliderPhysics : NetworkBehaviour
         /* ---------------- ADAPTIVE ANGULAR DAMPING ---------------- */
 
         // Use different damping based on whether player is actively controlling
-        float currentDamping = hasActiveInput ? angularDampingActive : angularDampingIdle;
+        // Only apply higher idle damping if auto-level is enabled
+        float currentDamping = hasActiveInput ? angularDampingActive : (enableAutoLevel ? angularDampingIdle : angularDampingActive);
         rb.angularDamping = currentDamping; // Update Rigidbody's built-in damping
         
-        // Additional damping torque for fine control
-        rb.AddRelativeTorque(-angLocal * currentDamping * 0.5f, ForceMode.Acceleration);
-
-        /* ---------------- AZTECH SURFACES: FOLLOW TARGET + RESET ---------------- */
-
-        if (surfaces != null)
+        // Additional damping torque for fine control (only when auto-level enabled)
+        if (enableAutoLevel || hasActiveInput)
         {
-            float dt = Time.fixedDeltaTime;
-            float maxDelta = surfaceCenterSpeed * dt;
-
-            // Map target roll to aileron amount (-1..1)
-            float aileronTarget = 0f;
-            if (maxRollAngle > 0.1f)
-                aileronTarget = Mathf.Clamp(targetRollRel / maxRollAngle, -1f, 1f);
-
-            // Map target pitch to elevator amount (-1..1)
-            float elevatorTarget = 0f;
-            float maxPitchMagUp = Mathf.Max(1e-3f, maxPitchAngleUp);
-            float maxPitchMagDown = Mathf.Max(1e-3f, maxPitchAngleDown);
-
-            if (targetPitchRel < 0f)
-            {
-                // Negative rel pitch = nose up -> positive elevator
-                float norm = -targetPitchRel / maxPitchMagUp;
-                elevatorTarget = Mathf.Clamp(norm, -1f, 1f);
-            }
-            else if (targetPitchRel > 0f)
-            {
-                // Positive rel pitch = nose down -> negative elevator
-                float norm = -targetPitchRel / maxPitchMagDown;
-                elevatorTarget = Mathf.Clamp(norm, -1f, 1f);
-            }
-
-            // Only auto-center surfaces when truly idle (not just small input)
-            if (!hasActiveInput)
-            {
-                aileronTarget = 0f;
-                elevatorTarget = 0f;
-            }
-
-            // When actively controlling, move surfaces faster for immediate response
-            // When auto-leveling, move slower for smooth return
-            float surfaceSpeed = hasActiveInput ? (surfaceCenterSpeed * 2f) : surfaceCenterSpeed;
-            float surfaceMaxDelta = surfaceSpeed * dt;
-            
-            surfaces.AileronAmount = Mathf.MoveTowards(surfaces.AileronAmount, aileronTarget, surfaceMaxDelta);
-            surfaces.ElevatorAmount = Mathf.MoveTowards(surfaces.ElevatorAmount, elevatorTarget, surfaceMaxDelta);
+            rb.AddRelativeTorque(-angLocal * currentDamping * 0.5f, ForceMode.Acceleration);
         }
 
         /* ---------------- THRUST ---------------- */
@@ -764,13 +764,37 @@ public class DragonGliderPhysics : NetworkBehaviour
 
         /* ---------------- LIFT & DRAG ---------------- */
 
-        if (speed > 0.01f && forwardSpeed > 0.01f)
+        if (speed > minLiftSpeed)
         {
-            float lift = liftCoefficient * forwardSpeed * forwardSpeed * Mathf.Cos(aoa);
-            rb.AddForce(transform.up * lift, ForceMode.Force);
-
-            float aoaDrag = 1f + Mathf.Abs(aoa) * aoaDragMultiplier;
-            rb.AddForce(-velocity.normalized * dragCoefficient * speed * speed * aoaDrag, ForceMode.Force);
+            // Calculate angle of attack in degrees
+            float aoaDegrees = aoa * Mathf.Rad2Deg;
+            
+            // Lift curve: peaks at optimal AoA, falls off on either side
+            float aoaDiff = Mathf.Abs(aoaDegrees - optimalAoA);
+            float liftMultiplier = Mathf.Exp(-aoaDiff * aoaLiftFalloff);
+            
+            // Lift force: proportional to speed squared and lift curve
+            float liftForce = liftCoefficient * speed * speed * liftMultiplier;
+            rb.AddForce(transform.up * liftForce, ForceMode.Force);
+            
+            // Induced drag: drag from generating lift (higher at low speeds)
+            float inducedDrag = inducedDragCoefficient * (liftForce * liftForce) / (speed * speed + 1f);
+            
+            // Parasitic drag: basic drag from moving through air
+            float parasiticDrag = dragCoefficient * speed * speed;
+            
+            // AoA drag: extra drag when not aligned with airflow (stall drag)
+            float stallDrag = aoaDragMultiplier * Mathf.Abs(aoa) * speed * speed;
+            
+            // Total drag
+            float totalDrag = parasiticDrag + inducedDrag + stallDrag;
+            rb.AddForce(-velocity.normalized * totalDrag, ForceMode.Force);
+        }
+        else
+        {
+            // Below minimum speed: only apply basic drag, no lift
+            float parasiticDrag = dragCoefficient * speed * speed;
+            rb.AddForce(-velocity.normalized * parasiticDrag, ForceMode.Force);
         }
     }
 
