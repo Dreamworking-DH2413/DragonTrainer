@@ -21,29 +21,36 @@ public class respawningSetup : NetworkBehaviour
 
     void Update()
     {
-        // Only allow host to respawn the dragon
-        if (!IsServer && !IsHost) return;
+        // Only allow server to respawn the dragon
+        if (!IsServer) return;
         
         // R key - lift dragon up
         if (Input.GetKeyDown(KeyCode.R))
         {
-            LiftDragonServerRpc();
+            LiftDragon();
         }
     }
 
-    [Rpc(SendTo.Server)]
-    private void LiftDragonServerRpc()
+    private void LiftDragon()
     {
-        // Server has authority over position - this will sync to all clients
-        transform.position += Vector3.up * respawnHeight;
+        // Calculate new position
+        Vector3 newPosition = transform.position + Vector3.up * respawnHeight;
         
-        // Reset velocities to prevent weird physics after respawn
+        // Reset velocities first to prevent weird physics after respawn
         if (rb != null)
         {
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
+            
+            // Use MovePosition for network rigidbody compatibility
+            rb.MovePosition(newPosition);
+        }
+        else
+        {
+            // Fallback if no rigidbody
+            transform.position = newPosition;
         }
         
-        Debug.Log($"Dragon lifted to: {transform.position}");
+        Debug.Log($"Dragon lifted to: {newPosition}");
     }
 }
