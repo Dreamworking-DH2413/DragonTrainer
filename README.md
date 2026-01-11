@@ -23,7 +23,7 @@ There are multiple components that are needed in order to provide the full exper
 - A board that can tilt left and right as well as a chair that can be mounted on the board (see board setup for details).
 - Alternatively a third computer that runs the spectator view.
 
-## Board setup
+## Board Setup
 The board that was built for our project was made using a table top, soft and medium soft foam, some planks, ratchet straps, and an office chair without the back and arm rests. 
 
 ![Board Setup](./img/board_setup.jpg)
