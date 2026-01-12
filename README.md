@@ -1,5 +1,7 @@
 # Dragon Trainer 
 
+Dragon Trainer is a co-op VR experience where you and your friend cooperate together as a dragon and its rider to explore a vast landscape, fly through rings, and breathe fire at sheep. Mount our proprietary controller platform and steer the experience together. The dragon controls speed by flapping its wings (your arms) and shoots fire through its mouth. The rider controls pitch with its controller, and together you control the roll by tilting left and right on the platform. By steering and cooperating together, we provide an experience like no other, immersing the players in once-in-a-lifetime fun.
+
 ![demo](./img/demo.jpg)
 ![game](./img/game.png)
 
@@ -11,6 +13,10 @@
 - ✨Realistic procedural infinite terrain generation
 - ✨Realistic horizon fog
 - Mouth recognition for fire breathing (half working)
+
+## Setup Overview
+
+![setup](./img/setup.png)
 
 ## Tech Stack
 - Unity 6000.0.62f1 LTS
